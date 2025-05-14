@@ -6,6 +6,16 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home Page'),
+      ),
+      body: Center(
+        child: Text(
+          'Welcome to the Home Page!',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
+    );
   }
 }
