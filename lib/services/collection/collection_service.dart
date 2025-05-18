@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/collection/collection_info.dart';
@@ -34,6 +35,7 @@ class CollectionService {
   /// Fetches the info data for the collection
   Future<CollectionInfo> fetchInfo() async {
     try {
+      debugPrint("""URI: $collectionUrl/info.json""");
       final response = await _client.get(Uri.parse('$collectionUrl/info.json'));
 
       if (response.statusCode == 200) {
@@ -52,6 +54,7 @@ class CollectionService {
   /// Fetches a collection item by ID
   Future<CollectionItem> fetchItem(int id) async {
     try {
+      debugPrint("""URI: $collectionUrl/data/$id.json""");
       final response =
           await _client.get(Uri.parse('$collectionUrl/data/$id.json'));
 

@@ -25,14 +25,14 @@ final gameServiceProvider = AutoDisposeProvider<GameService>.internal(
 // ignore: unused_element
 typedef GameServiceRef = AutoDisposeProviderRef<GameService>;
 String _$gameSessionNotifierHash() =>
-    r'4cc959c92e248c8d6203f888cef1eb0881431244';
+    r'e74f5aad5ccb97f59e9154e19a42e4c18a7d0c03';
 
 /// Provider for the active game session
 ///
 /// Copied from [GameSessionNotifier].
 @ProviderFor(GameSessionNotifier)
 final gameSessionNotifierProvider =
-    AutoDisposeNotifierProvider<GameSessionNotifier, GameSession?>.internal(
+    NotifierProvider<GameSessionNotifier, GameSession?>.internal(
   GameSessionNotifier.new,
   name: r'gameSessionNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -42,7 +42,7 @@ final gameSessionNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$GameSessionNotifier = AutoDisposeNotifier<GameSession?>;
+typedef _$GameSessionNotifier = Notifier<GameSession?>;
 String _$gameTimerNotifierHash() => r'1d4605bb2624b9d55f371a00fdfcb9ff7094cb58';
 
 /// Provider for the game timer

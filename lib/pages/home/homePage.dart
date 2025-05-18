@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/navigation/routes.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -62,6 +63,34 @@ class HomePage extends ConsumerWidget {
                 icon: const Icon(Icons.eco),
                 label: const Text('Browse Carbon Data'),
                 style: OutlinedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  minimumSize: const Size(double.infinity, 56),
+                ),
+              ),
+
+              // Text button
+              TextButton(
+                onPressed: () {
+                  // Start an http request to fetch data
+                  // and print the response
+                  final client = http.Client();
+                  client
+                      .get(Uri.parse('https://raw.githubusercontent.com/WesselvanDam/carbon-guessr-app/refs/heads/main/data/api/carbon/info.json'))
+                      .then((response) {
+                    if (response.statusCode == 200) {
+                      print('Response data: ${response.body}');
+                    } else {
+                      print('Error: ${response.statusCode}');
+                    }
+                  }).catchError((error) {
+                    print('Request failed: $error');
+                  }).whenComplete(() {
+                    client.close();
+                  });
+                },
+                child: const Text('test'),
+                style: TextButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   minimumSize: const Size(double.infinity, 56),

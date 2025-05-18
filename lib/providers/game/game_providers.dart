@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../models/collection/collection_info.dart';
 import '../../models/game/game_round.dart';
 import '../../models/game/game_session.dart';
 import '../../services/game/game_service.dart';
@@ -16,7 +17,7 @@ GameService gameService(Ref ref) {
 }
 
 /// Provider for the active game session
-@riverpod
+@Riverpod(keepAlive: true)
 class GameSessionNotifier extends _$GameSessionNotifier {
   @override
   GameSession? build() {
@@ -25,35 +26,35 @@ class GameSessionNotifier extends _$GameSessionNotifier {
   }
 
   /// Creates a new game session
-  Future<void> createNewSession(GameMode mode) async {
+  Future<void> createNewSession(GameMode mode, CollectionInfo info) async {
     final gameService = ref.read(gameServiceProvider);
-
-    // 1. Get the collection info to know the size of the collection
-    final collectionInfo = await ref.read(collectionInfoProvider.future);
 
     // Number of rounds as specified in requirements
     const numberOfRounds = 5;
 
-    // 2. Generate the required item IDs based on collection size
+    // Generate the required item IDs based on collection size
     final itemIds = gameService.generateRequiredItemIds(
-      collectionInfo: collectionInfo,
+      collectionInfo: info,
       numberOfRounds: numberOfRounds,
     );
 
-    // 3. Fetch only the specific items we need
+    // Fetch only the specific items we need
     final items = await ref.read(collectionItemsByIdsProvider(itemIds).future);
 
     if (items.isEmpty || items.length < numberOfRounds * 2) {
       throw Exception('Failed to load required items');
     }
 
-    // 4. Create the game session with the fetched items
+    // Create the game session with the fetched items
     // Use the same sessionId that was used to generate the items
     final session = gameService.createGameSession(
       mode: mode,
       items: items,
       numberOfRounds: numberOfRounds,
     );
+
+    debugPrint('Session created with ID: ${session.id}');
+    debugPrint('Session: ${session.toJson()}');
 
     state = session;
   }
@@ -69,14 +70,6 @@ class GameSessionNotifier extends _$GameSessionNotifier {
       session: state!,
       userEstimate: userEstimate,
     );
-  }
-
-  /// Returns the current round of the active session
-  GameRound? getCurrentRound() {
-    if (state == null || state!.currentRoundIndex >= state!.rounds.length) {
-      return null;
-    }
-    return state!.rounds[state!.currentRoundIndex];
   }
 
   /// Returns the total score of the active session

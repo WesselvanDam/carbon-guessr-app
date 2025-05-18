@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../i18n/strings.g.dart';
 import '../../models/game/game_session.dart';
+import '../../providers/collection/collection_providers.dart';
 import '../../providers/game/game_providers.dart';
 import '../../services/navigation/routes.dart';
 
@@ -12,7 +11,19 @@ class GameModeSelectionPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = Translations.of(context);
+    final collectionInfo = ref.watch(collectionInfoProvider);
+
+    // Check if collection info is available
+    if (!collectionInfo.hasValue) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Select Game Mode'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -99,10 +110,14 @@ class GameModeSelectionPage extends ConsumerWidget {
   Future<void> _startGame(
       BuildContext context, WidgetRef ref, GameMode mode) async {
     try {
+      final collectionInfo = ref.read(collectionInfoProvider).asData!.value;
+      debugPrint('info: $collectionInfo');
+
       // Create a new game session with selected mode
+
       await ref
           .read(gameSessionNotifierProvider.notifier)
-          .createNewSession(mode);
+          .createNewSession(mode, collectionInfo);
 
       // Navigate to the game round page
       if (context.mounted) {

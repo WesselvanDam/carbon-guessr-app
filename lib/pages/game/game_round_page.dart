@@ -65,19 +65,8 @@ class _GameRoundPageState extends ConsumerState<GameRoundPage> {
       );
     }
 
-    final currentRound =
-        ref.read(gameSessionNotifierProvider.notifier).getCurrentRound();
-    if (currentRound == null) {
-      // Navigate to results page if all rounds are completed
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        const GameResultsRoute().go(context);
-      });
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+    final currentRound = session.rounds[session.currentRoundIndex];
+    debugPrint('Current round: $currentRound');
 
     final itemA = currentRound.itemPair.itemA;
     final itemB = currentRound.itemPair.itemB;
@@ -385,9 +374,11 @@ class _GameRoundPageState extends ConsumerState<GameRoundPage> {
       }
 
       // Submit the estimate
+      debugPrint('Submitting estimate: $estimate');
       ref.read(gameSessionNotifierProvider.notifier).submitEstimate(estimate);
 
       // Stop the timer
+      debugPrint('Stopping timer');
       ref.read(gameTimerNotifierProvider.notifier).cancelTimer();
 
       // Update UI to show results
