@@ -115,11 +115,16 @@ def process_info_sheet(workbook_path: str, sheet_name: str, output_dir: str) -> 
         # Read the info sheet
         df = pd.read_excel(workbook_path, sheet_name="info", header=None)
 
+        # Read the data sheet to get the number of items
+        data_df = pd.read_excel(workbook_path, sheet_name="data")
+        data_size = len(data_df)
+
         # Extract data from the dataframe (expected format: id, quantity, unit with values in second column)
         info_data = {
             "id": df.iloc[0, 1] if not pd.isna(df.iloc[0, 1]) else "",
             "quantity": df.iloc[1, 1] if not pd.isna(df.iloc[1, 1]) else "",
             "unit": df.iloc[2, 1] if not pd.isna(df.iloc[2, 1]) else "",
+            "size": data_size,
         }
 
         # Create the output directory if it doesn't exist

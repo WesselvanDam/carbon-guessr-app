@@ -1,6 +1,8 @@
 include: package:lint/strict.yaml
 
 analyzer:
+  errors:
+    use_setters_to_change_properties: ignore
   exclude:
     - lib/generated/**
     - lib/**.g.dart

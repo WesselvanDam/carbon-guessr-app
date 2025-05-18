@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'constants/theme.dart';
 import 'i18n/strings.g.dart';
+import 'services/collection_data_manager.dart';
 import 'services/navigation/router.dart';
 
 class App extends ConsumerWidget {
@@ -11,13 +12,14 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
+    final router =
+        ref.watch(routerProvider); // Initialize collection data manager
+    ref.watch(collectionDataManagerProvider);
 
     final textTheme = createTextTheme(context);
     final theme = MaterialTheme(textTheme);
-
     return MaterialApp.router(
-      title: 'App',
+      title: 'CarbonGuessr',
       debugShowCheckedModeBanner: false,
       theme: theme.dark(),
       routerConfig: router,

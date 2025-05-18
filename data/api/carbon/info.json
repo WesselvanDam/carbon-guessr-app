@@ -1,5 +1,6 @@
 {
   "id": "carbon",
   "quantity": "global warming potential",
-  "unit": "kg CO2eq"
+  "unit": "kg CO2eq",
+  "size": 20
 }

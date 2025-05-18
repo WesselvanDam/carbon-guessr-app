@@ -61,9 +61,12 @@ The `info` data is placed in the <subdirectory>/info.json file. The data is in t
 {
   "id": "carbon",
   "quantity": "Global warming potential",
-  "unit": "kg CO2eq"
+  "unit": "kg CO2eq",
+  "size": 7
 }
 ```
+
+Where `size` represents the number of items in the data sheet.
 
 ## data
 
