@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "title": "Bell pepper",
+  "description": "Lorem ipsum dolor sit amet",
+  "value": 32,
+  "category": "Food",
+  "sources": [
+    1
+  ]
+}

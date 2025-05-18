@@ -1,0 +1,10 @@
+{
+  "id": 13,
+  "title": "Coffee",
+  "description": "Lorem ipsum dolor sit amet",
+  "value": 29,
+  "category": "Drinks",
+  "sources": [
+    3
+  ]
+}

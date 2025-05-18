@@ -1,0 +1,10 @@
+{
+  "id": 9,
+  "title": "Television",
+  "description": "Lorem ipsum dolor sit amet",
+  "value": 86,
+  "category": "Electronics",
+  "sources": [
+    4
+  ]
+}
