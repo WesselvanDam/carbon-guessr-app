@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": "carbon",
+      "quantity": "global warming potential",
+      "unit": "kg CO2eq",
+      "title": "Carbon Footprints",
+      "description": "Get to know what activities contribute the most to climate change",
+      "size": 20
+    }
+  ]
+}

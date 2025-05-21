@@ -13,6 +13,8 @@ The `info` sheet has data in the following format:
 | id   | carbon                  |
 | quantity | global warming potential |
 | unit | kg CO2eq                |
+| title | Carbon Footprints | 
+| description | Lorem ipsum dolor sit amet |
 
 ## data
 
@@ -111,6 +113,25 @@ The `l10n` data is placed in the <subdirectory>/l10n directory. Each localizatio
 }
 ```
 
+## collections.json
+
+The `collections.json` file is placed in the `api` directory. It aggregates the `info.json` data from all processed workbooks into a single JSON file. The data is structured as follows:
+
+```json
+{
+  "data": [
+    {
+      "id": "carbon",
+      "quantity": "Global warming potential",
+      "unit": "kg CO2eq",
+      "title": "Some title",
+      "description": "Some description",
+      "size": 7
+    }
+  ]
+}
+```
+
 ## Directory structure
 
 Given the above, the directory structure for the API data is as follows:
@@ -143,4 +164,4 @@ api
 
 # Scripts
 
-The scripts in the `scripts` directory are used to generate the API data from the Excel workbooks. The scripts are written in Python and use the `pandas` library to read the Excel files and convert them to JSON format. The scripts are designed to be run either from the command line or from a GitHub workflow. The scripts iterate over the available workbooks and generate the API data for each workbook. The generated data is placed in the `api` directory in the appropriate subdirectory. The scripts also handle the conversion of the `sources` field in the `data` sheet to the `cited_by` field in the `sources` data. The scripts are designed to be readable, maintainable, and scalable. 
+The scripts in the `scripts` directory are used to generate the API data from the Excel workbooks. The scripts are written in Python and use the `pandas` library to read the Excel files and convert them to JSON format. The scripts are designed to be run either from the command line or from a GitHub workflow. The scripts iterate over the available workbooks and generate the API data for each workbook. The generated data is placed in the `api` directory in the appropriate subdirectory. The scripts also handle the conversion of the `sources` field in the `data` sheet to the `cited_by` field in the `sources` data. The scripts are designed to be readable, maintainable, and scalable.
