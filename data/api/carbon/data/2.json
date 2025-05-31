@@ -1,10 +1,10 @@
 {
   "id": 2,
-  "title": "Kiwi",
-  "description": "Lorem ipsum dolor sit amet",
-  "value": 51,
+  "title": "1 kg of fresh bananas",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 0.8618963820000001,
   "category": "Food",
   "sources": [
-    2
+    1
   ]
 }

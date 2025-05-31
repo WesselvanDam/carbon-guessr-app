@@ -1,8 +1,8 @@
 {
   "id": 11,
-  "title": "Beef",
-  "description": "Lorem ipsum dolor sit amet",
-  "value": 49,
+  "title": "1 kg of cheese",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 23.877581218,
   "category": "Food",
   "sources": [
     1

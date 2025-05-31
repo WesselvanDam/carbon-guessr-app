@@ -1,0 +1,10 @@
+{
+  "id": 43,
+  "title": "1 L of wine",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 1.788762819,
+  "category": "Food",
+  "sources": [
+    1
+  ]
+}

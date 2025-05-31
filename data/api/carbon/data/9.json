@@ -1,10 +1,10 @@
 {
   "id": 9,
-  "title": "Television",
-  "description": "Lorem ipsum dolor sit amet",
-  "value": 80,
-  "category": "Electronics",
+  "title": "1 kg of cane sugar",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 3.1989241579999996,
+  "category": "Food",
   "sources": [
-    4
+    1
   ]
 }

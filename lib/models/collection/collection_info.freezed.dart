@@ -16,6 +16,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CollectionInfo {
   String get id;
+  String get title;
+  String get description;
   String get quantity;
   String get unit;
   int get size;
@@ -37,6 +39,9 @@ mixin _$CollectionInfo {
         (other.runtimeType == runtimeType &&
             other is CollectionInfo &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
@@ -45,11 +50,12 @@ mixin _$CollectionInfo {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, quantity, unit, size);
+  int get hashCode =>
+      Object.hash(runtimeType, id, title, description, quantity, unit, size);
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, quantity: $quantity, unit: $unit, size: $size)';
+    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size)';
   }
 }
 
@@ -59,7 +65,13 @@ abstract mixin class $CollectionInfoCopyWith<$Res> {
           CollectionInfo value, $Res Function(CollectionInfo) _then) =
       _$CollectionInfoCopyWithImpl;
   @useResult
-  $Res call({String id, String quantity, String unit, int size});
+  $Res call(
+      {String id,
+      String title,
+      String description,
+      String quantity,
+      String unit,
+      int size});
 }
 
 /// @nodoc
@@ -76,6 +88,8 @@ class _$CollectionInfoCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? title = null,
+    Object? description = null,
     Object? quantity = null,
     Object? unit = null,
     Object? size = null,
@@ -84,6 +98,14 @@ class _$CollectionInfoCopyWithImpl<$Res>
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
               as String,
       quantity: null == quantity
           ? _self.quantity
@@ -106,6 +128,8 @@ class _$CollectionInfoCopyWithImpl<$Res>
 class _CollectionInfo implements CollectionInfo {
   const _CollectionInfo(
       {required this.id,
+      required this.title,
+      required this.description,
       required this.quantity,
       required this.unit,
       required this.size});
@@ -114,6 +138,10 @@ class _CollectionInfo implements CollectionInfo {
 
   @override
   final String id;
+  @override
+  final String title;
+  @override
+  final String description;
   @override
   final String quantity;
   @override
@@ -142,6 +170,9 @@ class _CollectionInfo implements CollectionInfo {
         (other.runtimeType == runtimeType &&
             other is _CollectionInfo &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
@@ -150,11 +181,12 @@ class _CollectionInfo implements CollectionInfo {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, quantity, unit, size);
+  int get hashCode =>
+      Object.hash(runtimeType, id, title, description, quantity, unit, size);
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, quantity: $quantity, unit: $unit, size: $size)';
+    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size)';
   }
 }
 
@@ -166,7 +198,13 @@ abstract mixin class _$CollectionInfoCopyWith<$Res>
       __$CollectionInfoCopyWithImpl;
   @override
   @useResult
-  $Res call({String id, String quantity, String unit, int size});
+  $Res call(
+      {String id,
+      String title,
+      String description,
+      String quantity,
+      String unit,
+      int size});
 }
 
 /// @nodoc
@@ -183,6 +221,8 @@ class __$CollectionInfoCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = null,
+    Object? title = null,
+    Object? description = null,
     Object? quantity = null,
     Object? unit = null,
     Object? size = null,
@@ -191,6 +231,14 @@ class __$CollectionInfoCopyWithImpl<$Res>
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
               as String,
       quantity: null == quantity
           ? _self.quantity

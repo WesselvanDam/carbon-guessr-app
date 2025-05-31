@@ -1,39 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../models/game/game_round.dart';
 import '../../models/game/game_session.dart';
-import '../../providers/game/game_providers.dart';
-import '../../services/navigation/routes.dart';
+import '../../router/routes.dart';
 
 class GameResultsPage extends ConsumerWidget {
-  const GameResultsPage({super.key});
+  const GameResultsPage({required this.session, super.key});
+
+  final GameSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(gameSessionNotifierProvider);
-
-    // If no active session, navigate back to mode selection
-    if (session == null) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('No game results available'),
-              ElevatedButton(
-                onPressed: () => const GameModeSelectionRoute().go(context),
-                child: const Text('Start New Game'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    final totalScore =
-        ref.read(gameSessionNotifierProvider.notifier).getTotalScore();
+    final totalScore = session.totalScore;
     final maxPossibleScore = session.rounds.length * 100.0;
     final scorePercentage = (totalScore / maxPossibleScore) * 100;
 
@@ -62,7 +41,7 @@ class GameResultsPage extends ConsumerWidget {
 
               // Game mode info
               Text(
-                '${session.mode == GameMode.simple ? 'Simple' : 'Research'} Mode',
+                '${GameMode.simple == GameMode.simple ? 'Simple' : 'Research'} Mode',
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
@@ -122,23 +101,6 @@ class GameResultsPage extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Reset game session and start a new one
-                        ref
-                            .read(gameSessionNotifierProvider.notifier)
-                            .endSession();
-                        const GameModeSelectionRoute().go(context);
-                      },
-                      icon: const Icon(Icons.replay),
-                      label: const Text('Play Again'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ],
@@ -181,8 +143,7 @@ class GameResultsPage extends ConsumerWidget {
     // Determine accuracy color
     final accuracy = round.score!;
     Color accuracyColor = Colors.red;
-    if (accuracy >= 70) accuracyColor = Colors.orange;
-    if (accuracy >= 90) accuracyColor = Colors.green;
+    accuracyColor = _getScoreColor(accuracy);
 
     return Column(
       children: [
@@ -231,9 +192,11 @@ class GameResultsPage extends ConsumerWidget {
   }
 
   Color _getScoreColor(double percentage) {
-    if (percentage >= 90) return Colors.green;
-    if (percentage >= 70) return Colors.orange;
-    return Colors.red;
+    return switch (percentage) {
+      >= 90 => Colors.green,
+      >= 70 => Colors.orange,
+      _ => Colors.red,
+    };
   }
 
   String _getFeedbackMessage(double percentage) {

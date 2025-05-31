@@ -15,11 +15,8 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$GameSession {
-  String get id;
-  GameMode get mode;
   List<GameRound> get rounds;
-  int get currentRoundIndex;
-  bool get isCompleted;
+  int get roundDurationSeconds;
 
   /// Create a copy of GameSession
   /// with the given fields replaced by the non-null parameter values.
@@ -36,28 +33,19 @@ mixin _$GameSession {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is GameSession &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.mode, mode) || other.mode == mode) &&
             const DeepCollectionEquality().equals(other.rounds, rounds) &&
-            (identical(other.currentRoundIndex, currentRoundIndex) ||
-                other.currentRoundIndex == currentRoundIndex) &&
-            (identical(other.isCompleted, isCompleted) ||
-                other.isCompleted == isCompleted));
+            (identical(other.roundDurationSeconds, roundDurationSeconds) ||
+                other.roundDurationSeconds == roundDurationSeconds));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      mode,
-      const DeepCollectionEquality().hash(rounds),
-      currentRoundIndex,
-      isCompleted);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(rounds), roundDurationSeconds);
 
   @override
   String toString() {
-    return 'GameSession(id: $id, mode: $mode, rounds: $rounds, currentRoundIndex: $currentRoundIndex, isCompleted: $isCompleted)';
+    return 'GameSession(rounds: $rounds, roundDurationSeconds: $roundDurationSeconds)';
   }
 }
 
@@ -67,12 +55,7 @@ abstract mixin class $GameSessionCopyWith<$Res> {
           GameSession value, $Res Function(GameSession) _then) =
       _$GameSessionCopyWithImpl;
   @useResult
-  $Res call(
-      {String id,
-      GameMode mode,
-      List<GameRound> rounds,
-      int currentRoundIndex,
-      bool isCompleted});
+  $Res call({List<GameRound> rounds, int roundDurationSeconds});
 }
 
 /// @nodoc
@@ -87,54 +70,33 @@ class _$GameSessionCopyWithImpl<$Res> implements $GameSessionCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? mode = null,
     Object? rounds = null,
-    Object? currentRoundIndex = null,
-    Object? isCompleted = null,
+    Object? roundDurationSeconds = null,
   }) {
     return _then(_self.copyWith(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      mode: null == mode
-          ? _self.mode
-          : mode // ignore: cast_nullable_to_non_nullable
-              as GameMode,
       rounds: null == rounds
           ? _self.rounds
           : rounds // ignore: cast_nullable_to_non_nullable
               as List<GameRound>,
-      currentRoundIndex: null == currentRoundIndex
-          ? _self.currentRoundIndex
-          : currentRoundIndex // ignore: cast_nullable_to_non_nullable
+      roundDurationSeconds: null == roundDurationSeconds
+          ? _self.roundDurationSeconds
+          : roundDurationSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      isCompleted: null == isCompleted
-          ? _self.isCompleted
-          : isCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _GameSession implements GameSession {
+class _GameSession extends GameSession {
   const _GameSession(
-      {required this.id,
-      required this.mode,
-      required final List<GameRound> rounds,
-      required this.currentRoundIndex,
-      this.isCompleted = false})
-      : _rounds = rounds;
+      {required final List<GameRound> rounds,
+      required this.roundDurationSeconds})
+      : _rounds = rounds,
+        super._();
   factory _GameSession.fromJson(Map<String, dynamic> json) =>
       _$GameSessionFromJson(json);
 
-  @override
-  final String id;
-  @override
-  final GameMode mode;
   final List<GameRound> _rounds;
   @override
   List<GameRound> get rounds {
@@ -144,10 +106,7 @@ class _GameSession implements GameSession {
   }
 
   @override
-  final int currentRoundIndex;
-  @override
-  @JsonKey()
-  final bool isCompleted;
+  final int roundDurationSeconds;
 
   /// Create a copy of GameSession
   /// with the given fields replaced by the non-null parameter values.
@@ -169,28 +128,19 @@ class _GameSession implements GameSession {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _GameSession &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.mode, mode) || other.mode == mode) &&
             const DeepCollectionEquality().equals(other._rounds, _rounds) &&
-            (identical(other.currentRoundIndex, currentRoundIndex) ||
-                other.currentRoundIndex == currentRoundIndex) &&
-            (identical(other.isCompleted, isCompleted) ||
-                other.isCompleted == isCompleted));
+            (identical(other.roundDurationSeconds, roundDurationSeconds) ||
+                other.roundDurationSeconds == roundDurationSeconds));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      mode,
-      const DeepCollectionEquality().hash(_rounds),
-      currentRoundIndex,
-      isCompleted);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(_rounds), roundDurationSeconds);
 
   @override
   String toString() {
-    return 'GameSession(id: $id, mode: $mode, rounds: $rounds, currentRoundIndex: $currentRoundIndex, isCompleted: $isCompleted)';
+    return 'GameSession(rounds: $rounds, roundDurationSeconds: $roundDurationSeconds)';
   }
 }
 
@@ -202,12 +152,7 @@ abstract mixin class _$GameSessionCopyWith<$Res>
       __$GameSessionCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {String id,
-      GameMode mode,
-      List<GameRound> rounds,
-      int currentRoundIndex,
-      bool isCompleted});
+  $Res call({List<GameRound> rounds, int roundDurationSeconds});
 }
 
 /// @nodoc
@@ -222,33 +167,18 @@ class __$GameSessionCopyWithImpl<$Res> implements _$GameSessionCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = null,
-    Object? mode = null,
     Object? rounds = null,
-    Object? currentRoundIndex = null,
-    Object? isCompleted = null,
+    Object? roundDurationSeconds = null,
   }) {
     return _then(_GameSession(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      mode: null == mode
-          ? _self.mode
-          : mode // ignore: cast_nullable_to_non_nullable
-              as GameMode,
       rounds: null == rounds
           ? _self._rounds
           : rounds // ignore: cast_nullable_to_non_nullable
               as List<GameRound>,
-      currentRoundIndex: null == currentRoundIndex
-          ? _self.currentRoundIndex
-          : currentRoundIndex // ignore: cast_nullable_to_non_nullable
+      roundDurationSeconds: null == roundDurationSeconds
+          ? _self.roundDurationSeconds
+          : roundDurationSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      isCompleted: null == isCompleted
-          ? _self.isCompleted
-          : isCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }

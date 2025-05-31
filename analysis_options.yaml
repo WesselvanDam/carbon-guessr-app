@@ -3,6 +3,7 @@ include: package:lint/strict.yaml
 analyzer:
   errors:
     use_setters_to_change_properties: ignore
+    always_put_control_body_on_new_line: ignore
   exclude:
     - lib/generated/**
     - lib/**.g.dart

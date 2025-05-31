@@ -15,13 +15,19 @@ enum GameMode {
 @freezed
 abstract class GameSession with _$GameSession {
   const factory GameSession({
-    required String id,
-    required GameMode mode,
     required List<GameRound> rounds,
-    required int currentRoundIndex,
-    @Default(false) bool isCompleted,
+    required int roundDurationSeconds,
   }) = _GameSession;
+  const GameSession._();
 
   factory GameSession.fromJson(Map<String, dynamic> json) =>
       _$GameSessionFromJson(json);
+
+  int get currentRoundIndex => rounds.indexWhere((round) => !round.isCompleted);
+
+  bool get isCompleted => rounds.every((round) => round.isCompleted);
+
+  num get totalScore {
+    return rounds.fold(0, (total, round) => total + (round.score ?? 0));
+  }
 }

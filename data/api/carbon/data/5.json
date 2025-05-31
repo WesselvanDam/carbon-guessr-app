@@ -1,10 +1,10 @@
 {
   "id": 5,
-  "title": "1km in an electric car",
-  "description": "Lorem ipsum dolor sit amet",
-  "value": 16,
-  "category": "Transport",
+  "title": "1 kg of beef (dairy herd)",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 33.301395422,
+  "category": "Food",
   "sources": [
-    5
+    1
   ]
 }

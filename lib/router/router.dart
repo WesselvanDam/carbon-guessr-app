@@ -18,7 +18,8 @@ GoRouter router(Ref ref) {
     initialLocation: initialLocation,
     routes: $appRoutes,
     redirect: redirect,
-    errorBuilder: (context, state) => const Scaffold(body: Center(child: Text('404'))),
+    errorBuilder: (context, state) =>
+        const Scaffold(body: Center(child: Text('404'))),
   );
   ref.onDispose(router.dispose);
 
@@ -29,5 +30,6 @@ GoRouter router(Ref ref) {
 String initialLocation(Ref ref) => '/';
 
 String? redirect(BuildContext context, GoRouterState state) {
+  debugPrint('Redirecting to ${state.uri}');
   return null;
 }

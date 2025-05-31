@@ -1,10 +1,10 @@
 {
   "id": 14,
-  "title": "Water",
-  "description": "Lorem ipsum dolor sit amet",
-  "value": 54,
-  "category": "Drinks",
+  "title": "1 kg of dark chocolate",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 46.646745190999994,
+  "category": "Food",
   "sources": [
-    4
+    1
   ]
 }

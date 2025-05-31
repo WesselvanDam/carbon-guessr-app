@@ -12,8 +12,8 @@ class RiverpodProviderObserver extends ProviderObserver {
   ) =>
       debugPrint(
         '\x1B[34m'
-        '$provider Added'
-        '\x1B[0m',
+        '$provider Added\x1B[0m'
+        '',
       );
 
   @override
@@ -23,8 +23,8 @@ class RiverpodProviderObserver extends ProviderObserver {
   ) =>
       debugPrint(
         '\x1B[35m'
-        '$provider Disposed'
-        '\x1B[0m',
+        '$provider Disposed\x1B[0m'
+        '',
       );
 
   @override
@@ -38,8 +38,8 @@ class RiverpodProviderObserver extends ProviderObserver {
         '\x1B[33m'
         '$provider Updated:\n'
         '\tPrevious Value: $previousValue\n'
-        '\tNew Value: $newValue\n'
-        '\x1B[0m',
+        '\tNew Value: $newValue\x1B[0m\n'
+        '',
       );
 
   @override
@@ -52,7 +52,7 @@ class RiverpodProviderObserver extends ProviderObserver {
       debugPrint(
         '\x1B[31m'
         '$stackTrace\n'
-        '$provider Error: $error\n'
-        '\x1B[0m',
+        '$provider Error: $error\x1B[0m\n'
+        '',
       );
 }

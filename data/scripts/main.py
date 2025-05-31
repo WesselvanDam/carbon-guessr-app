@@ -124,6 +124,8 @@ def process_info_sheet(workbook_path: str, sheet_name: str, output_dir: str) -> 
             "id": df.iloc[0, 1] if not pd.isna(df.iloc[0, 1]) else "",
             "quantity": df.iloc[1, 1] if not pd.isna(df.iloc[1, 1]) else "",
             "unit": df.iloc[2, 1] if not pd.isna(df.iloc[2, 1]) else "",
+            "title": df.iloc[3, 1] if not pd.isna(df.iloc[3, 1]) else "",
+            "description": df.iloc[4, 1] if not pd.isna(df.iloc[4, 1]) else "",
             "size": data_size,
         }
 
@@ -387,6 +389,22 @@ def main():
                 continue
 
             process_workbook(workbook_path, api_dir)
+
+    # Create collections.json to aggregate info.json data
+    collections = []
+    for file_name in os.listdir(src_dir):
+        if file_name.endswith((".xlsx", ".xls")):
+            workbook_path = os.path.join(src_dir, file_name)
+            output_dir = os.path.join(api_dir, os.path.splitext(file_name)[0])
+            info_json_path = os.path.join(output_dir, "info.json")
+            if os.path.exists(info_json_path):
+                with open(info_json_path, "r", encoding="utf-8") as f:
+                    collections.append(json.load(f))
+
+    collections_json_path = os.path.join(api_dir, "collections.json")
+    with open(collections_json_path, "w", encoding="utf-8") as f:
+        json.dump({"data": collections}, f, indent=2, ensure_ascii=False)
+    logging.info(f"Created {collections_json_path}")
 
 
 if __name__ == "__main__":

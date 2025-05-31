@@ -8,6 +8,8 @@ part 'collection_info.g.dart';
 abstract class CollectionInfo with _$CollectionInfo {
   const factory CollectionInfo({
     required String id,
+    required String title,
+    required String description,
     required String quantity,
     required String unit,
     required int size,

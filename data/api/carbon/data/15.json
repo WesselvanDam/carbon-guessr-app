@@ -1,10 +1,10 @@
 {
   "id": 15,
-  "title": "500 km flight",
-  "description": "Lorem ipsum dolor sit amet",
-  "value": 80,
-  "category": "Transport",
+  "title": "1 kg of eggs",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "value": 4.669470952999999,
+  "category": "Food",
   "sources": [
-    5
+    1
   ]
 }
