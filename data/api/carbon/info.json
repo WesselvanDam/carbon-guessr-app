@@ -4,5 +4,6 @@
   "unit": "kg CO2eq",
   "title": "Carbon Footprints",
   "description": "Get to know what activities contribute the most to climate change",
-  "size": 40
+  "size": 40,
+  "ratioBoundary": 0.003897
 }
