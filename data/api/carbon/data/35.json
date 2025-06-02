@@ -1,6 +1,7 @@
 {
   "id": 35,
-  "title": "1 L of soybean oil",
+  "title": "Soybean oil",
+  "quantity": "1 L",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 6.324471519000001,
   "category": "Food",

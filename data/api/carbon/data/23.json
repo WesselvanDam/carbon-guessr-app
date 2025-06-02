@@ -1,6 +1,7 @@
 {
   "id": 23,
-  "title": "1 kg of olive oil",
+  "title": "Olive oil",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 5.424875844000001,
   "category": "Food",

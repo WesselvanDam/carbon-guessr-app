@@ -1,6 +1,7 @@
 {
   "id": 38,
-  "title": "1 kg of tomatoes",
+  "title": "Tomatoes",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 2.0887066549999997,
   "category": "Food",

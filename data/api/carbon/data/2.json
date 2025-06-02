@@ -1,6 +1,7 @@
 {
   "id": 2,
-  "title": "1 kg of fresh bananas",
+  "title": "Bananas",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 0.8618963820000001,
   "category": "Food",

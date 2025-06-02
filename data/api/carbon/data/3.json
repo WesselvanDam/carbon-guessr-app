@@ -1,6 +1,7 @@
 {
   "id": 3,
-  "title": "1 liter of beer",
+  "title": "Beer",
+  "quantity": "1 L",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 1.1791714819999999,
   "category": "Food",

@@ -1,6 +1,7 @@
 {
   "id": 14,
-  "title": "1 kg of dark chocolate",
+  "title": "Dark chocolate",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 46.646745190999994,
   "category": "Food",

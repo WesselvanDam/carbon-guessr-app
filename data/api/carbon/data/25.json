@@ -1,6 +1,7 @@
 {
   "id": 25,
-  "title": "1 L of palm oil",
+  "title": "Palm oil",
+  "quantity": "1 L",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 7.316770492999999,
   "category": "Food",

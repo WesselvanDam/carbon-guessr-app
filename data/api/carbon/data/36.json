@@ -1,6 +1,7 @@
 {
   "id": 36,
-  "title": "1 L of sunflower oil",
+  "title": "Sunflower oil",
+  "quantity": "1 L",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 3.5994784650000007,
   "category": "Food",

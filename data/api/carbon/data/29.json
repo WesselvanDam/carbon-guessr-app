@@ -1,6 +1,7 @@
 {
   "id": 29,
-  "title": "1 kg of poultry meat",
+  "title": "Poultry meat",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 9.86582363,
   "category": "Food",

@@ -1,6 +1,7 @@
 {
   "id": 30,
-  "title": "1 L of rapeseed oil",
+  "title": "Rapeseed oil",
+  "quantity": "1 L",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 3.7676725909999993,
   "category": "Food",

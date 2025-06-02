@@ -1,6 +1,7 @@
 {
   "id": 34,
-  "title": "1 L of soymilk",
+  "title": "Soymilk",
+  "quantity": "1 L",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 0.975179153,
   "category": "Food",

@@ -1,6 +1,7 @@
 {
   "id": 16,
-  "title": "1 kg of edible fish",
+  "title": "Fish",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 13.632445142000002,
   "category": "Food",

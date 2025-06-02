@@ -1,6 +1,7 @@
 {
   "id": 6,
-  "title": "1 kg of beet sugar",
+  "title": "Beet sugar",
+  "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 1.8120765,
   "category": "Food",
