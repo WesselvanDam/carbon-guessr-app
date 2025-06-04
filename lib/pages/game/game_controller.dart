@@ -31,6 +31,7 @@ class GameController extends _$GameController {
     final session = gameService.createGameSession(
       mode: mode,
       items: items,
+      ratioBoundary: info.ratioBoundary,
     );
 
     // Start the timer for the first round

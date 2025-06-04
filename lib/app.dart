@@ -17,9 +17,9 @@ class App extends ConsumerWidget {
     final textTheme = createTextTheme(context);
     final theme = MaterialTheme(textTheme);
     return MaterialApp.router(
-      title: 'CarbonGuessr',
+      title: 'QuoScient',
       debugShowCheckedModeBanner: false,
-      theme: theme.dark(),
+      theme: theme.light(),
       routerConfig: router,
       locale: TranslationProvider.of(context).flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,

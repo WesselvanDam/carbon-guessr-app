@@ -19,7 +19,7 @@ class GamePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(gameControllerProvider(cid, gid, mode));
     if (session.isLoading || session.value == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Material(child: Center(child: CircularProgressIndicator()));
     }
 
     final gameSession = session.value!;
@@ -51,9 +51,8 @@ class GamePage extends ConsumerWidget {
           style: OutlinedButton.styleFrom(
             shape: const CircleBorder(),
             side: BorderSide(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-              width: 2
-            ),
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
+                width: 2),
           ),
         ),
         title: Column(

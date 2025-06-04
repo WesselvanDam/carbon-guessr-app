@@ -65,13 +65,12 @@ def validate_workbook(workbook_path: str) -> Tuple[bool, List[str]]:
         if info_df.shape[0] < 3 or info_df.shape[1] < 2:
             errors.append(
                 f"Info sheet in {workbook_path} does not have the required structure"
-            )
-
-        # Check the structure of the data sheet
+            )  # Check the structure of the data sheet
         data_df = pd.read_excel(workbook_path, sheet_name="data")
         required_columns = [
             "id",
             "title",
+            "quantity",
             "description",
             "value",
             "category",
@@ -115,9 +114,19 @@ def process_info_sheet(workbook_path: str, sheet_name: str, output_dir: str) -> 
         # Read the info sheet
         df = pd.read_excel(workbook_path, sheet_name="info", header=None)
 
-        # Read the data sheet to get the number of items
+        # Read the data sheet to get the number of items and calculate ratio boundary
         data_df = pd.read_excel(workbook_path, sheet_name="data")
         data_size = len(data_df)
+
+        # Calculate ratio boundary (smallest value / largest value)
+        ratio_boundary = None
+        if "value" in data_df.columns and not data_df["value"].empty:
+            # Filter out NaN values and get min and max
+            values = data_df["value"].dropna()
+            if not values.empty and values.max() > 0:  # Avoid division by zero
+                ratio_boundary = float(values.min() / values.max())
+                # Round to 6 decimal places for cleaner JSON
+                ratio_boundary = round(ratio_boundary, 6)
 
         # Extract data from the dataframe (expected format: id, quantity, unit with values in second column)
         info_data = {
@@ -127,6 +136,7 @@ def process_info_sheet(workbook_path: str, sheet_name: str, output_dir: str) -> 
             "title": df.iloc[3, 1] if not pd.isna(df.iloc[3, 1]) else "",
             "description": df.iloc[4, 1] if not pd.isna(df.iloc[4, 1]) else "",
             "size": data_size,
+            "ratioBoundary": ratio_boundary,
         }
 
         # Create the output directory if it doesn't exist
@@ -176,12 +186,11 @@ def process_data_sheet(
             for source_id in source_ids:
                 if source_id not in source_to_data_map:
                     source_to_data_map[source_id] = []
-                source_to_data_map[source_id].append(data_id)
-
-            # Create the data object
+                source_to_data_map[source_id].append(data_id)  # Create the data object
             data_obj = {
                 "id": data_id,
                 "title": row["title"] if not pd.isna(row["title"]) else "",
+                "quantity": row["quantity"] if not pd.isna(row["quantity"]) else "",
                 "description": (
                     row["description"] if not pd.isna(row["description"]) else ""
                 ),

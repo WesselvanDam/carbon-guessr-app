@@ -10,7 +10,7 @@ class HomePage extends ConsumerWidget {
     // Use FutureBuilder to fetch and display collections
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CarbonGuessr'),
+        title: const Text('QuoScient'),
       ),
       body: Center(
         child: Padding(
@@ -28,7 +28,7 @@ class HomePage extends ConsumerWidget {
               const SizedBox(height: 24),
 
               Text(
-                'Welcome to CarbonGuessr!',
+                'Welcome to QuoScient!',
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -36,7 +36,7 @@ class HomePage extends ConsumerWidget {
               const SizedBox(height: 16),
 
               Text(
-                'Test your knowledge about carbon footprints',
+                'Train your intuition',
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),

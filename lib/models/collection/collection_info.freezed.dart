@@ -21,6 +21,7 @@ mixin _$CollectionInfo {
   String get quantity;
   String get unit;
   int get size;
+  double get ratioBoundary;
 
   /// Create a copy of CollectionInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -45,17 +46,19 @@ mixin _$CollectionInfo {
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
-            (identical(other.size, size) || other.size == size));
+            (identical(other.size, size) || other.size == size) &&
+            (identical(other.ratioBoundary, ratioBoundary) ||
+                other.ratioBoundary == ratioBoundary));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, title, description, quantity, unit, size);
+  int get hashCode => Object.hash(
+      runtimeType, id, title, description, quantity, unit, size, ratioBoundary);
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size)';
+    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
   }
 }
 
@@ -71,7 +74,8 @@ abstract mixin class $CollectionInfoCopyWith<$Res> {
       String description,
       String quantity,
       String unit,
-      int size});
+      int size,
+      double ratioBoundary});
 }
 
 /// @nodoc
@@ -93,6 +97,7 @@ class _$CollectionInfoCopyWithImpl<$Res>
     Object? quantity = null,
     Object? unit = null,
     Object? size = null,
+    Object? ratioBoundary = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -119,6 +124,10 @@ class _$CollectionInfoCopyWithImpl<$Res>
           ? _self.size
           : size // ignore: cast_nullable_to_non_nullable
               as int,
+      ratioBoundary: null == ratioBoundary
+          ? _self.ratioBoundary
+          : ratioBoundary // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -132,7 +141,8 @@ class _CollectionInfo implements CollectionInfo {
       required this.description,
       required this.quantity,
       required this.unit,
-      required this.size});
+      required this.size,
+      this.ratioBoundary = 1});
   factory _CollectionInfo.fromJson(Map<String, dynamic> json) =>
       _$CollectionInfoFromJson(json);
 
@@ -148,6 +158,9 @@ class _CollectionInfo implements CollectionInfo {
   final String unit;
   @override
   final int size;
+  @override
+  @JsonKey()
+  final double ratioBoundary;
 
   /// Create a copy of CollectionInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -176,17 +189,19 @@ class _CollectionInfo implements CollectionInfo {
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.unit, unit) || other.unit == unit) &&
-            (identical(other.size, size) || other.size == size));
+            (identical(other.size, size) || other.size == size) &&
+            (identical(other.ratioBoundary, ratioBoundary) ||
+                other.ratioBoundary == ratioBoundary));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, title, description, quantity, unit, size);
+  int get hashCode => Object.hash(
+      runtimeType, id, title, description, quantity, unit, size, ratioBoundary);
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size)';
+    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
   }
 }
 
@@ -204,7 +219,8 @@ abstract mixin class _$CollectionInfoCopyWith<$Res>
       String description,
       String quantity,
       String unit,
-      int size});
+      int size,
+      double ratioBoundary});
 }
 
 /// @nodoc
@@ -226,6 +242,7 @@ class __$CollectionInfoCopyWithImpl<$Res>
     Object? quantity = null,
     Object? unit = null,
     Object? size = null,
+    Object? ratioBoundary = null,
   }) {
     return _then(_CollectionInfo(
       id: null == id
@@ -252,6 +269,10 @@ class __$CollectionInfoCopyWithImpl<$Res>
           ? _self.size
           : size // ignore: cast_nullable_to_non_nullable
               as int,
+      ratioBoundary: null == ratioBoundary
+          ? _self.ratioBoundary
+          : ratioBoundary // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }

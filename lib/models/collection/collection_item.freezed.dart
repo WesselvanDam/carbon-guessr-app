@@ -17,6 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$CollectionItem {
   int get id;
   String get title;
+  String get quantity;
   String get description;
   double get value;
   String get category;
@@ -40,6 +41,8 @@ mixin _$CollectionItem {
             other is CollectionItem &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.value, value) || other.value == value) &&
@@ -50,12 +53,12 @@ mixin _$CollectionItem {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, description, value,
-      category, const DeepCollectionEquality().hash(sources));
+  int get hashCode => Object.hash(runtimeType, id, title, quantity, description,
+      value, category, const DeepCollectionEquality().hash(sources));
 
   @override
   String toString() {
-    return 'CollectionItem(id: $id, title: $title, description: $description, value: $value, category: $category, sources: $sources)';
+    return 'CollectionItem(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
   }
 }
 
@@ -68,6 +71,7 @@ abstract mixin class $CollectionItemCopyWith<$Res> {
   $Res call(
       {int id,
       String title,
+      String quantity,
       String description,
       double value,
       String category,
@@ -89,6 +93,7 @@ class _$CollectionItemCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
+    Object? quantity = null,
     Object? description = null,
     Object? value = null,
     Object? category = null,
@@ -102,6 +107,10 @@ class _$CollectionItemCopyWithImpl<$Res>
       title: null == title
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      quantity: null == quantity
+          ? _self.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
               as String,
       description: null == description
           ? _self.description
@@ -129,6 +138,7 @@ class _CollectionItem implements CollectionItem {
   const _CollectionItem(
       {required this.id,
       required this.title,
+      required this.quantity,
       required this.description,
       required this.value,
       required this.category,
@@ -141,6 +151,8 @@ class _CollectionItem implements CollectionItem {
   final int id;
   @override
   final String title;
+  @override
+  final String quantity;
   @override
   final String description;
   @override
@@ -177,6 +189,8 @@ class _CollectionItem implements CollectionItem {
             other is _CollectionItem &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.value, value) || other.value == value) &&
@@ -187,12 +201,12 @@ class _CollectionItem implements CollectionItem {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, description, value,
-      category, const DeepCollectionEquality().hash(_sources));
+  int get hashCode => Object.hash(runtimeType, id, title, quantity, description,
+      value, category, const DeepCollectionEquality().hash(_sources));
 
   @override
   String toString() {
-    return 'CollectionItem(id: $id, title: $title, description: $description, value: $value, category: $category, sources: $sources)';
+    return 'CollectionItem(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
   }
 }
 
@@ -207,6 +221,7 @@ abstract mixin class _$CollectionItemCopyWith<$Res>
   $Res call(
       {int id,
       String title,
+      String quantity,
       String description,
       double value,
       String category,
@@ -228,6 +243,7 @@ class __$CollectionItemCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
+    Object? quantity = null,
     Object? description = null,
     Object? value = null,
     Object? category = null,
@@ -241,6 +257,10 @@ class __$CollectionItemCopyWithImpl<$Res>
       title: null == title
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      quantity: null == quantity
+          ? _self.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
               as String,
       description: null == description
           ? _self.description

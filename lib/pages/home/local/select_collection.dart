@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/collection/collection_providers.dart';
 import '../../../router/routes.dart';
+import 'collection_card.dart';
 
 class CollectionSelector extends ConsumerWidget {
   const CollectionSelector({super.key});
@@ -18,11 +19,7 @@ class CollectionSelector extends ConsumerWidget {
           itemCount: collections.length,
           itemBuilder: (context, index) {
             final collection = collections[index];
-            return ListTile(
-              title: Text(collection.title),
-              subtitle: Text(collection.description),
-              onTap: () => CollectionRoute(cid: collection.id).go(context),
-            );
+            return CollectionCard(collectionInfo: collection);
           },
         );
       },

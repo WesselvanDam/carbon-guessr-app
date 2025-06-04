@@ -5,6 +5,7 @@ import '../../../models/collection/collection_item.dart';
 import '../../../models/game/game_round.dart';
 import 'custom_ratio_field.dart';
 import 'game_timer_provider.dart';
+import 'item_card.dart';
 
 class GameRoundForm extends ConsumerStatefulWidget {
   const GameRoundForm({
@@ -39,70 +40,33 @@ class _GameRoundState extends ConsumerState<GameRoundForm> {
     final itemA = widget.round.itemPair.itemA;
     final itemB = widget.round.itemPair.itemB;
 
-    return Column(
-      spacing: 2,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Items comparison section
-        _buildItemsComparisonCard(itemA, itemB),
-        if (!_isSubmitted && hasTimeLeft) ...[
-          _buildEstimateInputSection(),
-          _buildCustomRatioField(),
-        ] else ...[
-          _buildResultSection(widget.round),
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        spacing: 2,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Items comparison section
+          _buildItemsComparisonCard(itemA, itemB),
+          if (!_isSubmitted && hasTimeLeft) ...[
+            _buildEstimateInputSection(),
+            _buildCustomRatioField(),
+          ] else ...[
+            _buildResultSection(widget.round),
+          ],
         ],
-      ],
+      ),
     );
   }
 
   Widget _buildItemsComparisonCard(CollectionItem itemA, CollectionItem itemB) {
-    return Row(
-      spacing: 2,
-      children: [
-        Expanded(
-          child: _buildItemCard(
-            title: itemA.title,
-            description: itemA.description,
-            label: 'A',
-            color: Colors.blue.shade700,
-          ),
-        ),
-        Expanded(
-          child: _buildItemCard(
-            title: itemB.title,
-            description: itemB.description,
-            label: 'B',
-            color: Colors.green.shade700,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildItemCard({
-    required String title,
-    required String description,
-    required String label,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return IntrinsicHeight(
+      child: Row(
+        spacing: 2,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(description),
+          Expanded(child: ItemCard.first(item: itemA)),
+          Expanded(child: ItemCard.second(item: itemB)),
         ],
       ),
     );
@@ -111,7 +75,7 @@ class _GameRoundState extends ConsumerState<GameRoundForm> {
   Widget _buildEstimateInputSection() {
     return Card.filled(
       margin: EdgeInsets.zero,
-      elevation: 4,
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -200,7 +164,7 @@ class _GameRoundState extends ConsumerState<GameRoundForm> {
 
     return Card.filled(
       margin: EdgeInsets.zero,
-      elevation: 2,
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -245,7 +209,7 @@ class _GameRoundState extends ConsumerState<GameRoundForm> {
 
     return Card(
       margin: EdgeInsets.zero,
-      elevation: 4,
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

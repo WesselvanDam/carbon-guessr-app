@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../models/game/game_round.dart';
 import '../../models/game/game_session.dart';
@@ -93,7 +94,7 @@ class GameResultsPage extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => const HomeRoute().go(context),
+                      onPressed: () => context.pop(),
                       icon: const Icon(Icons.home),
                       label: const Text('Home'),
                       style: OutlinedButton.styleFrom(

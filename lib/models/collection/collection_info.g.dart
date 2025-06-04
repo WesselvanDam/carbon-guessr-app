@@ -14,6 +14,7 @@ _CollectionInfo _$CollectionInfoFromJson(Map<String, dynamic> json) =>
       quantity: json['quantity'] as String,
       unit: json['unit'] as String,
       size: (json['size'] as num).toInt(),
+      ratioBoundary: (json['ratioBoundary'] as num?)?.toDouble() ?? 1,
     );
 
 Map<String, dynamic> _$CollectionInfoToJson(_CollectionInfo instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$CollectionInfoToJson(_CollectionInfo instance) =>
       'quantity': instance.quantity,
       'unit': instance.unit,
       'size': instance.size,
+      'ratioBoundary': instance.ratioBoundary,
     };

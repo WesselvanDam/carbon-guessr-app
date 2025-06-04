@@ -13,6 +13,7 @@ abstract class CollectionInfo with _$CollectionInfo {
     required String quantity,
     required String unit,
     required int size,
+    @Default(1) double ratioBoundary,
   }) = _CollectionInfo;
 
   factory CollectionInfo.fromJson(Map<String, dynamic> json) =>

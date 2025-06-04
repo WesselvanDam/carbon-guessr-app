@@ -34,7 +34,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   bool? _isUpdatingFirstSquare;
 
   late double _maxSquareSize;
-  final double _minSquareSize = 12.0;
+  final double _minSquareSize = 1;
 
   @override
   void initState() {
@@ -44,7 +44,6 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _maxSquareSize = MediaQuery.of(context).size.width;
     debugPrint(
@@ -60,6 +59,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     // For a ratio of A:B where A is 3x bigger than B, the area of A should be 3x the area of B
 
     // Calculate sizes so that the areas respect the ratio
+    debugPrint('Updating square sizes for ratio: $_ratio');
     final double sqrtRatio = _ratio >= 1 ? sqrt(_ratio) : 1 / sqrt(1 / _ratio);
 
     if (_ratio >= 1) {
@@ -112,7 +112,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         : _ratio / dampedScale; // Scale the second square (denominator)
 
     // Limit the ratio to a reasonable range
-    newRatio = newRatio.clamp(0.001, 1000.0);
+    newRatio = newRatio.clamp(0.0001, 10000.0);
 
     // Round to 3 decimal places for better UX
     newRatio = double.parse(newRatio.toStringAsFixed(3));
@@ -183,10 +183,11 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       },
       onScaleEnd: (_) {
         // Reset the tracking state when gesture ends
+        
         debugPrint(
           '\tlargerSize: $largerSize\n'
           '\tsmallerSize: $smallerSize\n'
-          '\tratio: $_ratio\n'
+          '\tratio: $_ratio/${1 / _ratio}\n'
           '\tvisualized ratio: ${(largerSize * largerSize) / (smallerSize * smallerSize)}',
         );
         setState(() {
@@ -204,8 +205,8 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
               _buildLargeSquare(
                   largerSize, largerColor, isLargerActive, isFirstLarger),
               // Smaller square (foreground)
-              _buildSmallSquare(
-                  smallerSize, largerSize, smallerColor, isSmallerActive, isFirstLarger),
+              _buildSmallSquare(smallerSize, largerSize, smallerColor,
+                  isSmallerActive, isFirstLarger),
             ],
           ),
         ),
@@ -242,8 +243,8 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     );
   }
 
-  Container _buildSmallSquare(double smallerSize, double largerSize, Color smallerColor,
-      bool isSmallerActive, bool isFirstLarger) {
+  Container _buildSmallSquare(double smallerSize, double largerSize,
+      Color smallerColor, bool isSmallerActive, bool isFirstLarger) {
     return Container(
       width: smallerSize,
       height: smallerSize,
@@ -263,7 +264,11 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Transform.translate(
-        offset: (smallerSize < 0.8 * largerSize) ? isFirstLarger ? const Offset(0, 24) : const Offset(0, -24) : Offset.zero,
+        offset: (smallerSize < 0.8 * largerSize)
+            ? isFirstLarger
+                ? const Offset(0, 24)
+                : const Offset(0, -24)
+            : Offset.zero,
         child: Align(
           alignment:
               isFirstLarger ? Alignment.bottomCenter : Alignment.topCenter,

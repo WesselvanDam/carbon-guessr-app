@@ -9,6 +9,7 @@ abstract class CollectionItem with _$CollectionItem {
   const factory CollectionItem({
     required int id,
     required String title,
+    required String quantity,
     required String description,
     required double value,
     required String category,

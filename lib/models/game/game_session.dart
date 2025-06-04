@@ -17,6 +17,7 @@ abstract class GameSession with _$GameSession {
   const factory GameSession({
     required List<GameRound> rounds,
     required int roundDurationSeconds,
+    required double ratioBoundary,
   }) = _GameSession;
   const GameSession._();
 

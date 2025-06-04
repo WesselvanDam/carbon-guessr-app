@@ -45,7 +45,7 @@ class CollectionPage extends ConsumerWidget {
                     'Simple Mode',
                     'Match pairs of items within 30 seconds.\nFocus on your first impressions.',
                     Icons.speed,
-                    Colors.blue,
+                    Theme.of(context).colorScheme.secondary,
                   ),
                   const SizedBox(height: 24),
                   _buildGameModeCard(
@@ -54,7 +54,7 @@ class CollectionPage extends ConsumerWidget {
                     'Research Mode',
                     'Take up to 3 minutes to research and compare items.\nOpen browser for more information.',
                     Icons.search,
-                    Colors.green,
+                    Theme.of(context).colorScheme.tertiary,
                   ),
                 ],
               ),
@@ -94,7 +94,7 @@ class CollectionPage extends ConsumerWidget {
     Color color,
   ) {
     return Card(
-      elevation: 4,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -111,7 +111,7 @@ class CollectionPage extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 8, width: double.infinity),
               Text(
                 description,
                 textAlign: TextAlign.center,

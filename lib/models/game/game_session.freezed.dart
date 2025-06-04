@@ -17,6 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$GameSession {
   List<GameRound> get rounds;
   int get roundDurationSeconds;
+  double get ratioBoundary;
 
   /// Create a copy of GameSession
   /// with the given fields replaced by the non-null parameter values.
@@ -35,17 +36,22 @@ mixin _$GameSession {
             other is GameSession &&
             const DeepCollectionEquality().equals(other.rounds, rounds) &&
             (identical(other.roundDurationSeconds, roundDurationSeconds) ||
-                other.roundDurationSeconds == roundDurationSeconds));
+                other.roundDurationSeconds == roundDurationSeconds) &&
+            (identical(other.ratioBoundary, ratioBoundary) ||
+                other.ratioBoundary == ratioBoundary));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(rounds), roundDurationSeconds);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(rounds),
+      roundDurationSeconds,
+      ratioBoundary);
 
   @override
   String toString() {
-    return 'GameSession(rounds: $rounds, roundDurationSeconds: $roundDurationSeconds)';
+    return 'GameSession(rounds: $rounds, roundDurationSeconds: $roundDurationSeconds, ratioBoundary: $ratioBoundary)';
   }
 }
 
@@ -55,7 +61,8 @@ abstract mixin class $GameSessionCopyWith<$Res> {
           GameSession value, $Res Function(GameSession) _then) =
       _$GameSessionCopyWithImpl;
   @useResult
-  $Res call({List<GameRound> rounds, int roundDurationSeconds});
+  $Res call(
+      {List<GameRound> rounds, int roundDurationSeconds, double ratioBoundary});
 }
 
 /// @nodoc
@@ -72,6 +79,7 @@ class _$GameSessionCopyWithImpl<$Res> implements $GameSessionCopyWith<$Res> {
   $Res call({
     Object? rounds = null,
     Object? roundDurationSeconds = null,
+    Object? ratioBoundary = null,
   }) {
     return _then(_self.copyWith(
       rounds: null == rounds
@@ -82,6 +90,10 @@ class _$GameSessionCopyWithImpl<$Res> implements $GameSessionCopyWith<$Res> {
           ? _self.roundDurationSeconds
           : roundDurationSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      ratioBoundary: null == ratioBoundary
+          ? _self.ratioBoundary
+          : ratioBoundary // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -91,7 +103,8 @@ class _$GameSessionCopyWithImpl<$Res> implements $GameSessionCopyWith<$Res> {
 class _GameSession extends GameSession {
   const _GameSession(
       {required final List<GameRound> rounds,
-      required this.roundDurationSeconds})
+      required this.roundDurationSeconds,
+      required this.ratioBoundary})
       : _rounds = rounds,
         super._();
   factory _GameSession.fromJson(Map<String, dynamic> json) =>
@@ -107,6 +120,8 @@ class _GameSession extends GameSession {
 
   @override
   final int roundDurationSeconds;
+  @override
+  final double ratioBoundary;
 
   /// Create a copy of GameSession
   /// with the given fields replaced by the non-null parameter values.
@@ -130,17 +145,22 @@ class _GameSession extends GameSession {
             other is _GameSession &&
             const DeepCollectionEquality().equals(other._rounds, _rounds) &&
             (identical(other.roundDurationSeconds, roundDurationSeconds) ||
-                other.roundDurationSeconds == roundDurationSeconds));
+                other.roundDurationSeconds == roundDurationSeconds) &&
+            (identical(other.ratioBoundary, ratioBoundary) ||
+                other.ratioBoundary == ratioBoundary));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_rounds), roundDurationSeconds);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_rounds),
+      roundDurationSeconds,
+      ratioBoundary);
 
   @override
   String toString() {
-    return 'GameSession(rounds: $rounds, roundDurationSeconds: $roundDurationSeconds)';
+    return 'GameSession(rounds: $rounds, roundDurationSeconds: $roundDurationSeconds, ratioBoundary: $ratioBoundary)';
   }
 }
 
@@ -152,7 +172,8 @@ abstract mixin class _$GameSessionCopyWith<$Res>
       __$GameSessionCopyWithImpl;
   @override
   @useResult
-  $Res call({List<GameRound> rounds, int roundDurationSeconds});
+  $Res call(
+      {List<GameRound> rounds, int roundDurationSeconds, double ratioBoundary});
 }
 
 /// @nodoc
@@ -169,6 +190,7 @@ class __$GameSessionCopyWithImpl<$Res> implements _$GameSessionCopyWith<$Res> {
   $Res call({
     Object? rounds = null,
     Object? roundDurationSeconds = null,
+    Object? ratioBoundary = null,
   }) {
     return _then(_GameSession(
       rounds: null == rounds
@@ -179,6 +201,10 @@ class __$GameSessionCopyWithImpl<$Res> implements _$GameSessionCopyWith<$Res> {
           ? _self.roundDurationSeconds
           : roundDurationSeconds // ignore: cast_nullable_to_non_nullable
               as int,
+      ratioBoundary: null == ratioBoundary
+          ? _self.ratioBoundary
+          : ratioBoundary // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }

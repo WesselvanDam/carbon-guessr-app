@@ -10,6 +10,7 @@ _CollectionItem _$CollectionItemFromJson(Map<String, dynamic> json) =>
     _CollectionItem(
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
+      quantity: json['quantity'] as String,
       description: json['description'] as String,
       value: (json['value'] as num).toDouble(),
       category: json['category'] as String,
@@ -22,6 +23,7 @@ Map<String, dynamic> _$CollectionItemToJson(_CollectionItem instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
+      'quantity': instance.quantity,
       'description': instance.description,
       'value': instance.value,
       'category': instance.category,
