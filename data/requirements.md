@@ -14,7 +14,8 @@ The `info` sheet has data in the following format:
 | quantity | global warming potential |
 | unit | kg CO2eq                |
 | title | Carbon Footprints | 
-| description | Lorem ipsum dolor sit amet |
+| tagline | Lorem ipsum dolor sit amet |
+| description | Detailed description that provides more comprehensive information about the collection |
 
 ## data
 
@@ -64,6 +65,9 @@ The `info` data is placed in the <subdirectory>/info.json file. The data is in t
   "id": "carbon",
   "quantity": "Global warming potential",
   "unit": "kg CO2eq",
+  "title": "Carbon Footprints",
+  "tagline": "Lorem ipsum dolor sit amet",
+  "description": "Detailed description that provides more comprehensive information about the collection",
   "size": 7
 }
 ```
@@ -125,7 +129,8 @@ The `collections.json` file is placed in the `api` directory. It aggregates the 
       "quantity": "Global warming potential",
       "unit": "kg CO2eq",
       "title": "Some title",
-      "description": "Some description",
+      "tagline": "Brief tagline",
+      "description": "Detailed description that provides more comprehensive information about the collection",
       "size": 7
     }
   ]
