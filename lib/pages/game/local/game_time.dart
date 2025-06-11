@@ -29,36 +29,38 @@ class GameTime extends ConsumerWidget {
     final Color timerColor = switch (progress) {
       < 0.25 => Colors.redAccent,
       < 0.5 => Colors.orangeAccent,
-      < 0.75 => Colors.yellowAccent,
       _ => Colors.greenAccent,
     };
 
-    return SizedBox(
-      width: 52,
-      height: 52,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CircularProgressIndicator(
-            value: progress.clamp(0.0, 1.0),
-            strokeWidth: 2,
-            color: timerColor,
-            backgroundColor: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-            constraints: const BoxConstraints.expand(
-              width: 52 - 2, // Adjust for stroke width
-              height: 52 - 2,
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: SizedBox(
+        width: 52,
+        height: 52,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CircularProgressIndicator(
+              value: progress.clamp(0.0, 1.0),
+              strokeWidth: 2,
+              color: timerColor,
+              backgroundColor: Theme.of(context).colorScheme.onSurface.withAlpha(50),
+              constraints: const BoxConstraints.expand(
+                width: 52 - 2, // Adjust for stroke width
+                height: 52 - 2,
+              ),
             ),
-          ),
-          Text(
-            timerText,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: timerColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            Text(
+              timerText,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: timerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

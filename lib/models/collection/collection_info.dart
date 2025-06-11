@@ -9,6 +9,7 @@ abstract class CollectionInfo with _$CollectionInfo {
   const factory CollectionInfo({
     required String id,
     required String title,
+    required String tagline,
     required String description,
     required String quantity,
     required String unit,

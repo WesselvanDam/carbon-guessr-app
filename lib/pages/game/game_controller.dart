@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../models/game/game_session.dart';
 import '../../providers/collection/collection_providers.dart';
 import '../../providers/game/game_providers.dart';
+import '../../utils/extensions.dart';
 import 'local/game_timer_provider.dart';
 
 part 'game_controller.g.dart';
@@ -29,14 +30,14 @@ class GameController extends _$GameController {
         await ref.watch(collectionItemsByIdsProvider(info.id, itemIds).future);
 
     final session = gameService.createGameSession(
-      mode: mode,
+      collectionInfo: info,
       items: items,
-      ratioBoundary: info.ratioBoundary,
+      mode: mode,
     );
 
     // Start the timer for the first round
     ref.read(gameTimerProvider.notifier).startTimer(
-      session.roundDurationSeconds,
+      session.mode.roundDurationInSeconds,
     );
 
     return session;
@@ -63,7 +64,7 @@ class GameController extends _$GameController {
     update((state) => gameService.nextRound(state));
     // Restart the timer for the next round
     ref.read(gameTimerProvider.notifier).startTimer(
-      state.value!.roundDurationSeconds
+      state.value!.mode.roundDurationInSeconds
     );
   }
 }

@@ -7,16 +7,22 @@ part of 'game_session.dart';
 // **************************************************************************
 
 _GameSession _$GameSessionFromJson(Map<String, dynamic> json) => _GameSession(
+      collectionInfo: CollectionInfo.fromJson(
+          json['collectionInfo'] as Map<String, dynamic>),
       rounds: (json['rounds'] as List<dynamic>)
           .map((e) => GameRound.fromJson(e as Map<String, dynamic>))
           .toList(),
-      roundDurationSeconds: (json['roundDurationSeconds'] as num).toInt(),
-      ratioBoundary: (json['ratioBoundary'] as num).toDouble(),
+      mode: $enumDecode(_$GameModeEnumMap, json['mode']),
     );
 
 Map<String, dynamic> _$GameSessionToJson(_GameSession instance) =>
     <String, dynamic>{
+      'collectionInfo': instance.collectionInfo,
       'rounds': instance.rounds,
-      'roundDurationSeconds': instance.roundDurationSeconds,
-      'ratioBoundary': instance.ratioBoundary,
+      'mode': _$GameModeEnumMap[instance.mode]!,
     };
+
+const _$GameModeEnumMap = {
+  GameMode.simple: 'simple',
+  GameMode.research: 'research',
+};

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../models/collection/collection_info.dart';
 import '../../../router/routes.dart';
+import '../../../utils/extensions.dart';
 
 class CollectionCard extends ConsumerWidget {
   const CollectionCard({required this.collectionInfo, super.key});
@@ -24,27 +24,24 @@ class CollectionCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${collectionInfo.size} items',
+            '${collectionInfo.quantity.toSentenceCase()} · ${collectionInfo.size} items',
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
-            semanticsLabel: 'Number of items: ${collectionInfo.size}',
           ),
           const SizedBox(height: 8.0),
           Text(
-            collectionInfo.title,
+            collectionInfo.title.toTitleCase(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.bold,
                 ),
-            semanticsLabel: 'Collection name: ${collectionInfo.title}',
           ),
           const SizedBox(height: 8.0),
           Text(
-            collectionInfo.description,
+            collectionInfo.tagline,
             style: Theme.of(context).textTheme.bodyMedium,
-            semanticsLabel: 'Description: ${collectionInfo.description}',
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
@@ -58,7 +55,6 @@ class CollectionCard extends ConsumerWidget {
                       fontStyle: FontStyle.italic,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                semanticsLabel: 'Unit: ${collectionInfo.unit}',
               ),
               TextButton.icon(
                 icon: const Icon(Icons.arrow_forward, size: 18.0),

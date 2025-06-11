@@ -33,7 +33,8 @@ class RiverpodProviderObserver extends ProviderObserver {
     Object? previousValue,
     Object? newValue,
     ProviderContainer container,
-  ) =>
+  ) {
+    if (provider.name?.contains('gameTimerProvider') == true || provider.name?.contains('ratioControllerProvider') == true) return;
       debugPrint(
         '\x1B[33m'
         '$provider Updated:\n'
@@ -41,6 +42,7 @@ class RiverpodProviderObserver extends ProviderObserver {
         '\tNew Value: $newValue\x1B[0m\n'
         '',
       );
+  }
 
   @override
   void providerDidFail(

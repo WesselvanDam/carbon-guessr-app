@@ -318,11 +318,12 @@ class _CollectionRepositoryProviderElement
       (origin as CollectionRepositoryProvider).collectionId;
 }
 
-String _$collectionsInfoHash() => r'd01693dcbd9e5b3d2253896f7e5f2fd9c04f1d96';
+String _$collectionsInfoHash() => r'a724aefcd1492d0ce5413c484ffbc379ed67e928';
 
 /// See also [collectionsInfo].
 @ProviderFor(collectionsInfo)
-final collectionsInfoProvider = FutureProvider<List<CollectionInfo>>.internal(
+final collectionsInfoProvider =
+    FutureProvider<Map<String, CollectionInfo>>.internal(
   collectionsInfo,
   name: r'collectionsInfoProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -334,8 +335,8 @@ final collectionsInfoProvider = FutureProvider<List<CollectionInfo>>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CollectionsInfoRef = FutureProviderRef<List<CollectionInfo>>;
-String _$collectionInfoHash() => r'85cfb4368a25b0ca3a151dd3abd82a64ebbcd4b8';
+typedef CollectionsInfoRef = FutureProviderRef<Map<String, CollectionInfo>>;
+String _$collectionInfoHash() => r'c4628db6509d71b0b6ea5e0f61fdae13e55d6880';
 
 /// Provider for the collection info
 ///

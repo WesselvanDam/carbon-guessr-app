@@ -10,6 +10,7 @@ _CollectionInfo _$CollectionInfoFromJson(Map<String, dynamic> json) =>
     _CollectionInfo(
       id: json['id'] as String,
       title: json['title'] as String,
+      tagline: json['tagline'] as String,
       description: json['description'] as String,
       quantity: json['quantity'] as String,
       unit: json['unit'] as String,
@@ -21,6 +22,7 @@ Map<String, dynamic> _$CollectionInfoToJson(_CollectionInfo instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
+      'tagline': instance.tagline,
       'description': instance.description,
       'quantity': instance.quantity,
       'unit': instance.unit,

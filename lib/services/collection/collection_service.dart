@@ -40,11 +40,13 @@ class CollectionsResponse {
   CollectionsResponse({required this.data});
 
   factory CollectionsResponse.fromJson(Map<String, dynamic> json) {
-    return CollectionsResponse(
-      data: (json['data'] as List<dynamic>)
-          .map((item) => CollectionInfo.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
+    final List<dynamic> items = json['data'] as List<dynamic>;
+    final Map<String, CollectionInfo> data = {
+      for (final item in items)
+        (item['id'] as String): CollectionInfo.fromJson(item as Map<String, dynamic>)
+    };
+    return CollectionsResponse(data: data);
   }
-  final List<CollectionInfo> data;
+
+  final Map<String, CollectionInfo> data;
 }

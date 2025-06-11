@@ -1,304 +1,305 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/collection/collection_item.dart';
-import '../../../models/game/game_round.dart';
+import '../../../models/game/game_session.dart';
+import '../../../utils/extensions.dart';
+import '../../../widgets/score_pill.dart';
 import 'custom_ratio_field.dart';
 import 'game_timer_provider.dart';
 import 'item_card.dart';
+import 'ratio_controller.dart';
 
 class GameRoundForm extends ConsumerStatefulWidget {
   const GameRoundForm({
-    required this.round,
+    required this.session,
     required this.onSubmit,
     required this.onNextRound,
     super.key,
   });
 
-  final GameRound round;
+  final GameSession session;
   final void Function(double) onSubmit;
   final VoidCallback onNextRound;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _GameRoundState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _GameRoundFormState();
 }
 
-class _GameRoundState extends ConsumerState<GameRoundForm> {
-  final TextEditingController _estimateController = TextEditingController();
+class _GameRoundFormState extends ConsumerState<GameRoundForm> {
+  late final TextEditingController _firstTextController;
+  late final TextEditingController _secondTextController;
   bool _isSubmitted = false;
 
   @override
+  void initState() {
+    super.initState();
+    final ratio = ref.read(ratioControllerProvider);
+    _firstTextController = TextEditingController(
+      text: ratio > 1 ? ratio.toStringAsFixed(decimals(ratio)) : '1',
+    );
+    _secondTextController = TextEditingController(
+      text: ratio > 1 ? '1' : (1 / ratio).toStringAsFixed(decimals(1 / ratio)),
+    );
+  }
+
+  @override
   void dispose() {
-    _estimateController.dispose();
+    _firstTextController.dispose();
+    _secondTextController.dispose();
     super.dispose();
+  }
+
+  int decimals(double ratio) {
+    if (ratio > 100) return 0;
+    if (ratio > 10) return 1;
+    return 2;
+  }
+
+  void updateControllers(double ratio) {
+    // Update the text controllers based on the new ratio
+
+    if (ratio > 1) {
+      _firstTextController.text = ratio.toStringAsFixed(decimals(ratio));
+      _secondTextController.text = '1';
+    } else {
+      _firstTextController.text = '1';
+      _secondTextController.text =
+          (1 / ratio).toStringAsFixed(decimals(1 / ratio));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final hasTimeLeft =
-        ref.watch(gameTimerProvider.select((state) => state > 0));
-    final itemA = widget.round.itemPair.itemA;
-    final itemB = widget.round.itemPair.itemB;
+    // Reset the ratio controller when the form is initialized
+    ref.listen(ratioControllerProvider, (_, next) => updateControllers(next));
+
+    // Submit the estimate if the time is up and the form is not submitted
+    ref.listen(gameTimerProvider, (_, next) {
+      if (next == 0 && !_isSubmitted) {
+        setState(() => _isSubmitted = true);
+      }
+    });
+
+    final itemA = widget.session.currentRound.itemPair.itemA;
+    final itemB = widget.session.currentRound.itemPair.itemB;
 
     return Padding(
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
-        spacing: 2,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Items comparison section
-          _buildItemsComparisonCard(itemA, itemB),
-          if (!_isSubmitted && hasTimeLeft) ...[
-            _buildEstimateInputSection(),
-            _buildCustomRatioField(),
-          ] else ...[
-            _buildResultSection(widget.round),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItemsComparisonCard(CollectionItem itemA, CollectionItem itemB) {
-    return IntrinsicHeight(
-      child: Row(
-        spacing: 2,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: ItemCard.first(item: itemA)),
-          Expanded(child: ItemCard.second(item: itemB)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEstimateInputSection() {
-    return Card.filled(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            RichText(
-              text: TextSpan(
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                children: [
-                  const TextSpan(text: 'You estimate that the ratio between '),
-                  TextSpan(
-                    text: widget.round.itemPair.itemA.title,
-                    style: TextStyle(
-                      color: Colors.blue.shade700,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const TextSpan(text: ' and '),
-                  TextSpan(
-                    text: widget.round.itemPair.itemB.title,
-                    style: TextStyle(
-                      color: Colors.green.shade700,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const TextSpan(text: ' is '),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
+          RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodyLarge,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _estimateController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      suffixText: ':1',
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter ratio',
+                const TextSpan(text: 'Compare the ratio in '),
+                TextSpan(
+                  text: widget.session.collectionInfo.quantity,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: ' (expressed in '),
+                TextSpan(
+                  text: widget.session.collectionInfo.unit,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: ') between the two items below.'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'You can type a value or pinch the squares to adjust the ratio.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 16),
+          IntrinsicHeight(
+            child: Row(
+              spacing: 2,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: ItemCard.first(item: itemA)),
+                Expanded(child: ItemCard.second(item: itemB)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildEstimateRow(),
+          const SizedBox(height: 16),
+          _buildCustomRatioField(),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton.icon(
+              onPressed: _isSubmitted ? _nextRound : _submitEstimate,
+              icon: Icon(_isSubmitted ? Icons.arrow_forward : Icons.check),
+              label: Text(_isSubmitted ? 'Next Round' : 'Submit Estimate'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds the row displaying the estimated ratio and the true ratio if submitted.
+  Widget _buildEstimateRow() {
+    final style = Theme.of(context).textTheme.titleMedium!.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.onSurface,
+        );
+    return SizedBox(
+      height: 48,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: RichText(
+                    text: TextSpan(
+                      style: style,
+                      children: [
+                        ratioTextField(
+                          _firstTextController,
+                          style,
+                          isSecondField: false,
+                        ),
+                        const TextSpan(text: ' : '),
+                        ratioTextField(
+                          _secondTextController,
+                          style,
+                          isSecondField: true,
+                        ),
+                      ],
                     ),
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(width: 12),
-                FilledButton(
-                  onPressed: _submitEstimate,
-                  child: const Text('Submit'),
+                Text(
+                  'Your guess'.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'You can enter a value directly or use the visual ratio tool below.',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: 12,
+          ),
+          if (_isSubmitted)
+            // Show the true ratio if the estimate is submitted
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: RichText(
+                      text: widget.session.currentRound.correctRatio
+                          .ratioToReadableTextSpan(
+                        style: style,
+                        leftDigitStyle: style.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
+                        rightDigitStyle: style.copyWith(
+                            color: Theme.of(context).colorScheme.tertiary),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'True ratio'.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
               ),
             ),
-          ],
+          if (_isSubmitted)
+            // Show the score if the estimate is submitted
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ScorePill(
+                    score: widget.session.currentRound.score,
+                    style: style,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4, horizontal: 12),
+                  ),
+                  Text(
+                    'Score'.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  WidgetSpan ratioTextField(
+    TextEditingController controller,
+    TextStyle? style, {
+    required bool isSecondField,
+  }) {
+    return WidgetSpan(
+      alignment: PlaceholderAlignment.baseline,
+      baseline: TextBaseline.alphabetic,
+      child: TextField(
+        controller: controller,
+        enabled: !_isSubmitted,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        style: style?.copyWith(
+          color: isSecondField
+              ? Theme.of(context).colorScheme.tertiary
+              : Theme.of(context).colorScheme.secondary,
+          fontWeight: FontWeight.bold,
         ),
+        textAlign: isSecondField ? TextAlign.start : TextAlign.end,
+        textAlignVertical: TextAlignVertical.bottom,
+        decoration: const InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.only(bottom: 2, top: 2),
+          border: UnderlineInputBorder(),
+          constraints: BoxConstraints(maxWidth: 40),
+        ),
+        onChanged: (value) {
+          final ratio = double.tryParse(value);
+          if (ratio == null || ratio < 1) return;
+          ref
+              .read(ratioControllerProvider.notifier)
+              .set(isSecondField ? 1 / ratio : ratio);
+        },
+        onTapOutside: (event) => FocusScope.of(context).unfocus(),
       ),
     );
   }
 
   Widget _buildCustomRatioField() {
-    final itemA = widget.round.itemPair.itemA;
-    final itemB = widget.round.itemPair.itemB;
+    // Define the minRatio as the largest power of 10 that is less than or equal to the ratio boundary
+    final ratioBoundary = widget.session.collectionInfo.ratioBoundary;
+    final minRatio = pow(10, (log(ratioBoundary) / ln10).floor()).toDouble();
+    debugPrint('Boundary: $ratioBoundary, Min Ratio: $minRatio');
 
-    // Initialize with either the user's current estimate or a default value
-    double initialRatio = 1.2;
-    if (_estimateController.text.isNotEmpty) {
-      final double? parsedValue = double.tryParse(_estimateController.text);
-      if (parsedValue != null && parsedValue > 0) {
-        initialRatio = parsedValue;
-      }
-    }
-
-    return Card.filled(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Adjust Ratio Visually',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            CustomRatioField(
-              initialRatio: initialRatio,
-              firstItemTitle: itemA.title,
-              secondItemTitle: itemB.title,
-              firstItemColor: Colors.blue.shade700,
-              secondItemColor: Colors.green.shade700,
-              onRatioChanged: (newRatio) {
-                // Update the text field with the new ratio
-                setState(() {
-                  _estimateController.text = newRatio.toStringAsFixed(2);
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildResultSection(GameRound round) {
-    // Determine accuracy and color
-    final accuracy = round.score ?? 0;
-    final Color accuracyColor = switch (accuracy) {
-      >= 90 => Colors.green,
-      >= 70 => Colors.orange,
-      _ => Colors.red,
-    };
-
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Round Results',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            _buildResultRow('Your Estimate:',
-                round.userEstimate?.toStringAsFixed(2) ?? 'N/A'),
-            _buildResultRow(
-                'Correct Ratio:', round.correctRatio.toStringAsFixed(2)),
-            const Divider(),
-            _buildResultRow(
-              'Accuracy:',
-              '${accuracy.toStringAsFixed(1)}%',
-              valueColor: accuracyColor,
-              valueFontWeight: FontWeight.bold,
-            ),
-            const SizedBox(height: 24),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FilledButton(
-                onPressed: _nextRound,
-                child: const Text('Next Round'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildResultRow(String label, String value,
-      {Color? valueColor, FontWeight? valueFontWeight}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: valueFontWeight ?? FontWeight.normal,
-              color: valueColor,
-            ),
-          ),
-        ],
-      ),
+    return CustomRatioField(
+      round: widget.session.currentRound,
+      minRatio: minRatio,
     );
   }
 
   void _submitEstimate() {
-    // Validate input
-    if (_estimateController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter an estimate')),
-      );
-      return;
-    }
+    final ratio = ref.read(ratioControllerProvider);
 
     try {
-      // Parse user estimate
-      final estimate = double.parse(_estimateController.text);
-      if (estimate <= 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter a positive number')),
-        );
-        return;
-      }
-
       // Submit the estimate
-      debugPrint('Submitting estimate: $estimate');
-      widget.onSubmit(estimate);
-
-      // Stop the timer
-      debugPrint('Stopping timer');
-      // ref.read(gameTimerNotifierProvider.notifier).cancelTimer();
+      debugPrint('Submitting estimate: $ratio');
+      widget.onSubmit(ratio);
 
       // Update UI to show results
       setState(() {
@@ -314,7 +315,7 @@ class _GameRoundState extends ConsumerState<GameRoundForm> {
   void _nextRound() {
     setState(() {
       _isSubmitted = false;
-      _estimateController.clear();
+      ref.read(ratioControllerProvider.notifier).reset();
     });
     ref.read(gameTimerProvider.notifier).cancelTimer();
     widget.onNextRound();

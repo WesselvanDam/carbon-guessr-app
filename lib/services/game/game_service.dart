@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../models/collection/collection_info.dart';
 import '../../models/collection/collection_item.dart';
 import '../../models/game/game_round.dart';
 import '../../models/game/game_session.dart';
 import '../../models/game/item_pair.dart';
-import '../../utils/extensions.dart';
 
 /// Service responsible for pure game logic and calculations
 class GameService {
@@ -20,9 +20,9 @@ class GameService {
 
   /// Creates a new game session with the given mode, collection info, and items
   GameSession createGameSession({
+    required CollectionInfo collectionInfo,
     required List<CollectionItem> items,
     required GameMode mode,
-    required double ratioBoundary,
   }) {
     // Create the rounds
     final rounds = List.generate(items.length ~/ 2, (index) {
@@ -40,9 +40,9 @@ class GameService {
     });
 
     return GameSession(
+      collectionInfo: collectionInfo,
       rounds: rounds,
-      roundDurationSeconds: mode.roundDurationInSeconds,
-      ratioBoundary: ratioBoundary,
+      mode: mode,
     );
   }
 
@@ -83,18 +83,21 @@ class GameService {
   /// Throws:
   ///   - ArgumentError: If estimate, groundTruth, or minRatio are not positive,
   ///                  or if minRatio > 1.
-  double calculateRoundScore(
+  int calculateRoundScore(
     double truth,
     double estimate,
     double ratioBoundary, {
-    double maxScore = 100.0,
+    int maxScore = 100,
   }) {
-    debugPrint('Ratio Boundary: $ratioBoundary, Estimate: $estimate, Truth: $truth');
+    debugPrint(
+        'Ratio Boundary: $ratioBoundary, Estimate: $estimate, Truth: $truth');
     if (estimate <= 0 || truth <= 0 || ratioBoundary <= 0) {
-      throw ArgumentError('Ratios (estimate, groundTruth, minRatio) must be positive.');
+      throw ArgumentError(
+          'Ratios (estimate, groundTruth, minRatio) must be positive.');
     }
     if (ratioBoundary > 1) {
-      throw ArgumentError('minRatio cannot be greater than 1. It represents a/b where a <= b.');
+      throw ArgumentError(
+          'minRatio cannot be greater than 1. It represents a/b where a <= b.');
     }
 
     // Handle the special case where the only possible ratio is 1
@@ -102,7 +105,7 @@ class GameService {
       // If groundTruth is not 1, it's outside the allowed [min_r, max_r] = [1,1]
       // We proceed by definition of minRatio=1.
       // Logically, if minRatio=1, groundTruth must be 1.
-      return estimate == truth ? maxScore : 0.0;
+      return estimate == truth ? maxScore : 0;
     }
 
     // Transform to log space
@@ -124,14 +127,14 @@ class GameService {
 
     if (maxLogSpan == 0) {
       // Should be covered by minRatio == 1 case, but for robustness
-      return errorLog == 0 ? maxScore : 0.0;
+      return errorLog == 0 ? maxScore : 0;
     }
 
     // Scale the score
-    final double score = maxScore * exp(-10 * (errorLog / maxLogSpan));
+    final int score = (maxScore * exp(-10 * (errorLog / maxLogSpan))).round();
 
     // Clamp score at 0
-    return max(0.0, score);
+    return max(0, score);
   }
 
   /// Completes a round with the user's estimate
@@ -145,7 +148,11 @@ class GameService {
     }
 
     final currentRound = session.rounds[session.currentRoundIndex];
-    final score = calculateRoundScore(currentRound.correctRatio, estimate, session.ratioBoundary);
+    final score = calculateRoundScore(
+      currentRound.correctRatio,
+      estimate,
+      session.collectionInfo.ratioBoundary,
+    );
 
     final updatedRound = currentRound.copyWith(
       userEstimate: estimate,

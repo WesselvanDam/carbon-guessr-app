@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/collection/collection_providers.dart';
-import '../../../router/routes.dart';
 import 'collection_card.dart';
 
 class CollectionSelector extends ConsumerWidget {
@@ -13,14 +12,29 @@ class CollectionSelector extends ConsumerWidget {
     final collections = ref.watch(collectionsInfoProvider);
 
     return collections.when(
-      data: (collections) {
-        return ListView.builder(
+      data: (data) {
+        final collections = data.values.toList();
+        return ListView.separated(
           shrinkWrap: true,
-          itemCount: collections.length,
+          itemCount: collections.length + 1,
           itemBuilder: (context, index) {
-            final collection = collections[index];
-            return CollectionCard(collectionInfo: collection);
+            if (index == collections.length) {
+              return Card.outlined(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  side:
+                      BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                  borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                ),
+                child: const SizedBox(
+                  height: 180,
+                  child: Center(child: Text('More coming soon!')),
+                ),
+              );
+            }
+            return CollectionCard(collectionInfo: collections[index]);
           },
+          separatorBuilder: (context, index) => const SizedBox(height: 16.0),
         );
       },
       error: (error, stack) => Center(child: Text('Error: $error')),

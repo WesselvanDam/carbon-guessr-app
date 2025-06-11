@@ -11,7 +11,7 @@ class CollectionRepository {
   final String _collectionId;
 
   /// Fetches the list of all available collections
-  Future<List<CollectionInfo>> getAllCollections() async {
+  Future<Map<String, CollectionInfo>> getAllCollections() async {
     final response = await _service.fetchAllCollections();
     return response.data;
   }

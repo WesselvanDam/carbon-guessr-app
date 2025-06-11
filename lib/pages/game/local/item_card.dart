@@ -15,9 +15,14 @@ class ItemCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final Color mainColor = isFirst ? colorScheme.secondary : colorScheme.tertiary;
+    final Color mainContainer = isFirst ? colorScheme.secondaryContainer : colorScheme.tertiaryContainer;
+    final Color onMainContainer = isFirst ? colorScheme.onSecondaryContainer : colorScheme.onTertiaryContainer;
+
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: mainContainer,
         borderRadius: BorderRadius.circular(16.0),
       ),
       margin: EdgeInsets.zero,
@@ -29,56 +34,61 @@ class ItemCard extends ConsumerWidget {
           Text(
             '${item.category} · ${item.quantity}',
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: onMainContainer.withOpacity(0.7),
                   fontWeight: FontWeight.w600,
                 ),
-            semanticsLabel: 'Category: ${item.category} · Quantity: ${item.quantity}',
           ),
           const SizedBox(height: 8.0),
           Text(
             item.title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: onMainContainer,
                   fontWeight: FontWeight.bold,
                 ),
-            semanticsLabel: 'Title: ${item.title}',
           ),
-          const SizedBox(height: 16.0),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              icon: const Icon(Icons.info_outline, size: 18.0),
-              label: const Text('Details'),
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                textStyle: const TextStyle(fontSize: 14.0),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-              ),
-              onPressed: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(
-                      item.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    content: Text(
-                      item.description,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Close'),
+          const Expanded(child: SizedBox.shrink()),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                icon: Icon(Icons.info_outline, size: 18.0, color: mainColor),
+                label: Text(
+                  'Details',
+                  style: TextStyle(color: mainColor),
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: mainColor,
+                  textStyle: const TextStyle(fontSize: 14.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.standard,
+                ),
+                onPressed: () {
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(
+                        item.title,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: mainColor,
+                            ),
                       ),
-                    ],
-                  ),
-                );
-              },
+                      content: Text(
+                        item.description,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],

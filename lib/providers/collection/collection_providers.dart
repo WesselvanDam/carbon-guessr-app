@@ -27,14 +27,23 @@ CollectionRepository collectionRepository(Ref ref, String collectionId) {
 }
 
 @Riverpod(keepAlive: true)
-Future<List<CollectionInfo>> collectionsInfo(Ref ref) {
+Future<Map<String, CollectionInfo>> collectionsInfo(Ref ref) {
   final repository = ref.watch(collectionRepositoryProvider(''));
   return repository.getAllCollections();
 }
 
 /// Provider for the collection info
 @riverpod
-Future<CollectionInfo> collectionInfo(Ref ref, String collectionId) {
+Future<CollectionInfo> collectionInfo(Ref ref, String collectionId) async {
+  // Try to get all collections info from the provider
+  final collectionsInfoAsync = await ref.watch(collectionsInfoProvider.future);
+
+  // If the collection is already present, return it
+  if (collectionsInfoAsync.containsKey(collectionId)) {
+    return collectionsInfoAsync[collectionId]!;
+  }
+
+  // Otherwise, fetch from repository
   final repository = ref.watch(collectionRepositoryProvider(collectionId));
   return repository.getInfo();
 }

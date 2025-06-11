@@ -19,7 +19,7 @@ mixin _$GameRound {
   ItemPair get itemPair;
   double get correctRatio;
   double? get userEstimate;
-  double? get score;
+  int get score;
   bool get isCompleted;
 
   /// Create a copy of GameRound
@@ -71,7 +71,7 @@ abstract mixin class $GameRoundCopyWith<$Res> {
       ItemPair itemPair,
       double correctRatio,
       double? userEstimate,
-      double? score,
+      int score,
       bool isCompleted});
 
   $ItemPairCopyWith<$Res> get itemPair;
@@ -93,7 +93,7 @@ class _$GameRoundCopyWithImpl<$Res> implements $GameRoundCopyWith<$Res> {
     Object? itemPair = null,
     Object? correctRatio = null,
     Object? userEstimate = freezed,
-    Object? score = freezed,
+    Object? score = null,
     Object? isCompleted = null,
   }) {
     return _then(_self.copyWith(
@@ -113,10 +113,10 @@ class _$GameRoundCopyWithImpl<$Res> implements $GameRoundCopyWith<$Res> {
           ? _self.userEstimate
           : userEstimate // ignore: cast_nullable_to_non_nullable
               as double?,
-      score: freezed == score
+      score: null == score
           ? _self.score
           : score // ignore: cast_nullable_to_non_nullable
-              as double?,
+              as int,
       isCompleted: null == isCompleted
           ? _self.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -143,7 +143,7 @@ class _GameRound implements GameRound {
       required this.itemPair,
       required this.correctRatio,
       this.userEstimate,
-      this.score,
+      this.score = 0,
       this.isCompleted = false});
   factory _GameRound.fromJson(Map<String, dynamic> json) =>
       _$GameRoundFromJson(json);
@@ -157,7 +157,8 @@ class _GameRound implements GameRound {
   @override
   final double? userEstimate;
   @override
-  final double? score;
+  @JsonKey()
+  final int score;
   @override
   @JsonKey()
   final bool isCompleted;
@@ -219,7 +220,7 @@ abstract mixin class _$GameRoundCopyWith<$Res>
       ItemPair itemPair,
       double correctRatio,
       double? userEstimate,
-      double? score,
+      int score,
       bool isCompleted});
 
   @override
@@ -242,7 +243,7 @@ class __$GameRoundCopyWithImpl<$Res> implements _$GameRoundCopyWith<$Res> {
     Object? itemPair = null,
     Object? correctRatio = null,
     Object? userEstimate = freezed,
-    Object? score = freezed,
+    Object? score = null,
     Object? isCompleted = null,
   }) {
     return _then(_GameRound(
@@ -262,10 +263,10 @@ class __$GameRoundCopyWithImpl<$Res> implements _$GameRoundCopyWith<$Res> {
           ? _self.userEstimate
           : userEstimate // ignore: cast_nullable_to_non_nullable
               as double?,
-      score: freezed == score
+      score: null == score
           ? _self.score
           : score // ignore: cast_nullable_to_non_nullable
-              as double?,
+              as int,
       isCompleted: null == isCompleted
           ? _self.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable

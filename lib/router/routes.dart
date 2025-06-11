@@ -50,7 +50,7 @@ class CollectionRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return CollectionPage(id: cid);
+    return CollectionPage(cid: cid);
   }
 }
 

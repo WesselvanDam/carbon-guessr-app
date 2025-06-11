@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/game/game_session.dart';
+import '../../utils/extensions.dart';
 import 'game_controller.dart';
 import 'game_results_page.dart';
 import 'local/game_round_form.dart';
@@ -43,16 +44,20 @@ class GamePage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        leading: IconButton.outlined(
-          padding: const EdgeInsets.all(12.0),
-          iconSize: 28,
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-          style: OutlinedButton.styleFrom(
-            shape: const CircleBorder(),
-            side: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-                width: 2),
+        leadingWidth: 68,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: IconButton.outlined(
+            padding: const EdgeInsets.all(12.0),
+            iconSize: 28,
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+            style: OutlinedButton.styleFrom(
+              shape: const CircleBorder(),
+              side: BorderSide(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
+                  width: 2),
+            ),
           ),
         ),
         title: Column(
@@ -62,7 +67,7 @@ class GamePage extends ConsumerWidget {
             Text(
                 'Round ${gameSession.currentRoundIndex + 1} of ${gameSession.rounds.length}'),
             Text(
-              'Carbon Footprints · ${mode.name} Mode',
+              '${gameSession.collectionInfo.title.toTitleCase()} · ${mode.name.toTitleCase()} Mode',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -74,7 +79,7 @@ class GamePage extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: GameRoundForm(
-          round: gameSession.rounds[gameSession.currentRoundIndex],
+          session: gameSession,
           onSubmit: onSubmit,
           onNextRound: onNextRound,
         ),

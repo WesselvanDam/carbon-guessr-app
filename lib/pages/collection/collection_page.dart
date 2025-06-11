@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/game/game_session.dart';
 import '../../providers/collection/collection_providers.dart';
 import '../../router/routes.dart';
 import '../../services/game/game_service.dart';
+import '../../utils/extensions.dart';
 
 class CollectionPage extends ConsumerWidget {
-  const CollectionPage({required this.id, super.key});
+  const CollectionPage({required this.cid, super.key});
 
-  final String id;
+  final String cid;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collectionInfo = ref.watch(collectionInfoProvider(id));
+    final collectionInfo = ref.watch(collectionInfoProvider(cid));
 
     return collectionInfo.when(
       data: (info) {
@@ -25,39 +28,93 @@ class CollectionPage extends ConsumerWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Select Game Mode'),
-          ),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Choose a Game Mode',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 48),
-                  _buildGameModeCard(
-                    context,
-                    () => startGameCallback(GameMode.simple),
-                    'Simple Mode',
-                    'Match pairs of items within 30 seconds.\nFocus on your first impressions.',
-                    Icons.speed,
-                    Theme.of(context).colorScheme.secondary,
-                  ),
-                  const SizedBox(height: 24),
-                  _buildGameModeCard(
-                    context,
-                    () => startGameCallback(GameMode.research),
-                    'Research Mode',
-                    'Take up to 3 minutes to research and compare items.\nOpen browser for more information.',
-                    Icons.search,
-                    Theme.of(context).colorScheme.tertiary,
-                  ),
-                ],
+            toolbarHeight: 80,
+            leadingWidth: 68,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: IconButton.outlined(
+                padding: const EdgeInsets.all(12.0),
+                iconSize: 28,
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+                style: OutlinedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  side: BorderSide(
+                      color:
+                          Theme.of(context).colorScheme.onSurface.withAlpha(50),
+                      width: 2),
+                ),
               ),
+            ),
+            title: Column(
+              spacing: 4,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(info.title.toTitleCase()),
+                Text(
+                  '${info.quantity.toSentenceCase()} · ${info.unit}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+            centerTitle: true,
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  info.tagline,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+                const SizedBox(height: 8),
+                MarkdownBody(
+                  data: info.description,
+                  styleSheet: MarkdownStyleSheet(
+                    p: Theme.of(context).textTheme.bodyLarge,
+                    a: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                  ),
+                  onTapLink: (text, url, title) => url == null
+                      ? null
+                      : launchUrlString(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Choose a Game Mode',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                _buildGameModeCard(
+                  context,
+                  () => startGameCallback(GameMode.simple),
+                  'Simple',
+                  'Match pairs of items within 30 seconds. Trust your intuition.',
+                  Icons.speed,
+                  Theme.of(context).colorScheme.secondary,
+                ),
+                const SizedBox(height: 16),
+                _buildGameModeCard(
+                  context,
+                  () => startGameCallback(GameMode.research),
+                  'Research',
+                  'Take up to 3 minutes to research the items using your browser.',
+                  Icons.search,
+                  Theme.of(context).colorScheme.tertiary,
+                ),
+              ],
             ),
           ),
         );
@@ -95,28 +152,37 @@ class CollectionPage extends ConsumerWidget {
   ) {
     return Card(
       elevation: 0,
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: Column(
+          child: Row(
             children: [
               Icon(icon, size: 48, color: color),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      description,
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8, width: double.infinity),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+              const Icon(Icons.chevron_right, size: 32, color: Colors.grey),
             ],
           ),
         ),

@@ -13,7 +13,7 @@ abstract class GameRound with _$GameRound {
     required ItemPair itemPair,
     required double correctRatio,
     double? userEstimate,
-    double? score,
+    @Default(0) int score,
     @Default(false) bool isCompleted,
   }) = _GameRound;
 

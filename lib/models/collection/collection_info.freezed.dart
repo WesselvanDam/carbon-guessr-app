@@ -17,6 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$CollectionInfo {
   String get id;
   String get title;
+  String get tagline;
   String get description;
   String get quantity;
   String get unit;
@@ -41,6 +42,7 @@ mixin _$CollectionInfo {
             other is CollectionInfo &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            (identical(other.tagline, tagline) || other.tagline == tagline) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.quantity, quantity) ||
@@ -53,12 +55,12 @@ mixin _$CollectionInfo {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, title, description, quantity, unit, size, ratioBoundary);
+  int get hashCode => Object.hash(runtimeType, id, title, tagline, description,
+      quantity, unit, size, ratioBoundary);
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
+    return 'CollectionInfo(id: $id, title: $title, tagline: $tagline, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
   }
 }
 
@@ -71,6 +73,7 @@ abstract mixin class $CollectionInfoCopyWith<$Res> {
   $Res call(
       {String id,
       String title,
+      String tagline,
       String description,
       String quantity,
       String unit,
@@ -93,6 +96,7 @@ class _$CollectionInfoCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
+    Object? tagline = null,
     Object? description = null,
     Object? quantity = null,
     Object? unit = null,
@@ -107,6 +111,10 @@ class _$CollectionInfoCopyWithImpl<$Res>
       title: null == title
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      tagline: null == tagline
+          ? _self.tagline
+          : tagline // ignore: cast_nullable_to_non_nullable
               as String,
       description: null == description
           ? _self.description
@@ -138,6 +146,7 @@ class _CollectionInfo implements CollectionInfo {
   const _CollectionInfo(
       {required this.id,
       required this.title,
+      required this.tagline,
       required this.description,
       required this.quantity,
       required this.unit,
@@ -150,6 +159,8 @@ class _CollectionInfo implements CollectionInfo {
   final String id;
   @override
   final String title;
+  @override
+  final String tagline;
   @override
   final String description;
   @override
@@ -184,6 +195,7 @@ class _CollectionInfo implements CollectionInfo {
             other is _CollectionInfo &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            (identical(other.tagline, tagline) || other.tagline == tagline) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.quantity, quantity) ||
@@ -196,12 +208,12 @@ class _CollectionInfo implements CollectionInfo {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, title, description, quantity, unit, size, ratioBoundary);
+  int get hashCode => Object.hash(runtimeType, id, title, tagline, description,
+      quantity, unit, size, ratioBoundary);
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, title: $title, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
+    return 'CollectionInfo(id: $id, title: $title, tagline: $tagline, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
   }
 }
 
@@ -216,6 +228,7 @@ abstract mixin class _$CollectionInfoCopyWith<$Res>
   $Res call(
       {String id,
       String title,
+      String tagline,
       String description,
       String quantity,
       String unit,
@@ -238,6 +251,7 @@ class __$CollectionInfoCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
+    Object? tagline = null,
     Object? description = null,
     Object? quantity = null,
     Object? unit = null,
@@ -252,6 +266,10 @@ class __$CollectionInfoCopyWithImpl<$Res>
       title: null == title
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      tagline: null == tagline
+          ? _self.tagline
+          : tagline // ignore: cast_nullable_to_non_nullable
               as String,
       description: null == description
           ? _self.description

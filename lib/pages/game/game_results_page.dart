@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../models/collection/collection_item.dart';
 import '../../models/game/game_round.dart';
 import '../../models/game/game_session.dart';
 import '../../router/routes.dart';
+import '../../services/game/game_service.dart';
+import '../../utils/extensions.dart';
+import '../../widgets/score_pill.dart';
 
 class GameResultsPage extends ConsumerWidget {
   const GameResultsPage({required this.session, super.key});
@@ -15,7 +19,7 @@ class GameResultsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final totalScore = session.totalScore;
     final maxPossibleScore = session.rounds.length * 100.0;
-    final scorePercentage = (totalScore / maxPossibleScore) * 100;
+    final scorePercentage = ((totalScore / maxPossibleScore) * 100).round();
 
     // Get a feedback message based on the score
     final feedbackMessage = _getFeedbackMessage(scorePercentage);
@@ -23,6 +27,7 @@ class GameResultsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Game Results'),
+        centerTitle: true,
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -70,15 +75,43 @@ class GameResultsPage extends ConsumerWidget {
               const SizedBox(height: 16),
 
               // Feedback message
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    feedbackMessage,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.10),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.lightbulb,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        feedbackMessage,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -90,17 +123,24 @@ class GameResultsPage extends ConsumerWidget {
               const SizedBox(height: 32),
 
               // Action buttons
-              Row(
+              OverflowBar(
+                alignment: MainAxisAlignment.end,
+                overflowAlignment: OverflowBarAlignment.center,
+                overflowDirection: VerticalDirection.up,
+                spacing: 16,
                 children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => context.pop(),
-                      icon: const Icon(Icons.home),
-                      label: const Text('Home'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                    ),
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Back to collection'),
+                  ),
+                  FilledButton.icon(
+                    onPressed: () => GameRoute(
+                      cid: session.collectionInfo.id,
+                      gid: GameService.newGameId,
+                      mode: session.mode,
+                    ).go(context),
+                    icon: const Icon(Icons.play_arrow),
+                    label: const Text('Play Again'),
                   ),
                 ],
               ),
@@ -113,102 +153,447 @@ class GameResultsPage extends ConsumerWidget {
 
   Widget _buildRoundDetailsCard(BuildContext context, GameSession session) {
     return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Round Details',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header with stylized background
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
             ),
-            const SizedBox(height: 16),
-            const Divider(),
-            ...session.rounds.map((round) => _buildRoundRow(context, round)),
-          ],
-        ),
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Game Breakdown',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+            ),
+          ),
+
+          // Round rows
+          ...session.rounds
+              .where((round) => round.isCompleted)
+              .map((round) => _buildRoundRow(context, round)),
+        ],
       ),
     );
   }
 
   Widget _buildRoundRow(BuildContext context, GameRound round) {
-    // Skip incomplete rounds
-    if (!round.isCompleted || round.score == null) {
-      return const SizedBox.shrink();
-    }
+    final score = round.score;
+    final valueStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
+          fontWeight: FontWeight.bold,
+        );
+    final labelStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
 
-    // Determine accuracy color
-    final accuracy = round.score!;
-    Color accuracyColor = Colors.red;
-    accuracyColor = _getScoreColor(accuracy);
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            children: [
-              Text(
-                'Round ${round.roundNumber}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const Spacer(),
-              Text(
-                '${round.score!.toStringAsFixed(0)} points',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: accuracyColor,
+    return Container(
+      decoration: BoxDecoration(
+        color: round.roundNumber.isEven
+            ? Theme.of(context).colorScheme.surfaceContainer
+            : Theme.of(context).colorScheme.surfaceContainerLow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Round number label
+                Text(
+                  'ROUND ${round.roundNumber}',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 12),
+
+                // Items side by side
+                Row(
+                  spacing: 2,
+                  children: [
+                    Expanded(
+                      child: _buildItemButton(
+                        context,
+                        round.itemPair.itemA,
+                        isItemA: true,
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildItemButton(
+                        context,
+                        round.itemPair.itemB,
+                        isItemA: false,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16), // Results section
+                SizedBox(
+                  height: 48,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // User estimate
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Text(
+                                round.userEstimate?.ratioToReadableString() ??
+                                    'N/A',
+                                textAlign: TextAlign.center,
+                                style: valueStyle,
+                              ),
+                            ),
+                            Text(
+                              'YOUR GUESS',
+                              style: labelStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Correct ratio
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Text(
+                                round.correctRatio.ratioToReadableString(),
+                                textAlign: TextAlign.center,
+                                style: valueStyle,
+                              ),
+                            ),
+                            Text(
+                              'TRUE RATIO',
+                              style: labelStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Points
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ScorePill(
+                              score: score,
+                              style: valueStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 2,
+                              ),
+                            ),
+                            Text(
+                              'POINTS',
+                              style: labelStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-          child: Row(
-            children: [
-              const Text('Your estimate:'),
-              const Spacer(),
-              Text(round.userEstimate?.toStringAsFixed(2) ?? 'N/A'),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, bottom: 16.0),
-          child: Row(
-            children: [
-              const Text('Correct ratio:'),
-              const Spacer(),
-              Text(round.correctRatio.toStringAsFixed(2)),
-            ],
-          ),
-        ),
-        const Divider(),
-      ],
+          if (round != session.rounds.last || !round.isCompleted)
+            const Divider(height: 1),
+        ],
+      ),
     );
   }
 
-  Color _getScoreColor(double percentage) {
-    return switch (percentage) {
+  Widget _buildItemButton(
+    BuildContext context,
+    CollectionItem item, {
+    required bool isItemA,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final backgroundColor = isItemA
+        ? colorScheme.secondaryContainer
+        : colorScheme.tertiaryContainer;
+    final foregroundColor = isItemA
+        ? colorScheme.onSecondaryContainer
+        : colorScheme.onTertiaryContainer;
+
+    return OutlinedButton(
+      onPressed: () => _showItemDetailsDialog(context, item),
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        side: BorderSide.none,
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  item.quantity,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.info_outline,
+            size: 16,
+            color: isItemA ? colorScheme.secondary : colorScheme.tertiary,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showItemDetailsDialog(BuildContext context, CollectionItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => ItemDetailsDialog(item: item),
+    );
+  }
+
+  Color _getScoreColor(int score) {
+    return switch (score) {
       >= 90 => Colors.green,
       >= 70 => Colors.orange,
       _ => Colors.red,
     };
   }
 
-  String _getFeedbackMessage(double percentage) {
-    if (percentage >= 90) {
+  String _getFeedbackMessage(int score) {
+    if (score >= 90) {
       return 'Excellent! You have a great understanding of carbon footprints!';
-    } else if (percentage >= 70) {
+    } else if (score >= 70) {
       return 'Good job! You have a solid understanding of carbon footprints.';
-    } else if (percentage >= 50) {
+    } else if (score >= 50) {
       return 'Not bad! You have some understanding of carbon footprints.';
     } else {
       return 'Keep learning! Carbon footprints can be tricky to estimate.';
     }
+  }
+}
+
+class ItemDetailsDialog extends ConsumerStatefulWidget {
+  const ItemDetailsDialog({
+    required this.item,
+    super.key,
+  });
+
+  final CollectionItem item;
+
+  @override
+  ConsumerState<ItemDetailsDialog> createState() => _ItemDetailsDialogState();
+}
+
+class _ItemDetailsDialogState extends ConsumerState<ItemDetailsDialog> {
+  bool _isLoading = true;
+  List<String> _sources = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSources();
+  }
+
+  Future<void> _loadSources() async {
+    // In a real implementation, you would fetch the sources from a service
+    // This is just a placeholder
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Simulate loading sources
+      // In a real app, you would use something like:
+      // final sources = await ref.read(collectionServiceProvider).getSources(widget.item.sources);
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Mock sources for now
+      final sources = widget.item.sources.map((id) => 'Source #$id').toList();
+
+      setState(() {
+        _sources = sources;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _sources = ['Error loading sources'];
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.item.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                    splashRadius: 24,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 8),
+
+              // Quantity
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  widget.item.quantity,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Value
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.bar_chart,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                title: const Text('Carbon Footprint Value'),
+                subtitle: Text(
+                  '${widget.item.value} kg CO₂e',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Category
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.category,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                title: const Text('Category'),
+                subtitle: Text(widget.item.category),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Description
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.description,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                title: const Text('Description'),
+                subtitle: Text(widget.item.description),
+              ),
+
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 16),
+
+              // Sources
+              Text(
+                'Sources',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+
+              // Sources list
+              if (_isLoading)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              else
+                _sources.isEmpty
+                    ? const Text('No sources available')
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _sources.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.link, size: 14),
+                                const SizedBox(width: 8),
+                                Expanded(child: Text(_sources[index])),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

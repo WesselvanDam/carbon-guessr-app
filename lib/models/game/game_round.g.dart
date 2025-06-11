@@ -11,7 +11,7 @@ _GameRound _$GameRoundFromJson(Map<String, dynamic> json) => _GameRound(
       itemPair: ItemPair.fromJson(json['itemPair'] as Map<String, dynamic>),
       correctRatio: (json['correctRatio'] as num).toDouble(),
       userEstimate: (json['userEstimate'] as num?)?.toDouble(),
-      score: (json['score'] as num?)?.toDouble(),
+      score: (json['score'] as num?)?.toInt() ?? 0,
       isCompleted: json['isCompleted'] as bool? ?? false,
     );
 

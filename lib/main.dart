@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
 import 'i18n/strings.g.dart';
-import 'utils/providerObserver.dart';
+import 'utils/provider_observer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
