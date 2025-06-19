@@ -318,55 +318,54 @@ class _CollectionRepositoryProviderElement
       (origin as CollectionRepositoryProvider).collectionId;
 }
 
-String _$collectionsInfoHash() => r'a724aefcd1492d0ce5413c484ffbc379ed67e928';
+String _$collectionsHash() => r'1888ea2dedda0a1e3f0d61623fba5ddcbbc5b3f8';
 
-/// See also [collectionsInfo].
-@ProviderFor(collectionsInfo)
-final collectionsInfoProvider =
-    FutureProvider<Map<String, CollectionInfo>>.internal(
-  collectionsInfo,
-  name: r'collectionsInfoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$collectionsInfoHash,
+/// See also [collections].
+@ProviderFor(collections)
+final collectionsProvider =
+    FutureProvider<Map<String, CollectionModel>>.internal(
+  collections,
+  name: r'collectionsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$collectionsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CollectionsInfoRef = FutureProviderRef<Map<String, CollectionInfo>>;
-String _$collectionInfoHash() => r'c4628db6509d71b0b6ea5e0f61fdae13e55d6880';
+typedef CollectionsRef = FutureProviderRef<Map<String, CollectionModel>>;
+String _$collectionHash() => r'7a4448327ea98f9aabe568abe746057820844ff6';
 
 /// Provider for the collection info
 ///
-/// Copied from [collectionInfo].
-@ProviderFor(collectionInfo)
-const collectionInfoProvider = CollectionInfoFamily();
+/// Copied from [collection].
+@ProviderFor(collection)
+const collectionProvider = CollectionFamily();
 
 /// Provider for the collection info
 ///
-/// Copied from [collectionInfo].
-class CollectionInfoFamily extends Family<AsyncValue<CollectionInfo>> {
+/// Copied from [collection].
+class CollectionFamily extends Family<AsyncValue<CollectionModel>> {
   /// Provider for the collection info
   ///
-  /// Copied from [collectionInfo].
-  const CollectionInfoFamily();
+  /// Copied from [collection].
+  const CollectionFamily();
 
   /// Provider for the collection info
   ///
-  /// Copied from [collectionInfo].
-  CollectionInfoProvider call(
+  /// Copied from [collection].
+  CollectionProvider call(
     String collectionId,
   ) {
-    return CollectionInfoProvider(
+    return CollectionProvider(
       collectionId,
     );
   }
 
   @override
-  CollectionInfoProvider getProviderOverride(
-    covariant CollectionInfoProvider provider,
+  CollectionProvider getProviderOverride(
+    covariant CollectionProvider provider,
   ) {
     return call(
       provider.collectionId,
@@ -385,36 +384,36 @@ class CollectionInfoFamily extends Family<AsyncValue<CollectionInfo>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'collectionInfoProvider';
+  String? get name => r'collectionProvider';
 }
 
 /// Provider for the collection info
 ///
-/// Copied from [collectionInfo].
-class CollectionInfoProvider extends AutoDisposeFutureProvider<CollectionInfo> {
+/// Copied from [collection].
+class CollectionProvider extends AutoDisposeFutureProvider<CollectionModel> {
   /// Provider for the collection info
   ///
-  /// Copied from [collectionInfo].
-  CollectionInfoProvider(
+  /// Copied from [collection].
+  CollectionProvider(
     String collectionId,
   ) : this._internal(
-          (ref) => collectionInfo(
-            ref as CollectionInfoRef,
+          (ref) => collection(
+            ref as CollectionRef,
             collectionId,
           ),
-          from: collectionInfoProvider,
-          name: r'collectionInfoProvider',
+          from: collectionProvider,
+          name: r'collectionProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$collectionInfoHash,
-          dependencies: CollectionInfoFamily._dependencies,
+                  : _$collectionHash,
+          dependencies: CollectionFamily._dependencies,
           allTransitiveDependencies:
-              CollectionInfoFamily._allTransitiveDependencies,
+              CollectionFamily._allTransitiveDependencies,
           collectionId: collectionId,
         );
 
-  CollectionInfoProvider._internal(
+  CollectionProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -428,12 +427,12 @@ class CollectionInfoProvider extends AutoDisposeFutureProvider<CollectionInfo> {
 
   @override
   Override overrideWith(
-    FutureOr<CollectionInfo> Function(CollectionInfoRef provider) create,
+    FutureOr<CollectionModel> Function(CollectionRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: CollectionInfoProvider._internal(
-        (ref) => create(ref as CollectionInfoRef),
+      override: CollectionProvider._internal(
+        (ref) => create(ref as CollectionRef),
         from: from,
         name: null,
         dependencies: null,
@@ -445,14 +444,13 @@ class CollectionInfoProvider extends AutoDisposeFutureProvider<CollectionInfo> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<CollectionInfo> createElement() {
-    return _CollectionInfoProviderElement(this);
+  AutoDisposeFutureProviderElement<CollectionModel> createElement() {
+    return _CollectionProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is CollectionInfoProvider &&
-        other.collectionId == collectionId;
+    return other is CollectionProvider && other.collectionId == collectionId;
   }
 
   @override
@@ -466,21 +464,39 @@ class CollectionInfoProvider extends AutoDisposeFutureProvider<CollectionInfo> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CollectionInfoRef on AutoDisposeFutureProviderRef<CollectionInfo> {
+mixin CollectionRef on AutoDisposeFutureProviderRef<CollectionModel> {
   /// The parameter `collectionId` of this provider.
   String get collectionId;
 }
 
-class _CollectionInfoProviderElement
-    extends AutoDisposeFutureProviderElement<CollectionInfo>
-    with CollectionInfoRef {
-  _CollectionInfoProviderElement(super.provider);
+class _CollectionProviderElement
+    extends AutoDisposeFutureProviderElement<CollectionModel>
+    with CollectionRef {
+  _CollectionProviderElement(super.provider);
 
   @override
-  String get collectionId => (origin as CollectionInfoProvider).collectionId;
+  String get collectionId => (origin as CollectionProvider).collectionId;
 }
 
-String _$collectionItemHash() => r'c04fa485f8996a08e41bb2a059d45051294023de';
+String _$currentCollectionHash() => r'2d46fed2a957ddd25a3f7a3f066522ede3b6c239';
+
+/// See also [currentCollection].
+@ProviderFor(currentCollection)
+final currentCollectionProvider =
+    AutoDisposeFutureProvider<CollectionModel?>.internal(
+  currentCollection,
+  name: r'currentCollectionProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentCollectionHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CurrentCollectionRef = AutoDisposeFutureProviderRef<CollectionModel?>;
+String _$collectionItemHash() => r'fa35c2e4552412d826d5aee8a2de67e711bf6af4';
 
 /// Provider for a specific collection item by ID
 ///
@@ -491,7 +507,7 @@ const collectionItemProvider = CollectionItemFamily();
 /// Provider for a specific collection item by ID
 ///
 /// Copied from [collectionItem].
-class CollectionItemFamily extends Family<AsyncValue<CollectionItem>> {
+class CollectionItemFamily extends Family<AsyncValue<ItemModel>> {
   /// Provider for a specific collection item by ID
   ///
   /// Copied from [collectionItem].
@@ -538,7 +554,7 @@ class CollectionItemFamily extends Family<AsyncValue<CollectionItem>> {
 /// Provider for a specific collection item by ID
 ///
 /// Copied from [collectionItem].
-class CollectionItemProvider extends AutoDisposeFutureProvider<CollectionItem> {
+class CollectionItemProvider extends AutoDisposeFutureProvider<ItemModel> {
   /// Provider for a specific collection item by ID
   ///
   /// Copied from [collectionItem].
@@ -580,7 +596,7 @@ class CollectionItemProvider extends AutoDisposeFutureProvider<CollectionItem> {
 
   @override
   Override overrideWith(
-    FutureOr<CollectionItem> Function(CollectionItemRef provider) create,
+    FutureOr<ItemModel> Function(CollectionItemRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -598,7 +614,7 @@ class CollectionItemProvider extends AutoDisposeFutureProvider<CollectionItem> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<CollectionItem> createElement() {
+  AutoDisposeFutureProviderElement<ItemModel> createElement() {
     return _CollectionItemProviderElement(this);
   }
 
@@ -621,7 +637,7 @@ class CollectionItemProvider extends AutoDisposeFutureProvider<CollectionItem> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CollectionItemRef on AutoDisposeFutureProviderRef<CollectionItem> {
+mixin CollectionItemRef on AutoDisposeFutureProviderRef<ItemModel> {
   /// The parameter `collectionId` of this provider.
   String get collectionId;
 
@@ -630,8 +646,7 @@ mixin CollectionItemRef on AutoDisposeFutureProviderRef<CollectionItem> {
 }
 
 class _CollectionItemProviderElement
-    extends AutoDisposeFutureProviderElement<CollectionItem>
-    with CollectionItemRef {
+    extends AutoDisposeFutureProviderElement<ItemModel> with CollectionItemRef {
   _CollectionItemProviderElement(super.provider);
 
   @override
@@ -641,7 +656,7 @@ class _CollectionItemProviderElement
 }
 
 String _$collectionItemsByIdsHash() =>
-    r'b3ad422c3c3f7aeffefd673fc6bd856e83a3e4c9';
+    r'64aacf44224639f964c546ff111de7fa41c3ab25';
 
 /// Provider for specific collection items by IDs
 ///
@@ -652,8 +667,7 @@ const collectionItemsByIdsProvider = CollectionItemsByIdsFamily();
 /// Provider for specific collection items by IDs
 ///
 /// Copied from [collectionItemsByIds].
-class CollectionItemsByIdsFamily
-    extends Family<AsyncValue<List<CollectionItem>>> {
+class CollectionItemsByIdsFamily extends Family<AsyncValue<List<ItemModel>>> {
   /// Provider for specific collection items by IDs
   ///
   /// Copied from [collectionItemsByIds].
@@ -701,7 +715,7 @@ class CollectionItemsByIdsFamily
 ///
 /// Copied from [collectionItemsByIds].
 class CollectionItemsByIdsProvider
-    extends AutoDisposeFutureProvider<List<CollectionItem>> {
+    extends AutoDisposeFutureProvider<List<ItemModel>> {
   /// Provider for specific collection items by IDs
   ///
   /// Copied from [collectionItemsByIds].
@@ -743,8 +757,7 @@ class CollectionItemsByIdsProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<CollectionItem>> Function(CollectionItemsByIdsRef provider)
-        create,
+    FutureOr<List<ItemModel>> Function(CollectionItemsByIdsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -762,7 +775,7 @@ class CollectionItemsByIdsProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<CollectionItem>> createElement() {
+  AutoDisposeFutureProviderElement<List<ItemModel>> createElement() {
     return _CollectionItemsByIdsProviderElement(this);
   }
 
@@ -785,8 +798,7 @@ class CollectionItemsByIdsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CollectionItemsByIdsRef
-    on AutoDisposeFutureProviderRef<List<CollectionItem>> {
+mixin CollectionItemsByIdsRef on AutoDisposeFutureProviderRef<List<ItemModel>> {
   /// The parameter `collectionId` of this provider.
   String get collectionId;
 
@@ -795,7 +807,7 @@ mixin CollectionItemsByIdsRef
 }
 
 class _CollectionItemsByIdsProviderElement
-    extends AutoDisposeFutureProviderElement<List<CollectionItem>>
+    extends AutoDisposeFutureProviderElement<List<ItemModel>>
     with CollectionItemsByIdsRef {
   _CollectionItemsByIdsProviderElement(super.provider);
 
@@ -970,7 +982,7 @@ class _CollectionItemSourcesProviderElement
 }
 
 String _$localizedCollectionItemHash() =>
-    r'244d2e7b74c42fa6c457cdf28613d1a6f40eb716';
+    r'8f59fa18aeed5e0e00738e7fd13028fca6ca3fda';
 
 /// Provider for a localized collection item
 ///
@@ -981,7 +993,7 @@ const localizedCollectionItemProvider = LocalizedCollectionItemFamily();
 /// Provider for a localized collection item
 ///
 /// Copied from [localizedCollectionItem].
-class LocalizedCollectionItemFamily extends Family<AsyncValue<CollectionItem>> {
+class LocalizedCollectionItemFamily extends Family<AsyncValue<ItemModel>> {
   /// Provider for a localized collection item
   ///
   /// Copied from [localizedCollectionItem].
@@ -1032,7 +1044,7 @@ class LocalizedCollectionItemFamily extends Family<AsyncValue<CollectionItem>> {
 ///
 /// Copied from [localizedCollectionItem].
 class LocalizedCollectionItemProvider
-    extends AutoDisposeFutureProvider<CollectionItem> {
+    extends AutoDisposeFutureProvider<ItemModel> {
   /// Provider for a localized collection item
   ///
   /// Copied from [localizedCollectionItem].
@@ -1079,8 +1091,7 @@ class LocalizedCollectionItemProvider
 
   @override
   Override overrideWith(
-    FutureOr<CollectionItem> Function(LocalizedCollectionItemRef provider)
-        create,
+    FutureOr<ItemModel> Function(LocalizedCollectionItemRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -1099,7 +1110,7 @@ class LocalizedCollectionItemProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<CollectionItem> createElement() {
+  AutoDisposeFutureProviderElement<ItemModel> createElement() {
     return _LocalizedCollectionItemProviderElement(this);
   }
 
@@ -1124,8 +1135,7 @@ class LocalizedCollectionItemProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin LocalizedCollectionItemRef
-    on AutoDisposeFutureProviderRef<CollectionItem> {
+mixin LocalizedCollectionItemRef on AutoDisposeFutureProviderRef<ItemModel> {
   /// The parameter `collectionId` of this provider.
   String get collectionId;
 
@@ -1137,7 +1147,7 @@ mixin LocalizedCollectionItemRef
 }
 
 class _LocalizedCollectionItemProviderElement
-    extends AutoDisposeFutureProviderElement<CollectionItem>
+    extends AutoDisposeFutureProviderElement<ItemModel>
     with LocalizedCollectionItemRef {
   _LocalizedCollectionItemProviderElement(super.provider);
 

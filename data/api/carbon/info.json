@@ -4,7 +4,7 @@
   "unit": "kg CO2eq",
   "title": "everyday climate impact",
   "tagline": "Get to know what activities contribute the most to climate change",
-  "description": "Ever wondered about the climate impact of your daily choices? This collection measures the [carbon footprint](https://en.wikipedia.org/wiki/Carbon_footprint) of various items and activities, such as food production, electricity usage, and transportation. It expresses these footprints in kilograms of CO2 equivalent (kg CO2eq), allowing us to compare the warming effect of different greenhouse gases, like methane, to that of carbon dioxide. By comparing these values, you'll learn which activities have a large impact on our planet's climate and which are less important.",
+  "description": "Ever wondered about the climate impact of your daily choices? This collection measures the [carbon footprint](https://en.wikipedia.org/wiki/Carbon_footprint) of various items and activities, such as food production, electricity usage, and transportation. It expresses these footprints in kilograms of CO2 equivalent (kg CO2eq), and by comparing these values you'll learn which activities have a large impact on our planet's climate and which are less important.",
   "size": 40,
   "ratioBoundary": 0.003897
 }

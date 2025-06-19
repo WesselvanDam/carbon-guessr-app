@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'game_controller.dart';
+part of 'timer_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$gameControllerHash() => r'557103905047a0d185a6a61ff6ed47cbd2f88b80';
+String _$timerControllerHash() => r'1e751f98869c6723e46dbf4deb3976c320327a5a';
 
-/// See also [GameController].
-@ProviderFor(GameController)
-final gameControllerProvider =
-    AutoDisposeAsyncNotifierProvider<GameController, GameModel>.internal(
-  GameController.new,
-  name: r'gameControllerProvider',
+/// See also [TimerController].
+@ProviderFor(TimerController)
+final timerControllerProvider =
+    AutoDisposeNotifierProvider<TimerController, int?>.internal(
+  TimerController.new,
+  name: r'timerControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$gameControllerHash,
+      : _$timerControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$GameController = AutoDisposeAsyncNotifier<GameModel>;
+typedef _$TimerController = AutoDisposeNotifier<int?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

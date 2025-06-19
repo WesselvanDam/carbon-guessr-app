@@ -34,14 +34,15 @@ class RiverpodProviderObserver extends ProviderObserver {
     Object? newValue,
     ProviderContainer container,
   ) {
-    if (provider.name?.contains('gameTimerProvider') == true || provider.name?.contains('ratioControllerProvider') == true) return;
-      debugPrint(
-        '\x1B[33m'
-        '$provider Updated:\n'
-        '\tPrevious Value: $previousValue\n'
-        '\tNew Value: $newValue\x1B[0m\n'
-        '',
-      );
+    if (provider.name?.contains('timerControllerProvider') == true ||
+        provider.name?.contains('ratioControllerProvider') == true) return;
+    debugPrint(
+      '\x1B[33m'
+      '$provider Updated:\n'
+      '\tPrevious Value: $previousValue\n'
+      '\tNew Value: $newValue\x1B[0m\n'
+      '',
+    );
   }
 
   @override

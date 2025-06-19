@@ -1,12 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'collection_info.freezed.dart';
-part 'collection_info.g.dart';
+part 'collection.model.freezed.dart';
+part 'collection.model.g.dart';
 
 /// Model representing general information about a collection
 @freezed
-abstract class CollectionInfo with _$CollectionInfo {
-  const factory CollectionInfo({
+abstract class CollectionModel with _$CollectionModel {
+  const factory CollectionModel({
     required String id,
     required String title,
     required String tagline,
@@ -15,8 +15,8 @@ abstract class CollectionInfo with _$CollectionInfo {
     required String unit,
     required int size,
     @Default(1) double ratioBoundary,
-  }) = _CollectionInfo;
+  }) = _CollectionModel;
 
-  factory CollectionInfo.fromJson(Map<String, dynamic> json) =>
-      _$CollectionInfoFromJson(json);
+  factory CollectionModel.fromJson(Map<String, dynamic> json) =>
+      _$CollectionModelFromJson(json);
 }

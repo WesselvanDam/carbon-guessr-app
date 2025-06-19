@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/game/game_session.dart';
+import '../models/game/game.model.dart';
 
 /// Extensions for string manipulation
 extension StringExtension on String {

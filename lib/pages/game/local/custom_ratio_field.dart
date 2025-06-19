@@ -1,27 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/game/game_round.dart';
-import 'game_timer_provider.dart';
+import '../game_controller.dart';
 import 'ratio_controller.dart';
 
 class CustomRatioField extends ConsumerStatefulWidget {
-  const CustomRatioField({
-    required this.round,
-    required this.minRatio,
-    super.key,
-  });
-
-  final GameRound round;
-  final double minRatio;
+  const CustomRatioField({super.key});
 
   @override
   ConsumerState<CustomRatioField> createState() => _CustomRatioFieldState();
 }
 
 class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
+
   // Track pointer locations
   final Map<int, Offset> _pointerLocations = {};
 
@@ -44,15 +38,9 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     // Get the current ratio from the provider
     final ratio = ref.read(ratioControllerProvider);
 
-    double newRatio = isFirstSquare
+    final newRatio = isFirstSquare
         ? ratio * dampedScale // Scale the first square (numerator)
         : ratio / dampedScale; // Scale the second square (denominator)
-
-    // Limit the ratio to a reasonable range
-    newRatio = newRatio.clamp(widget.minRatio, 1 / widget.minRatio);
-
-    // Round the ratio to four decimal places for consistency
-    newRatio = double.parse(newRatio.toStringAsFixed(4));
 
     // Update the ratio in the provider
     ref.read(ratioControllerProvider.notifier).set(newRatio);
@@ -74,11 +62,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
           final sqrtRatio = ratio >= 1 ? sqrt(ratio) : 1 / sqrt(1 / ratio);
           final smallerSizeProportion = ratio >= 1 ? 1 / sqrtRatio : sqrtRatio;
 
-          // Ensure the smaller square is not too small
-          final adjustedSmallerProportion =
-              smallerSizeProportion.clamp(widget.minRatio, 1 / widget.minRatio);
-
-          final smallerSize = containerSize * adjustedSmallerProportion;
+          final smallerSize = containerSize * smallerSizeProportion;
           final isFirstLarger = ratio >= 1;
 
           return Listener(
@@ -164,6 +148,12 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   }
 
   Container _buildLargeSquare(double size, bool isActive, bool isFirstLarger) {
+    final label = ref.watch(gameControllerProvider.select((game) {
+      if (game.value == null) return ' ';
+      return isFirstLarger
+          ? game.value!.currentRound.itemA.title
+          : game.value!.currentRound.itemB.title;
+    }));
     final squareColor = isFirstLarger
         ? Theme.of(context).colorScheme.secondaryContainer
         : Theme.of(context).colorScheme.tertiaryContainer;
@@ -185,20 +175,24 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       child: Align(
         alignment: isFirstLarger ? Alignment.topCenter : Alignment.bottomCenter,
         child: Text(
-          isFirstLarger
-              ? widget.round.itemPair.itemA.title
-              : widget.round.itemPair.itemB.title,
+          label,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: onSquareColor,
                 fontWeight: FontWeight.bold,
               ),
-        ),
+        ).animate(target: label.trim().isEmpty ? 0 : 1).fadeIn(),
       ),
     );
   }
 
   Container _buildSmallSquare(double smallerSize, double largerSize,
       bool isActive, bool isFirstLarger) {
+    final label = ref.watch(gameControllerProvider.select((game) {
+      if (game.value == null) return ' ';
+      return isFirstLarger
+          ? game.value!.currentRound.itemB.title
+          : game.value!.currentRound.itemA.title;
+    }));
     final squareColor = isFirstLarger
         ? Theme.of(context).colorScheme.tertiaryContainer
         : Theme.of(context).colorScheme.secondaryContainer;
@@ -227,16 +221,14 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
           alignment:
               isFirstLarger ? Alignment.bottomCenter : Alignment.topCenter,
           child: Text(
-            isFirstLarger
-                ? widget.round.itemPair.itemB.title
-                : widget.round.itemPair.itemA.title,
+            label,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: onSquareColor,
                   fontWeight: FontWeight.bold,
                 ),
             softWrap: false,
             overflow: TextOverflow.visible,
-          ),
+          ).animate(target: label.trim().isEmpty ? 0 : 1).fadeIn(),
         ),
       ),
     );

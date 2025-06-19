@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'collection_item.dart';
+part of 'item.model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,7 +14,7 @@ part of 'collection_item.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$CollectionItem {
+mixin _$ItemModel {
   int get id;
   String get title;
   String get quantity;
@@ -23,22 +23,21 @@ mixin _$CollectionItem {
   String get category;
   List<int> get sources;
 
-  /// Create a copy of CollectionItem
+  /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $CollectionItemCopyWith<CollectionItem> get copyWith =>
-      _$CollectionItemCopyWithImpl<CollectionItem>(
-          this as CollectionItem, _$identity);
+  $ItemModelCopyWith<ItemModel> get copyWith =>
+      _$ItemModelCopyWithImpl<ItemModel>(this as ItemModel, _$identity);
 
-  /// Serializes this CollectionItem to a JSON map.
+  /// Serializes this ItemModel to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is CollectionItem &&
+            other is ItemModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.quantity, quantity) ||
@@ -58,15 +57,14 @@ mixin _$CollectionItem {
 
   @override
   String toString() {
-    return 'CollectionItem(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
+    return 'ItemModel(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
   }
 }
 
 /// @nodoc
-abstract mixin class $CollectionItemCopyWith<$Res> {
-  factory $CollectionItemCopyWith(
-          CollectionItem value, $Res Function(CollectionItem) _then) =
-      _$CollectionItemCopyWithImpl;
+abstract mixin class $ItemModelCopyWith<$Res> {
+  factory $ItemModelCopyWith(ItemModel value, $Res Function(ItemModel) _then) =
+      _$ItemModelCopyWithImpl;
   @useResult
   $Res call(
       {int id,
@@ -79,14 +77,13 @@ abstract mixin class $CollectionItemCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$CollectionItemCopyWithImpl<$Res>
-    implements $CollectionItemCopyWith<$Res> {
-  _$CollectionItemCopyWithImpl(this._self, this._then);
+class _$ItemModelCopyWithImpl<$Res> implements $ItemModelCopyWith<$Res> {
+  _$ItemModelCopyWithImpl(this._self, this._then);
 
-  final CollectionItem _self;
-  final $Res Function(CollectionItem) _then;
+  final ItemModel _self;
+  final $Res Function(ItemModel) _then;
 
-  /// Create a copy of CollectionItem
+  /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -134,8 +131,8 @@ class _$CollectionItemCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _CollectionItem implements CollectionItem {
-  const _CollectionItem(
+class _ItemModel implements ItemModel {
+  const _ItemModel(
       {required this.id,
       required this.title,
       required this.quantity,
@@ -144,8 +141,8 @@ class _CollectionItem implements CollectionItem {
       required this.category,
       required final List<int> sources})
       : _sources = sources;
-  factory _CollectionItem.fromJson(Map<String, dynamic> json) =>
-      _$CollectionItemFromJson(json);
+  factory _ItemModel.fromJson(Map<String, dynamic> json) =>
+      _$ItemModelFromJson(json);
 
   @override
   final int id;
@@ -167,17 +164,17 @@ class _CollectionItem implements CollectionItem {
     return EqualUnmodifiableListView(_sources);
   }
 
-  /// Create a copy of CollectionItem
+  /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$CollectionItemCopyWith<_CollectionItem> get copyWith =>
-      __$CollectionItemCopyWithImpl<_CollectionItem>(this, _$identity);
+  _$ItemModelCopyWith<_ItemModel> get copyWith =>
+      __$ItemModelCopyWithImpl<_ItemModel>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$CollectionItemToJson(
+    return _$ItemModelToJson(
       this,
     );
   }
@@ -186,7 +183,7 @@ class _CollectionItem implements CollectionItem {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _CollectionItem &&
+            other is _ItemModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.quantity, quantity) ||
@@ -206,16 +203,16 @@ class _CollectionItem implements CollectionItem {
 
   @override
   String toString() {
-    return 'CollectionItem(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
+    return 'ItemModel(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$CollectionItemCopyWith<$Res>
-    implements $CollectionItemCopyWith<$Res> {
-  factory _$CollectionItemCopyWith(
-          _CollectionItem value, $Res Function(_CollectionItem) _then) =
-      __$CollectionItemCopyWithImpl;
+abstract mixin class _$ItemModelCopyWith<$Res>
+    implements $ItemModelCopyWith<$Res> {
+  factory _$ItemModelCopyWith(
+          _ItemModel value, $Res Function(_ItemModel) _then) =
+      __$ItemModelCopyWithImpl;
   @override
   @useResult
   $Res call(
@@ -229,14 +226,13 @@ abstract mixin class _$CollectionItemCopyWith<$Res>
 }
 
 /// @nodoc
-class __$CollectionItemCopyWithImpl<$Res>
-    implements _$CollectionItemCopyWith<$Res> {
-  __$CollectionItemCopyWithImpl(this._self, this._then);
+class __$ItemModelCopyWithImpl<$Res> implements _$ItemModelCopyWith<$Res> {
+  __$ItemModelCopyWithImpl(this._self, this._then);
 
-  final _CollectionItem _self;
-  final $Res Function(_CollectionItem) _then;
+  final _ItemModel _self;
+  final $Res Function(_ItemModel) _then;
 
-  /// Create a copy of CollectionItem
+  /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -249,7 +245,7 @@ class __$CollectionItemCopyWithImpl<$Res>
     Object? category = null,
     Object? sources = null,
   }) {
-    return _then(_CollectionItem(
+    return _then(_ItemModel(
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable

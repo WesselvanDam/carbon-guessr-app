@@ -3,7 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../models/game/game_session.dart';
+import '../../models/game/game.model.dart';
 import '../../providers/collection/collection_providers.dart';
 import '../../router/routes.dart';
 import '../../services/game/game_service.dart';
@@ -16,9 +16,9 @@ class CollectionPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collectionInfo = ref.watch(collectionInfoProvider(cid));
+    final collection = ref.watch(collectionProvider(cid));
 
-    return collectionInfo.when(
+    return collection.when(
       data: (info) {
         void startGameCallback(GameMode mode) => GameRoute(
               cid: info.id,
@@ -67,8 +67,8 @@ class CollectionPage extends ConsumerWidget {
                 Text(
                   info.tagline,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.start,
                 ),
                 const SizedBox(height: 8),
@@ -92,8 +92,8 @@ class CollectionPage extends ConsumerWidget {
                 Text(
                   'Choose a Game Mode',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),

@@ -2,11 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../models/collection/collection_info.dart';
-import '../../models/collection/collection_item.dart';
-import '../../models/game/game_round.dart';
-import '../../models/game/game_session.dart';
-import '../../models/game/item_pair.dart';
+import '../../models/collection/item.model.dart';
+import '../../models/game/game.model.dart';
+import '../../models/game/round.model.dart';
 
 /// Service responsible for pure game logic and calculations
 class GameService {
@@ -18,32 +16,24 @@ class GameService {
       .join()
       .substring(0, 8);
 
-  /// Creates a new game session with the given mode, collection info, and items
-  GameSession createGameSession({
-    required CollectionInfo collectionInfo,
-    required List<CollectionItem> items,
-    required GameMode mode,
-  }) {
+  /// Creates a new game session with the given items
+  GameModel createGameSession({required List<ItemModel> items}) {
     // Create the rounds
     final rounds = List.generate(items.length ~/ 2, (index) {
       final itemA = items[index * 2];
       final itemB = items[index * 2 + 1];
 
-      final pair = ItemPair(itemA: itemA, itemB: itemB);
-      final correctRatio = pair.itemA.value / pair.itemB.value;
+      final correctRatio = itemA.value / itemB.value;
 
-      return GameRound(
+      return RoundModel(
         roundNumber: index + 1,
-        itemPair: pair,
+        itemA: itemA,
+        itemB: itemB,
         correctRatio: correctRatio,
       );
     });
 
-    return GameSession(
-      collectionInfo: collectionInfo,
-      rounds: rounds,
-      mode: mode,
-    );
+    return GameModel(rounds: rounds);
   }
 
   /// Generates deterministic random item IDs based on the session ID
@@ -138,20 +128,21 @@ class GameService {
   }
 
   /// Completes a round with the user's estimate
-  GameSession submitEstimate({
-    required GameSession session,
+  GameModel submitEstimate({
+    required GameModel game,
     required double estimate,
+    required double ratioBoundary,
   }) {
-    if (session.isCompleted ||
-        session.currentRoundIndex >= session.rounds.length) {
+    if (game.isCompleted ||
+        game.currentRoundIndex >= game.rounds.length) {
       throw Exception('Cannot submit estimate for completed session');
     }
 
-    final currentRound = session.rounds[session.currentRoundIndex];
+    final currentRound = game.rounds[game.currentRoundIndex];
     final score = calculateRoundScore(
       currentRound.correctRatio,
       estimate,
-      session.collectionInfo.ratioBoundary,
+      ratioBoundary,
     );
 
     final updatedRound = currentRound.copyWith(
@@ -159,14 +150,14 @@ class GameService {
       score: score,
     );
 
-    final updatedRounds = List<GameRound>.from(session.rounds);
-    updatedRounds[session.currentRoundIndex] = updatedRound;
+    final updatedRounds = List<RoundModel>.from(game.rounds);
+    updatedRounds[game.currentRoundIndex] = updatedRound;
 
-    return session.copyWith(rounds: updatedRounds);
+    return game.copyWith(rounds: updatedRounds);
   }
 
   /// Moves to the next round in the session
-  GameSession nextRound(GameSession session) {
+  GameModel nextRound(GameModel session) {
     if (session.isCompleted ||
         session.currentRoundIndex > session.rounds.length - 1) {
       throw Exception('Cannot move to the next round');
@@ -174,7 +165,7 @@ class GameService {
 
     final currentRound = session.rounds[session.currentRoundIndex];
     final updatedRound = currentRound.copyWith(isCompleted: true);
-    final updatedRounds = List<GameRound>.from(session.rounds);
+    final updatedRounds = List<RoundModel>.from(session.rounds);
     updatedRounds[session.currentRoundIndex] = updatedRound;
 
     return session.copyWith(rounds: updatedRounds);

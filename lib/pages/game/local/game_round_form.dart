@@ -1,27 +1,18 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/game/game_session.dart';
+import '../../../models/game/game.model.dart';
 import '../../../utils/extensions.dart';
 import '../../../widgets/score_pill.dart';
+import '../game_controller.dart';
 import 'custom_ratio_field.dart';
-import 'game_timer_provider.dart';
+import 'game_intro.dart';
 import 'item_card.dart';
 import 'ratio_controller.dart';
+import 'timer_controller.dart';
 
 class GameRoundForm extends ConsumerStatefulWidget {
-  const GameRoundForm({
-    required this.session,
-    required this.onSubmit,
-    required this.onNextRound,
-    super.key,
-  });
-
-  final GameSession session;
-  final void Function(double) onSubmit;
-  final VoidCallback onNextRound;
+  const GameRoundForm({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _GameRoundFormState();
@@ -75,59 +66,36 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
     // Reset the ratio controller when the form is initialized
     ref.listen(ratioControllerProvider, (_, next) => updateControllers(next));
 
-    // Submit the estimate if the time is up and the form is not submitted
-    ref.listen(gameTimerProvider, (_, next) {
+    // Flip the submitted switch if the time is up and the form is not submitted
+    ref.listen(timerControllerProvider, (_, next) {
       if (next == 0 && !_isSubmitted) {
         setState(() => _isSubmitted = true);
       }
     });
 
-    final itemA = widget.session.currentRound.itemPair.itemA;
-    final itemB = widget.session.currentRound.itemPair.itemB;
+    final game = ref.watch(gameControllerProvider).value;
 
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          RichText(
-            text: TextSpan(
-              style: Theme.of(context).textTheme.bodyLarge,
-              children: [
-                const TextSpan(text: 'Compare the ratio in '),
-                TextSpan(
-                  text: widget.session.collectionInfo.quantity,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(text: ' (expressed in '),
-                TextSpan(
-                  text: widget.session.collectionInfo.unit,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(text: ') between the two items below.'),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'You can type a value or pinch the squares to adjust the ratio.',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          const GameIntro(),
           const SizedBox(height: 16),
-          IntrinsicHeight(
+          const IntrinsicHeight(
             child: Row(
               spacing: 2,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(child: ItemCard.first(item: itemA)),
-                Expanded(child: ItemCard.second(item: itemB)),
+                Expanded(child: ItemCard.first()),
+                Expanded(child: ItemCard.second()),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          _buildEstimateRow(),
+          _buildEstimateRow(game),
           const SizedBox(height: 16),
-          _buildCustomRatioField(),
+          const CustomRatioField(),
           const SizedBox(height: 16),
           Align(
             alignment: Alignment.centerRight,
@@ -143,7 +111,7 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
   }
 
   /// Builds the row displaying the estimated ratio and the true ratio if submitted.
-  Widget _buildEstimateRow() {
+  Widget _buildEstimateRow(GameModel? game) {
     final style = Theme.of(context).textTheme.titleMedium!.copyWith(
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.onSurface,
@@ -196,7 +164,7 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: RichText(
-                      text: widget.session.currentRound.correctRatio
+                      text: game!.currentRound.correctRatio
                           .ratioToReadableTextSpan(
                         style: style,
                         leftDigitStyle: style.copyWith(
@@ -209,8 +177,7 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
                   Text(
                     'True ratio'.toUpperCase(),
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                 ],
@@ -223,16 +190,15 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ScorePill(
-                    score: widget.session.currentRound.score,
+                    score: game!.currentRound.score,
                     style: style,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 4, horizontal: 12),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                   ),
                   Text(
                     'Score'.toUpperCase(),
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                 ],
@@ -281,31 +247,17 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
     );
   }
 
-  Widget _buildCustomRatioField() {
-    // Define the minRatio as the largest power of 10 that is less than or equal to the ratio boundary
-    final ratioBoundary = widget.session.collectionInfo.ratioBoundary;
-    final minRatio = pow(10, (log(ratioBoundary) / ln10).floor()).toDouble();
-    debugPrint('Boundary: $ratioBoundary, Min Ratio: $minRatio');
-
-    return CustomRatioField(
-      round: widget.session.currentRound,
-      minRatio: minRatio,
-    );
-  }
-
   void _submitEstimate() {
-    final ratio = ref.read(ratioControllerProvider);
-
     try {
-      // Submit the estimate
-      debugPrint('Submitting estimate: $ratio');
-      widget.onSubmit(ratio);
+      ref.read(gameControllerProvider.notifier).onSubmit();
 
       // Update UI to show results
       setState(() {
         _isSubmitted = true;
       });
     } catch (e) {
+      debugPrint('Error submitting estimate: $e');
+      debugPrintStack(label: 'Stack trace');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a valid number')),
       );
@@ -317,7 +269,7 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
       _isSubmitted = false;
       ref.read(ratioControllerProvider.notifier).reset();
     });
-    ref.read(gameTimerProvider.notifier).cancelTimer();
-    widget.onNextRound();
+
+    ref.read(gameControllerProvider.notifier).onNextRound();
   }
 }

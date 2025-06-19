@@ -45,12 +45,12 @@ class _CollectionService implements CollectionService {
   }
 
   @override
-  Future<CollectionInfo> fetchInfo(String collectionId) async {
+  Future<CollectionModel> fetchInfo(String collectionId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CollectionInfo>(
+    final _options = _setStreamType<CollectionModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -61,9 +61,9 @@ class _CollectionService implements CollectionService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CollectionInfo _value;
+    late CollectionModel _value;
     try {
-      _value = CollectionInfo.fromJson(_result.data!);
+      _value = CollectionModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -72,12 +72,12 @@ class _CollectionService implements CollectionService {
   }
 
   @override
-  Future<CollectionItem> fetchItem(String collectionId, int id) async {
+  Future<ItemModel> fetchItem(String collectionId, int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CollectionItem>(
+    final _options = _setStreamType<ItemModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -88,9 +88,9 @@ class _CollectionService implements CollectionService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CollectionItem _value;
+    late ItemModel _value;
     try {
-      _value = CollectionItem.fromJson(_result.data!);
+      _value = ItemModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

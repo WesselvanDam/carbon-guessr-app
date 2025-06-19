@@ -2,156 +2,151 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../models/collection/collection_item.dart';
-import '../../models/game/game_round.dart';
-import '../../models/game/game_session.dart';
+import '../../models/collection/item.model.dart';
+import '../../models/game/game.model.dart';
+import '../../models/game/round.model.dart';
+import '../../providers/collection/collection_providers.dart';
+import '../../providers/game/game_providers.dart';
 import '../../router/routes.dart';
 import '../../services/game/game_service.dart';
 import '../../utils/extensions.dart';
 import '../../widgets/score_pill.dart';
+import 'game_controller.dart';
 
 class GameResultsPage extends ConsumerWidget {
-  const GameResultsPage({required this.session, super.key});
-
-  final GameSession session;
+  const GameResultsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final totalScore = session.totalScore;
-    final maxPossibleScore = session.rounds.length * 100.0;
+    final game = ref.watch(gameControllerProvider).value!;
+
+    final totalScore = game.totalScore;
+    final maxPossibleScore = game.rounds.length * 100.0;
     final scorePercentage = ((totalScore / maxPossibleScore) * 100).round();
 
     // Get a feedback message based on the score
     final feedbackMessage = _getFeedbackMessage(scorePercentage);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Game Results'),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Trophy image or icon
-              const Icon(
-                Icons.emoji_events,
-                size: 80,
-                color: Colors.amber,
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Trophy image or icon
+          const Icon(
+            Icons.emoji_events,
+            size: 80,
+            color: Colors.amber,
+          ),
 
-              const SizedBox(height: 24),
+          const SizedBox(height: 24),
 
-              // Game mode info
-              Text(
-                '${GameMode.simple == GameMode.simple ? 'Simple' : 'Research'} Mode',
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
+          // Game mode info
+          Text(
+            '${GameMode.simple == GameMode.simple ? 'Simple' : 'Research'} Mode',
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
 
-              const SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-              // Total score
-              Text(
-                'Final Score',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
+          // Total score
+          Text(
+            'Final Score',
+            style: Theme.of(context).textTheme.headlineMedium,
+            textAlign: TextAlign.center,
+          ),
 
-              const SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-              Text(
-                '${totalScore.toStringAsFixed(0)} / ${maxPossibleScore.toInt()}',
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: _getScoreColor(scorePercentage),
-                    ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 16),
-
-              // Feedback message
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary.withOpacity(0.15),
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.10),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color:
-                        Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                    width: 1.5,
-                  ),
+          Text(
+            '${totalScore.toStringAsFixed(0)} / ${maxPossibleScore.toInt()}',
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: _getScoreColor(scorePercentage),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.lightbulb,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 32,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        feedbackMessage,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            textAlign: TextAlign.center,
+          ),
 
-              const SizedBox(height: 32),
+          const SizedBox(height: 16),
 
-              // Round details
-              _buildRoundDetailsCard(context, session),
-
-              const SizedBox(height: 32),
-
-              // Action buttons
-              OverflowBar(
-                alignment: MainAxisAlignment.end,
-                overflowAlignment: OverflowBarAlignment.center,
-                overflowDirection: VerticalDirection.up,
-                spacing: 16,
-                children: [
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text('Back to collection'),
-                  ),
-                  FilledButton.icon(
-                    onPressed: () => GameRoute(
-                      cid: session.collectionInfo.id,
-                      gid: GameService.newGameId,
-                      mode: session.mode,
-                    ).go(context),
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text('Play Again'),
-                  ),
+          // Feedback message
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                  Theme.of(context).colorScheme.secondary.withOpacity(0.10),
                 ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                width: 1.5,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.lightbulb,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 32,
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    feedbackMessage,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 32),
+
+          // Round details
+          _buildRoundDetailsCard(context, game),
+
+          const SizedBox(height: 32),
+
+          // Action buttons
+          OverflowBar(
+            alignment: MainAxisAlignment.end,
+            overflowAlignment: OverflowBarAlignment.center,
+            overflowDirection: VerticalDirection.up,
+            spacing: 16,
+            children: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text('Back to collection'),
+              ),
+              FilledButton.icon(
+                onPressed: () {
+                  GameRoute(
+                    cid: ref.read(currentCollectionProvider).value!.id,
+                    gid: GameService.newGameId,
+                    mode: ref.read(gameModeProvider),
+                  ).go(context);
+                  ref.invalidate(gameControllerProvider);
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Play Again'),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildRoundDetailsCard(BuildContext context, GameSession session) {
+  Widget _buildRoundDetailsCard(BuildContext context, GameModel game) {
     return Card(
       elevation: 0,
       margin: EdgeInsets.zero,
@@ -175,16 +170,20 @@ class GameResultsPage extends ConsumerWidget {
             ),
           ),
 
-          // Round rows
-          ...session.rounds
-              .where((round) => round.isCompleted)
-              .map((round) => _buildRoundRow(context, round)),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: game.rounds.length,
+            separatorBuilder: (context, index) => const Divider(height: 1),
+            itemBuilder: (context, index) =>
+                _buildRoundRow(context, game.rounds[index]),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildRoundRow(BuildContext context, GameRound round) {
+  Widget _buildRoundRow(BuildContext context, RoundModel round) {
     final score = round.score;
     final valueStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
           fontWeight: FontWeight.bold,
@@ -225,14 +224,14 @@ class GameResultsPage extends ConsumerWidget {
                     Expanded(
                       child: _buildItemButton(
                         context,
-                        round.itemPair.itemA,
+                        round.itemA,
                         isItemA: true,
                       ),
                     ),
                     Expanded(
                       child: _buildItemButton(
                         context,
-                        round.itemPair.itemB,
+                        round.itemB,
                         isItemA: false,
                       ),
                     ),
@@ -319,8 +318,6 @@ class GameResultsPage extends ConsumerWidget {
               ],
             ),
           ),
-          if (round != session.rounds.last || !round.isCompleted)
-            const Divider(height: 1),
         ],
       ),
     );
@@ -328,7 +325,7 @@ class GameResultsPage extends ConsumerWidget {
 
   Widget _buildItemButton(
     BuildContext context,
-    CollectionItem item, {
+    ItemModel item, {
     required bool isItemA,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -377,7 +374,7 @@ class GameResultsPage extends ConsumerWidget {
     );
   }
 
-  void _showItemDetailsDialog(BuildContext context, CollectionItem item) {
+  void _showItemDetailsDialog(BuildContext context, ItemModel item) {
     showDialog(
       context: context,
       builder: (context) => ItemDetailsDialog(item: item),
@@ -411,7 +408,7 @@ class ItemDetailsDialog extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final CollectionItem item;
+  final ItemModel item;
 
   @override
   ConsumerState<ItemDetailsDialog> createState() => _ItemDetailsDialogState();

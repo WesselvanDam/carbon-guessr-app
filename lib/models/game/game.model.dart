@@ -1,10 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../collection/collection_info.dart';
-import 'game_round.dart';
+import 'round.model.dart';
 
-part 'game_session.freezed.dart';
-part 'game_session.g.dart';
+part 'game.model.freezed.dart';
+part 'game.model.g.dart';
 
 /// Enum representing the available game modes
 enum GameMode {
@@ -14,18 +13,16 @@ enum GameMode {
 
 /// Represents a full game session containing multiple rounds
 @freezed
-abstract class GameSession with _$GameSession {
-  const factory GameSession({
-    required CollectionInfo collectionInfo,
-    required List<GameRound> rounds,
-    required GameMode mode,
-  }) = _GameSession;
-  const GameSession._();
+abstract class GameModel with _$GameModel {
+  const factory GameModel({
+    required List<RoundModel> rounds,
+  }) = _GameModel;
+  const GameModel._();
 
-  factory GameSession.fromJson(Map<String, dynamic> json) =>
-      _$GameSessionFromJson(json);
+  factory GameModel.fromJson(Map<String, dynamic> json) =>
+      _$GameModelFromJson(json);
 
-  GameRound get currentRound => rounds.firstWhere(
+  RoundModel get currentRound => rounds.firstWhere(
         (round) => !round.isCompleted,
         orElse: () => rounds.last,
       );

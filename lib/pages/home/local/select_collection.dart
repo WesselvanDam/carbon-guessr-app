@@ -9,7 +9,7 @@ class CollectionSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collections = ref.watch(collectionsInfoProvider);
+    final collections = ref.watch(collectionsProvider);
 
     return collections.when(
       data: (data) {
@@ -22,8 +22,8 @@ class CollectionSelector extends ConsumerWidget {
               return Card.outlined(
                 margin: EdgeInsets.zero,
                 shape: RoundedRectangleBorder(
-                  side:
-                      BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                  side: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant),
                   borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                 ),
                 child: const SizedBox(
@@ -32,7 +32,7 @@ class CollectionSelector extends ConsumerWidget {
                 ),
               );
             }
-            return CollectionCard(collectionInfo: collections[index]);
+            return CollectionCard(collection: collections[index]);
           },
           separatorBuilder: (context, index) => const SizedBox(height: 16.0),
         );

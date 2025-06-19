@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/game/game_session.dart';
+import '../models/game/game.model.dart';
 import '../pages/collection/collection_page.dart';
 import '../pages/game/game_page.dart';
 import '../pages/home/homePage.dart';
@@ -62,7 +62,5 @@ class GameRoute extends GoRouteData {
   final GameMode mode;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return GamePage(cid: cid, gid: gid, mode: mode);
-  }
+  Widget build(BuildContext context, GoRouterState state) => const GamePage();
 }

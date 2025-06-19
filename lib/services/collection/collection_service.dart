@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../models/collection/collection_info.dart';
-import '../../models/collection/collection_item.dart';
+import '../../models/collection/collection.model.dart';
+import '../../models/collection/item.model.dart';
 import '../../models/collection/localization_data.dart';
 import '../../models/collection/source.dart';
 
@@ -19,11 +19,11 @@ abstract class CollectionService {
 
   /// Fetches the info data for the collection
   @GET('/{collectionId}/info.json')
-  Future<CollectionInfo> fetchInfo(@Path() String collectionId);
+  Future<CollectionModel> fetchInfo(@Path() String collectionId);
 
   /// Fetches a collection item by ID
   @GET('/{collectionId}/data/{id}.json')
-  Future<CollectionItem> fetchItem(@Path() String collectionId, @Path() int id);
+  Future<ItemModel> fetchItem(@Path() String collectionId, @Path() int id);
 
   /// Fetches a source by ID
   @GET('/{collectionId}/sources/{id}.json')
@@ -41,12 +41,13 @@ class CollectionsResponse {
 
   factory CollectionsResponse.fromJson(Map<String, dynamic> json) {
     final List<dynamic> items = json['data'] as List<dynamic>;
-    final Map<String, CollectionInfo> data = {
+    final Map<String, CollectionModel> data = {
       for (final item in items)
-        (item['id'] as String): CollectionInfo.fromJson(item as Map<String, dynamic>)
+        (item['id'] as String):
+            CollectionModel.fromJson(item as Map<String, dynamic>)
     };
     return CollectionsResponse(data: data);
   }
 
-  final Map<String, CollectionInfo> data;
+  final Map<String, CollectionModel> data;
 }

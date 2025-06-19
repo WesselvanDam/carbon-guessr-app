@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../models/collection/collection_info.dart';
-import '../../models/collection/collection_item.dart';
+import '../../models/collection/collection.model.dart';
+import '../../models/collection/item.model.dart';
 import '../../models/collection/source.dart';
+import '../../router/router.dart';
 import '../../services/collection/collection_repository.dart';
 import '../../services/collection/collection_service.dart';
 import '../client/http_client.dart';
@@ -27,16 +28,16 @@ CollectionRepository collectionRepository(Ref ref, String collectionId) {
 }
 
 @Riverpod(keepAlive: true)
-Future<Map<String, CollectionInfo>> collectionsInfo(Ref ref) {
+Future<Map<String, CollectionModel>> collections(Ref ref) {
   final repository = ref.watch(collectionRepositoryProvider(''));
   return repository.getAllCollections();
 }
 
 /// Provider for the collection info
 @riverpod
-Future<CollectionInfo> collectionInfo(Ref ref, String collectionId) async {
+Future<CollectionModel> collection(Ref ref, String collectionId) async {
   // Try to get all collections info from the provider
-  final collectionsInfoAsync = await ref.watch(collectionsInfoProvider.future);
+  final collectionsInfoAsync = await ref.watch(collectionsProvider.future);
 
   // If the collection is already present, return it
   if (collectionsInfoAsync.containsKey(collectionId)) {
@@ -48,16 +49,31 @@ Future<CollectionInfo> collectionInfo(Ref ref, String collectionId) async {
   return repository.getInfo();
 }
 
+@riverpod
+Future<CollectionModel?> currentCollection(Ref ref) async {
+  // Get the current collection ID from the router
+  final collectionId = ref.watch(routerProvider.select(
+    (router) => router.state.pathParameters['cid'],
+  ));
+
+  // If no collection ID is provided, return null
+  if (collectionId == null || collectionId.isEmpty) {
+    return null;
+  }
+
+  return ref.watch(collectionProvider(collectionId).future);
+}
+
 /// Provider for a specific collection item by ID
 @riverpod
-Future<CollectionItem> collectionItem(Ref ref, String collectionId, int id) {
+Future<ItemModel> collectionItem(Ref ref, String collectionId, int id) {
   final repository = ref.watch(collectionRepositoryProvider(collectionId));
   return repository.getItem(id);
 }
 
 /// Provider for specific collection items by IDs
 @riverpod
-Future<List<CollectionItem>> collectionItemsByIds(
+Future<List<ItemModel>> collectionItemsByIds(
     Ref ref, String collectionId, List<int> ids) {
   final repository = ref.watch(collectionRepositoryProvider(collectionId));
   return repository.getItems(ids);
@@ -74,7 +90,7 @@ Future<List<Source>> collectionItemSources(
 
 /// Provider for a localized collection item
 @riverpod
-Future<CollectionItem> localizedCollectionItem(
+Future<ItemModel> localizedCollectionItem(
     Ref ref, String collectionId, int id, String locale) {
   final repository = ref.watch(collectionRepositoryProvider(collectionId));
   return repository.getLocalizedItem(id, locale);

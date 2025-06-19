@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'game_round.dart';
+part of 'round.model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,33 +14,34 @@ part of 'game_round.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$GameRound {
+mixin _$RoundModel {
   int get roundNumber;
-  ItemPair get itemPair;
+  ItemModel get itemA;
+  ItemModel get itemB;
   double get correctRatio;
   double? get userEstimate;
   int get score;
   bool get isCompleted;
 
-  /// Create a copy of GameRound
+  /// Create a copy of RoundModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $GameRoundCopyWith<GameRound> get copyWith =>
-      _$GameRoundCopyWithImpl<GameRound>(this as GameRound, _$identity);
+  $RoundModelCopyWith<RoundModel> get copyWith =>
+      _$RoundModelCopyWithImpl<RoundModel>(this as RoundModel, _$identity);
 
-  /// Serializes this GameRound to a JSON map.
+  /// Serializes this RoundModel to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is GameRound &&
+            other is RoundModel &&
             (identical(other.roundNumber, roundNumber) ||
                 other.roundNumber == roundNumber) &&
-            (identical(other.itemPair, itemPair) ||
-                other.itemPair == itemPair) &&
+            (identical(other.itemA, itemA) || other.itemA == itemA) &&
+            (identical(other.itemB, itemB) || other.itemB == itemB) &&
             (identical(other.correctRatio, correctRatio) ||
                 other.correctRatio == correctRatio) &&
             (identical(other.userEstimate, userEstimate) ||
@@ -52,45 +53,49 @@ mixin _$GameRound {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, roundNumber, itemPair,
+  int get hashCode => Object.hash(runtimeType, roundNumber, itemA, itemB,
       correctRatio, userEstimate, score, isCompleted);
 
   @override
   String toString() {
-    return 'GameRound(roundNumber: $roundNumber, itemPair: $itemPair, correctRatio: $correctRatio, userEstimate: $userEstimate, score: $score, isCompleted: $isCompleted)';
+    return 'RoundModel(roundNumber: $roundNumber, itemA: $itemA, itemB: $itemB, correctRatio: $correctRatio, userEstimate: $userEstimate, score: $score, isCompleted: $isCompleted)';
   }
 }
 
 /// @nodoc
-abstract mixin class $GameRoundCopyWith<$Res> {
-  factory $GameRoundCopyWith(GameRound value, $Res Function(GameRound) _then) =
-      _$GameRoundCopyWithImpl;
+abstract mixin class $RoundModelCopyWith<$Res> {
+  factory $RoundModelCopyWith(
+          RoundModel value, $Res Function(RoundModel) _then) =
+      _$RoundModelCopyWithImpl;
   @useResult
   $Res call(
       {int roundNumber,
-      ItemPair itemPair,
+      ItemModel itemA,
+      ItemModel itemB,
       double correctRatio,
       double? userEstimate,
       int score,
       bool isCompleted});
 
-  $ItemPairCopyWith<$Res> get itemPair;
+  $ItemModelCopyWith<$Res> get itemA;
+  $ItemModelCopyWith<$Res> get itemB;
 }
 
 /// @nodoc
-class _$GameRoundCopyWithImpl<$Res> implements $GameRoundCopyWith<$Res> {
-  _$GameRoundCopyWithImpl(this._self, this._then);
+class _$RoundModelCopyWithImpl<$Res> implements $RoundModelCopyWith<$Res> {
+  _$RoundModelCopyWithImpl(this._self, this._then);
 
-  final GameRound _self;
-  final $Res Function(GameRound) _then;
+  final RoundModel _self;
+  final $Res Function(RoundModel) _then;
 
-  /// Create a copy of GameRound
+  /// Create a copy of RoundModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? roundNumber = null,
-    Object? itemPair = null,
+    Object? itemA = null,
+    Object? itemB = null,
     Object? correctRatio = null,
     Object? userEstimate = freezed,
     Object? score = null,
@@ -101,10 +106,14 @@ class _$GameRoundCopyWithImpl<$Res> implements $GameRoundCopyWith<$Res> {
           ? _self.roundNumber
           : roundNumber // ignore: cast_nullable_to_non_nullable
               as int,
-      itemPair: null == itemPair
-          ? _self.itemPair
-          : itemPair // ignore: cast_nullable_to_non_nullable
-              as ItemPair,
+      itemA: null == itemA
+          ? _self.itemA
+          : itemA // ignore: cast_nullable_to_non_nullable
+              as ItemModel,
+      itemB: null == itemB
+          ? _self.itemB
+          : itemB // ignore: cast_nullable_to_non_nullable
+              as ItemModel,
       correctRatio: null == correctRatio
           ? _self.correctRatio
           : correctRatio // ignore: cast_nullable_to_non_nullable
@@ -124,34 +133,47 @@ class _$GameRoundCopyWithImpl<$Res> implements $GameRoundCopyWith<$Res> {
     ));
   }
 
-  /// Create a copy of GameRound
+  /// Create a copy of RoundModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $ItemPairCopyWith<$Res> get itemPair {
-    return $ItemPairCopyWith<$Res>(_self.itemPair, (value) {
-      return _then(_self.copyWith(itemPair: value));
+  $ItemModelCopyWith<$Res> get itemA {
+    return $ItemModelCopyWith<$Res>(_self.itemA, (value) {
+      return _then(_self.copyWith(itemA: value));
+    });
+  }
+
+  /// Create a copy of RoundModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ItemModelCopyWith<$Res> get itemB {
+    return $ItemModelCopyWith<$Res>(_self.itemB, (value) {
+      return _then(_self.copyWith(itemB: value));
     });
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _GameRound implements GameRound {
-  const _GameRound(
+class _RoundModel implements RoundModel {
+  const _RoundModel(
       {required this.roundNumber,
-      required this.itemPair,
+      required this.itemA,
+      required this.itemB,
       required this.correctRatio,
       this.userEstimate,
       this.score = 0,
       this.isCompleted = false});
-  factory _GameRound.fromJson(Map<String, dynamic> json) =>
-      _$GameRoundFromJson(json);
+  factory _RoundModel.fromJson(Map<String, dynamic> json) =>
+      _$RoundModelFromJson(json);
 
   @override
   final int roundNumber;
   @override
-  final ItemPair itemPair;
+  final ItemModel itemA;
+  @override
+  final ItemModel itemB;
   @override
   final double correctRatio;
   @override
@@ -163,17 +185,17 @@ class _GameRound implements GameRound {
   @JsonKey()
   final bool isCompleted;
 
-  /// Create a copy of GameRound
+  /// Create a copy of RoundModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$GameRoundCopyWith<_GameRound> get copyWith =>
-      __$GameRoundCopyWithImpl<_GameRound>(this, _$identity);
+  _$RoundModelCopyWith<_RoundModel> get copyWith =>
+      __$RoundModelCopyWithImpl<_RoundModel>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$GameRoundToJson(
+    return _$RoundModelToJson(
       this,
     );
   }
@@ -182,11 +204,11 @@ class _GameRound implements GameRound {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _GameRound &&
+            other is _RoundModel &&
             (identical(other.roundNumber, roundNumber) ||
                 other.roundNumber == roundNumber) &&
-            (identical(other.itemPair, itemPair) ||
-                other.itemPair == itemPair) &&
+            (identical(other.itemA, itemA) || other.itemA == itemA) &&
+            (identical(other.itemB, itemB) || other.itemB == itemB) &&
             (identical(other.correctRatio, correctRatio) ||
                 other.correctRatio == correctRatio) &&
             (identical(other.userEstimate, userEstimate) ||
@@ -198,63 +220,71 @@ class _GameRound implements GameRound {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, roundNumber, itemPair,
+  int get hashCode => Object.hash(runtimeType, roundNumber, itemA, itemB,
       correctRatio, userEstimate, score, isCompleted);
 
   @override
   String toString() {
-    return 'GameRound(roundNumber: $roundNumber, itemPair: $itemPair, correctRatio: $correctRatio, userEstimate: $userEstimate, score: $score, isCompleted: $isCompleted)';
+    return 'RoundModel(roundNumber: $roundNumber, itemA: $itemA, itemB: $itemB, correctRatio: $correctRatio, userEstimate: $userEstimate, score: $score, isCompleted: $isCompleted)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$GameRoundCopyWith<$Res>
-    implements $GameRoundCopyWith<$Res> {
-  factory _$GameRoundCopyWith(
-          _GameRound value, $Res Function(_GameRound) _then) =
-      __$GameRoundCopyWithImpl;
+abstract mixin class _$RoundModelCopyWith<$Res>
+    implements $RoundModelCopyWith<$Res> {
+  factory _$RoundModelCopyWith(
+          _RoundModel value, $Res Function(_RoundModel) _then) =
+      __$RoundModelCopyWithImpl;
   @override
   @useResult
   $Res call(
       {int roundNumber,
-      ItemPair itemPair,
+      ItemModel itemA,
+      ItemModel itemB,
       double correctRatio,
       double? userEstimate,
       int score,
       bool isCompleted});
 
   @override
-  $ItemPairCopyWith<$Res> get itemPair;
+  $ItemModelCopyWith<$Res> get itemA;
+  @override
+  $ItemModelCopyWith<$Res> get itemB;
 }
 
 /// @nodoc
-class __$GameRoundCopyWithImpl<$Res> implements _$GameRoundCopyWith<$Res> {
-  __$GameRoundCopyWithImpl(this._self, this._then);
+class __$RoundModelCopyWithImpl<$Res> implements _$RoundModelCopyWith<$Res> {
+  __$RoundModelCopyWithImpl(this._self, this._then);
 
-  final _GameRound _self;
-  final $Res Function(_GameRound) _then;
+  final _RoundModel _self;
+  final $Res Function(_RoundModel) _then;
 
-  /// Create a copy of GameRound
+  /// Create a copy of RoundModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
     Object? roundNumber = null,
-    Object? itemPair = null,
+    Object? itemA = null,
+    Object? itemB = null,
     Object? correctRatio = null,
     Object? userEstimate = freezed,
     Object? score = null,
     Object? isCompleted = null,
   }) {
-    return _then(_GameRound(
+    return _then(_RoundModel(
       roundNumber: null == roundNumber
           ? _self.roundNumber
           : roundNumber // ignore: cast_nullable_to_non_nullable
               as int,
-      itemPair: null == itemPair
-          ? _self.itemPair
-          : itemPair // ignore: cast_nullable_to_non_nullable
-              as ItemPair,
+      itemA: null == itemA
+          ? _self.itemA
+          : itemA // ignore: cast_nullable_to_non_nullable
+              as ItemModel,
+      itemB: null == itemB
+          ? _self.itemB
+          : itemB // ignore: cast_nullable_to_non_nullable
+              as ItemModel,
       correctRatio: null == correctRatio
           ? _self.correctRatio
           : correctRatio // ignore: cast_nullable_to_non_nullable
@@ -274,13 +304,23 @@ class __$GameRoundCopyWithImpl<$Res> implements _$GameRoundCopyWith<$Res> {
     ));
   }
 
-  /// Create a copy of GameRound
+  /// Create a copy of RoundModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $ItemPairCopyWith<$Res> get itemPair {
-    return $ItemPairCopyWith<$Res>(_self.itemPair, (value) {
-      return _then(_self.copyWith(itemPair: value));
+  $ItemModelCopyWith<$Res> get itemA {
+    return $ItemModelCopyWith<$Res>(_self.itemA, (value) {
+      return _then(_self.copyWith(itemA: value));
+    });
+  }
+
+  /// Create a copy of RoundModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ItemModelCopyWith<$Res> get itemB {
+    return $ItemModelCopyWith<$Res>(_self.itemB, (value) {
+      return _then(_self.copyWith(itemB: value));
     });
   }
 }

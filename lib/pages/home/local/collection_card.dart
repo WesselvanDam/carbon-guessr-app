@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/collection/collection_info.dart';
+import '../../../models/collection/collection.model.dart';
 import '../../../router/routes.dart';
 import '../../../utils/extensions.dart';
 
 class CollectionCard extends ConsumerWidget {
-  const CollectionCard({required this.collectionInfo, super.key});
+  const CollectionCard({required this.collection, super.key});
 
-  final CollectionInfo collectionInfo;
+  final CollectionModel collection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +24,7 @@ class CollectionCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${collectionInfo.quantity.toSentenceCase()} · ${collectionInfo.size} items',
+            '${collection.quantity.toSentenceCase()} · ${collection.size} items',
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
@@ -32,7 +32,7 @@ class CollectionCard extends ConsumerWidget {
           ),
           const SizedBox(height: 8.0),
           Text(
-            collectionInfo.title.toTitleCase(),
+            collection.title.toTitleCase(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.bold,
@@ -40,7 +40,7 @@ class CollectionCard extends ConsumerWidget {
           ),
           const SizedBox(height: 8.0),
           Text(
-            collectionInfo.tagline,
+            collection.tagline,
             style: Theme.of(context).textTheme.bodyMedium,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -50,7 +50,7 @@ class CollectionCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Unit: ${collectionInfo.unit}',
+                'Unit: ${collection.unit}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontStyle: FontStyle.italic,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -66,10 +66,10 @@ class CollectionCard extends ConsumerWidget {
                       horizontal: 8.0, vertical: 4.0),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: VisualDensity.comfortable,
                 ),
                 onPressed: () =>
-                    CollectionRoute(cid: collectionInfo.id).go(context),
+                    CollectionRoute(cid: collection.id).go(context),
               ),
             ],
           ),

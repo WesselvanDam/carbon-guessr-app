@@ -4,7 +4,7 @@
   "quantity": "1 kg",
   "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
   "value": 0.42628005300000005,
-  "category": "Food",
+  "category": "Food Production",
   "sources": [
     1
   ]

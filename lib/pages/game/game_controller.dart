@@ -1,59 +1,59 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../models/game/game_session.dart';
+import '../../models/game/game.model.dart';
 import '../../providers/collection/collection_providers.dart';
 import '../../providers/game/game_providers.dart';
-import '../../utils/extensions.dart';
-import 'local/game_timer_provider.dart';
+import 'local/ratio_controller.dart';
+import 'local/timer_controller.dart';
 
 part 'game_controller.g.dart';
 
 @riverpod
 class GameController extends _$GameController {
-  @override
-  FutureOr<GameSession> build(String cid, String gid, GameMode mode) async {
-    ref.onDispose(() {
-      // Cancel the timer when the controller is disposed
-      ref.read(gameTimerProvider.notifier).cancelTimer();
-    });
+  late final double ratioBoundary;
 
-    final info = await ref.watch(collectionInfoProvider(cid).future);
+  @override
+  FutureOr<GameModel> build() async {
+    final collection = (await ref.watch(currentCollectionProvider.future))!;
+    final gid = ref.watch(gameIdProvider);
+
+    // Set the ratio boundary based on the collection's metadata
+    ratioBoundary = collection.ratioBoundary;
+
     final gameService = ref.watch(gameServiceProvider);
 
     final itemIds = gameService.generateItemIds(
       gid: gid,
-      collectionSize: info.size,
+      collectionSize: collection.size,
       rounds: 5,
     );
 
     final items =
-        await ref.watch(collectionItemsByIdsProvider(info.id, itemIds).future);
+        await ref.watch(collectionItemsByIdsProvider(collection.id, itemIds).future);
 
-    final session = gameService.createGameSession(
-      collectionInfo: info,
-      items: items,
-      mode: mode,
-    );
-
-    // Start the timer for the first round
-    ref.read(gameTimerProvider.notifier).startTimer(
-      session.mode.roundDurationInSeconds,
-    );
+    final session = gameService.createGameSession(items: items);
 
     return session;
   }
 
-  void onSubmit(double estimate) {
+  void onSubmit() {
     final gameService = ref.watch(gameServiceProvider);
     if (!state.hasValue || state.value == null) {
       return;
     }
-    ref.read(gameTimerProvider.notifier).cancelTimer();
+
+    // Cancel the timer
+    ref.read(timerControllerProvider.notifier).cancel();
+
+    // Get the current estimate from the ratio controller
+    final ratio = ref.read(ratioControllerProvider);
+
+    // Submit the estimate
     update((state) => gameService.submitEstimate(
-      session: state,
-      estimate: estimate,
-    ));
-    
+          game: state,
+          estimate: ratio,
+          ratioBoundary: ratioBoundary,
+        ));
   }
 
   void onNextRound() {
@@ -62,9 +62,5 @@ class GameController extends _$GameController {
       return;
     }
     update((state) => gameService.nextRound(state));
-    // Restart the timer for the next round
-    ref.read(gameTimerProvider.notifier).startTimer(
-      state.value!.mode.roundDurationInSeconds
-    );
   }
 }

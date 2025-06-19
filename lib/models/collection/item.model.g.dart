@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'collection_item.dart';
+part of 'item.model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_CollectionItem _$CollectionItemFromJson(Map<String, dynamic> json) =>
-    _CollectionItem(
+_ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
       quantity: json['quantity'] as String,
@@ -19,7 +18,7 @@ _CollectionItem _$CollectionItemFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$CollectionItemToJson(_CollectionItem instance) =>
+Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,

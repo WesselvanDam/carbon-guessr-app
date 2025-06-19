@@ -1,12 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'collection_item.freezed.dart';
-part 'collection_item.g.dart';
+part 'item.model.freezed.dart';
+part 'item.model.g.dart';
 
 /// Model representing an individual item from a collection
 @freezed
-abstract class CollectionItem with _$CollectionItem {
-  const factory CollectionItem({
+abstract class ItemModel with _$ItemModel {
+  const factory ItemModel({
     required int id,
     required String title,
     required String quantity,
@@ -14,8 +14,8 @@ abstract class CollectionItem with _$CollectionItem {
     required double value,
     required String category,
     required List<int> sources,
-  }) = _CollectionItem;
+  }) = _ItemModel;
 
-  factory CollectionItem.fromJson(Map<String, dynamic> json) =>
-      _$CollectionItemFromJson(json);
+  factory ItemModel.fromJson(Map<String, dynamic> json) =>
+      _$ItemModelFromJson(json);
 }

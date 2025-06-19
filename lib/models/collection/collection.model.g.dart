@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'collection_info.dart';
+part of 'collection.model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_CollectionInfo _$CollectionInfoFromJson(Map<String, dynamic> json) =>
-    _CollectionInfo(
+_CollectionModel _$CollectionModelFromJson(Map<String, dynamic> json) =>
+    _CollectionModel(
       id: json['id'] as String,
       title: json['title'] as String,
       tagline: json['tagline'] as String,
@@ -18,7 +18,7 @@ _CollectionInfo _$CollectionInfoFromJson(Map<String, dynamic> json) =>
       ratioBoundary: (json['ratioBoundary'] as num?)?.toDouble() ?? 1,
     );
 
-Map<String, dynamic> _$CollectionInfoToJson(_CollectionInfo instance) =>
+Map<String, dynamic> _$CollectionModelToJson(_CollectionModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,

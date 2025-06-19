@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'collection_info.dart';
+part of 'collection.model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,7 +14,7 @@ part of 'collection_info.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$CollectionInfo {
+mixin _$CollectionModel {
   String get id;
   String get title;
   String get tagline;
@@ -24,22 +24,22 @@ mixin _$CollectionInfo {
   int get size;
   double get ratioBoundary;
 
-  /// Create a copy of CollectionInfo
+  /// Create a copy of CollectionModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $CollectionInfoCopyWith<CollectionInfo> get copyWith =>
-      _$CollectionInfoCopyWithImpl<CollectionInfo>(
-          this as CollectionInfo, _$identity);
+  $CollectionModelCopyWith<CollectionModel> get copyWith =>
+      _$CollectionModelCopyWithImpl<CollectionModel>(
+          this as CollectionModel, _$identity);
 
-  /// Serializes this CollectionInfo to a JSON map.
+  /// Serializes this CollectionModel to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is CollectionInfo &&
+            other is CollectionModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.tagline, tagline) || other.tagline == tagline) &&
@@ -60,15 +60,15 @@ mixin _$CollectionInfo {
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, title: $title, tagline: $tagline, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
+    return 'CollectionModel(id: $id, title: $title, tagline: $tagline, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
   }
 }
 
 /// @nodoc
-abstract mixin class $CollectionInfoCopyWith<$Res> {
-  factory $CollectionInfoCopyWith(
-          CollectionInfo value, $Res Function(CollectionInfo) _then) =
-      _$CollectionInfoCopyWithImpl;
+abstract mixin class $CollectionModelCopyWith<$Res> {
+  factory $CollectionModelCopyWith(
+          CollectionModel value, $Res Function(CollectionModel) _then) =
+      _$CollectionModelCopyWithImpl;
   @useResult
   $Res call(
       {String id,
@@ -82,14 +82,14 @@ abstract mixin class $CollectionInfoCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$CollectionInfoCopyWithImpl<$Res>
-    implements $CollectionInfoCopyWith<$Res> {
-  _$CollectionInfoCopyWithImpl(this._self, this._then);
+class _$CollectionModelCopyWithImpl<$Res>
+    implements $CollectionModelCopyWith<$Res> {
+  _$CollectionModelCopyWithImpl(this._self, this._then);
 
-  final CollectionInfo _self;
-  final $Res Function(CollectionInfo) _then;
+  final CollectionModel _self;
+  final $Res Function(CollectionModel) _then;
 
-  /// Create a copy of CollectionInfo
+  /// Create a copy of CollectionModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -142,8 +142,8 @@ class _$CollectionInfoCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _CollectionInfo implements CollectionInfo {
-  const _CollectionInfo(
+class _CollectionModel implements CollectionModel {
+  const _CollectionModel(
       {required this.id,
       required this.title,
       required this.tagline,
@@ -152,8 +152,8 @@ class _CollectionInfo implements CollectionInfo {
       required this.unit,
       required this.size,
       this.ratioBoundary = 1});
-  factory _CollectionInfo.fromJson(Map<String, dynamic> json) =>
-      _$CollectionInfoFromJson(json);
+  factory _CollectionModel.fromJson(Map<String, dynamic> json) =>
+      _$CollectionModelFromJson(json);
 
   @override
   final String id;
@@ -173,17 +173,17 @@ class _CollectionInfo implements CollectionInfo {
   @JsonKey()
   final double ratioBoundary;
 
-  /// Create a copy of CollectionInfo
+  /// Create a copy of CollectionModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$CollectionInfoCopyWith<_CollectionInfo> get copyWith =>
-      __$CollectionInfoCopyWithImpl<_CollectionInfo>(this, _$identity);
+  _$CollectionModelCopyWith<_CollectionModel> get copyWith =>
+      __$CollectionModelCopyWithImpl<_CollectionModel>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$CollectionInfoToJson(
+    return _$CollectionModelToJson(
       this,
     );
   }
@@ -192,7 +192,7 @@ class _CollectionInfo implements CollectionInfo {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _CollectionInfo &&
+            other is _CollectionModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.tagline, tagline) || other.tagline == tagline) &&
@@ -213,16 +213,16 @@ class _CollectionInfo implements CollectionInfo {
 
   @override
   String toString() {
-    return 'CollectionInfo(id: $id, title: $title, tagline: $tagline, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
+    return 'CollectionModel(id: $id, title: $title, tagline: $tagline, description: $description, quantity: $quantity, unit: $unit, size: $size, ratioBoundary: $ratioBoundary)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$CollectionInfoCopyWith<$Res>
-    implements $CollectionInfoCopyWith<$Res> {
-  factory _$CollectionInfoCopyWith(
-          _CollectionInfo value, $Res Function(_CollectionInfo) _then) =
-      __$CollectionInfoCopyWithImpl;
+abstract mixin class _$CollectionModelCopyWith<$Res>
+    implements $CollectionModelCopyWith<$Res> {
+  factory _$CollectionModelCopyWith(
+          _CollectionModel value, $Res Function(_CollectionModel) _then) =
+      __$CollectionModelCopyWithImpl;
   @override
   @useResult
   $Res call(
@@ -237,14 +237,14 @@ abstract mixin class _$CollectionInfoCopyWith<$Res>
 }
 
 /// @nodoc
-class __$CollectionInfoCopyWithImpl<$Res>
-    implements _$CollectionInfoCopyWith<$Res> {
-  __$CollectionInfoCopyWithImpl(this._self, this._then);
+class __$CollectionModelCopyWithImpl<$Res>
+    implements _$CollectionModelCopyWith<$Res> {
+  __$CollectionModelCopyWithImpl(this._self, this._then);
 
-  final _CollectionInfo _self;
-  final $Res Function(_CollectionInfo) _then;
+  final _CollectionModel _self;
+  final $Res Function(_CollectionModel) _then;
 
-  /// Create a copy of CollectionInfo
+  /// Create a copy of CollectionModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -258,7 +258,7 @@ class __$CollectionInfoCopyWithImpl<$Res>
     Object? size = null,
     Object? ratioBoundary = null,
   }) {
-    return _then(_CollectionInfo(
+    return _then(_CollectionModel(
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
