@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../providers/collection/collection_providers.dart';
@@ -21,12 +22,14 @@ class RatioController extends _$RatioController {
     // The ratio boundary is defined in the collection's metadata and is defined
     // as the smallest ratio that can be achieved with the collection's items.
     ref.listen(
-        collectionProvider(cid)
-            .select((collection) => collection.valueOrNull?.ratioBoundary),
-        (_, ratioBoundary) {
-      minRatio =
-          pow(10, (log(ratioBoundary ?? 0.01) / log(10)).floor()).toDouble();
-    });
+      collectionProvider(cid)
+          .select((collection) => collection.valueOrNull?.ratioBoundary),
+      (_, ratioBoundary) {
+        minRatio =
+            pow(10, (log(ratioBoundary ?? 0.01) / log(10)).floor()).toDouble();
+      },
+      fireImmediately: true,
+    );
 
     return 1.5;
   }

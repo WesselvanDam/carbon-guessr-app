@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/game/game.model.dart';
 import '../../../utils/extensions.dart';
 import '../../../widgets/score_pill.dart';
 import '../game_controller.dart';
-import 'custom_ratio_field.dart';
-import 'game_intro.dart';
-import 'item_card.dart';
 import 'ratio_controller.dart';
 import 'timer_controller.dart';
 
-class GameRoundForm extends ConsumerStatefulWidget {
-  const GameRoundForm({super.key});
+class EvaluationRow extends ConsumerStatefulWidget {
+  const EvaluationRow({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _GameRoundFormState();
+  ConsumerState<EvaluationRow> createState() => _EvaluationRowState();
 }
 
-class _GameRoundFormState extends ConsumerState<GameRoundForm> {
+class _EvaluationRowState extends ConsumerState<EvaluationRow> {
   late final TextEditingController _firstTextController;
   late final TextEditingController _secondTextController;
-  bool _isSubmitted = false;
 
   @override
   void initState() {
@@ -63,55 +58,16 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Reset the ratio controller when the form is initialized
+    // Update the text controllers when the ratio changes
     ref.listen(ratioControllerProvider, (_, next) => updateControllers(next));
 
-    // Flip the submitted switch if the time is up and the form is not submitted
-    ref.listen(timerControllerProvider, (_, next) {
-      if (next == 0 && !_isSubmitted) {
-        setState(() => _isSubmitted = true);
-      }
-    });
+    final currentRound = ref.watch(gameControllerProvider.select(
+      (game) => game.value?.currentRound,
+    ));
 
-    final game = ref.watch(gameControllerProvider).value;
+    final isRoundOver =
+        ref.watch(timerControllerProvider.select((time) => time == 0));
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const GameIntro(),
-          const SizedBox(height: 16),
-          const IntrinsicHeight(
-            child: Row(
-              spacing: 2,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(child: ItemCard.first()),
-                Expanded(child: ItemCard.second()),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildEstimateRow(game),
-          const SizedBox(height: 16),
-          const CustomRatioField(),
-          const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.centerRight,
-            child: FilledButton.icon(
-              onPressed: _isSubmitted ? _nextRound : _submitEstimate,
-              icon: Icon(_isSubmitted ? Icons.arrow_forward : Icons.check),
-              label: Text(_isSubmitted ? 'Next Round' : 'Submit Estimate'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Builds the row displaying the estimated ratio and the true ratio if submitted.
-  Widget _buildEstimateRow(GameModel? game) {
     final style = Theme.of(context).textTheme.titleMedium!.copyWith(
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.onSurface,
@@ -125,27 +81,42 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: RichText(
-                    text: TextSpan(
-                      style: style,
-                      children: [
-                        ratioTextField(
-                          _firstTextController,
-                          style,
-                          isSecondField: false,
-                        ),
-                        const TextSpan(text: ' : '),
-                        ratioTextField(
-                          _secondTextController,
-                          style,
-                          isSecondField: true,
-                        ),
-                      ],
+                if (!isRoundOver ||
+                    (isRoundOver && currentRound?.userEstimate != null))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: RichText(
+                      text: TextSpan(
+                        style: style,
+                        children: [
+                          ratioTextField(
+                            _firstTextController,
+                            style,
+                            isSecondField: false,
+                            isRoundOver: isRoundOver,
+                          ),
+                          const TextSpan(text: ' : '),
+                          ratioTextField(
+                            _secondTextController,
+                            style,
+                            isSecondField: true,
+                            isRoundOver: isRoundOver,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      'N/A',
+                      style: style.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
-                ),
+                
                 Text(
                   'Your guess'.toUpperCase(),
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -155,7 +126,7 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
               ],
             ),
           ),
-          if (_isSubmitted)
+          if (isRoundOver && currentRound != null)
             // Show the true ratio if the estimate is submitted
             Expanded(
               child: Column(
@@ -164,8 +135,7 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: RichText(
-                      text: game!.currentRound.correctRatio
-                          .ratioToReadableTextSpan(
+                      text: currentRound.correctRatio.ratioToReadableTextSpan(
                         style: style,
                         leftDigitStyle: style.copyWith(
                             color: Theme.of(context).colorScheme.secondary),
@@ -183,14 +153,14 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
                 ],
               ),
             ),
-          if (_isSubmitted)
+          if (isRoundOver && currentRound != null)
             // Show the score if the estimate is submitted
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ScorePill(
-                    score: game!.currentRound.score,
+                    score: currentRound.score,
                     style: style,
                     padding:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
@@ -213,13 +183,14 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
     TextEditingController controller,
     TextStyle? style, {
     required bool isSecondField,
+    required bool isRoundOver,
   }) {
     return WidgetSpan(
       alignment: PlaceholderAlignment.baseline,
       baseline: TextBaseline.alphabetic,
       child: TextField(
         controller: controller,
-        enabled: !_isSubmitted,
+        enabled: !isRoundOver,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         style: style?.copyWith(
           color: isSecondField
@@ -245,31 +216,5 @@ class _GameRoundFormState extends ConsumerState<GameRoundForm> {
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
       ),
     );
-  }
-
-  void _submitEstimate() {
-    try {
-      ref.read(gameControllerProvider.notifier).onSubmit();
-
-      // Update UI to show results
-      setState(() {
-        _isSubmitted = true;
-      });
-    } catch (e) {
-      debugPrint('Error submitting estimate: $e');
-      debugPrintStack(label: 'Stack trace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid number')),
-      );
-    }
-  }
-
-  void _nextRound() {
-    setState(() {
-      _isSubmitted = false;
-      ref.read(ratioControllerProvider.notifier).reset();
-    });
-
-    ref.read(gameControllerProvider.notifier).onNextRound();
   }
 }

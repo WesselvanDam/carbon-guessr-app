@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'game_controller.dart';
 import 'game_results_page.dart';
+import 'game_round_form.dart';
 import 'local/game_app_bar.dart';
-import 'local/game_round_form.dart';
 
 class GamePage extends ConsumerWidget {
   const GamePage({super.key});

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/game/game_providers.dart';
@@ -24,7 +25,7 @@ class GameTime extends ConsumerWidget {
 
     final seconds = ref.watch(timerControllerProvider);
 
-    if (seconds == null) {
+    if (seconds == null || seconds <= 0) {
       return const SizedBox.shrink();
     }
 
@@ -73,6 +74,6 @@ class GameTime extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    ).animate().fadeIn();
   }
 }

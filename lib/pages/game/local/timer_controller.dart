@@ -20,7 +20,7 @@ class TimerController extends _$TimerController {
 
   void start() {
     // Cancel any existing timer
-    cancel();
+    stop();
 
     state = ref.read(gameModeProvider).roundDurationInSeconds;
 
@@ -33,9 +33,9 @@ class TimerController extends _$TimerController {
     });
   }
 
-  void cancel() {
+  void stop() {
     _timer?.cancel();
     _timer = null;
-    state = null;
+    state = 0;
   }
 }

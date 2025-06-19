@@ -10,7 +10,7 @@ part 'game_controller.g.dart';
 
 @riverpod
 class GameController extends _$GameController {
-  late final double ratioBoundary;
+  late double ratioBoundary;
 
   @override
   FutureOr<GameModel> build() async {
@@ -28,8 +28,8 @@ class GameController extends _$GameController {
       rounds: 5,
     );
 
-    final items =
-        await ref.watch(collectionItemsByIdsProvider(collection.id, itemIds).future);
+    final items = await ref
+        .watch(collectionItemsByIdsProvider(collection.id, itemIds).future);
 
     final session = gameService.createGameSession(items: items);
 
@@ -43,7 +43,7 @@ class GameController extends _$GameController {
     }
 
     // Cancel the timer
-    ref.read(timerControllerProvider.notifier).cancel();
+    ref.read(timerControllerProvider.notifier).stop();
 
     // Get the current estimate from the ratio controller
     final ratio = ref.read(ratioControllerProvider);
@@ -61,6 +61,10 @@ class GameController extends _$GameController {
     if (!state.hasValue || state.value == null) {
       return;
     }
+
+    // Reset the ratio controller
+    ref.read(ratioControllerProvider.notifier).reset();
+
     update((state) => gameService.nextRound(state));
   }
 }

@@ -9,9 +9,6 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Use FutureBuilder to fetch and display collections
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('QuoScient'),
-      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
