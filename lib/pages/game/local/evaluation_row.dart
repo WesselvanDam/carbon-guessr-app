@@ -77,6 +77,33 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          if (isRoundOver && currentRound != null)
+            // Show the true ratio if the estimate is submitted
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: RichText(
+                      text: currentRound.correctRatio.ratioToReadableTextSpan(
+                        style: style,
+                        leftDigitStyle: style.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
+                        rightDigitStyle: style.copyWith(
+                            color: Theme.of(context).colorScheme.tertiary),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'True ratio'.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,7 +143,6 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                       ),
                     ),
                   ),
-                
                 Text(
                   'Your guess'.toUpperCase(),
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -126,33 +152,6 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
               ],
             ),
           ),
-          if (isRoundOver && currentRound != null)
-            // Show the true ratio if the estimate is submitted
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: RichText(
-                      text: currentRound.correctRatio.ratioToReadableTextSpan(
-                        style: style,
-                        leftDigitStyle: style.copyWith(
-                            color: Theme.of(context).colorScheme.secondary),
-                        rightDigitStyle: style.copyWith(
-                            color: Theme.of(context).colorScheme.tertiary),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'True ratio'.toUpperCase(),
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                ],
-              ),
-            ),
           if (isRoundOver && currentRound != null)
             // Show the score if the estimate is submitted
             Expanded(

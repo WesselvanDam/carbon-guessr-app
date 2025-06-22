@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../game_controller.dart';
 import 'ratio_controller.dart';
+import 'timer_controller.dart';
 
 class CustomRatioField extends ConsumerStatefulWidget {
+  // correctRatio is no longer needed here
   const CustomRatioField({super.key});
 
   @override
@@ -15,6 +17,8 @@ class CustomRatioField extends ConsumerStatefulWidget {
 }
 
 class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
+  // Internal state to hold the correct ratio when it's time to animate
+  double? _correctRatio;
 
   // Track pointer locations
   final Map<int, Offset> _pointerLocations = {};
@@ -22,97 +26,143 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   // Track which square is being updated during a gesture
   bool? _isUpdatingFirstSquare;
 
-  void _handleScaleUpdate(bool isFirstSquare, ScaleUpdateDetails details) {
-    final double scaleFactor = details.scale;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with no correction animation
+    _correctRatio = null;
+  }
 
-    // Only respond to meaningful scale changes
+  void _handleScaleUpdate(bool isFirstSquare, ScaleUpdateDetails details) {
+    // Disable interaction while animating to the correct ratio
+    if (_correctRatio != null) return;
+
+    final double scaleFactor = details.scale;
+    debugPrint('Scale factor: $scaleFactor');
     if (scaleFactor > 0.98 && scaleFactor < 1.02) return;
 
-    // Use a dampened scale factor to make the interaction smoother
     const dampFactor = 0.1;
-
     final double dampedScale = scaleFactor > 1.0
-        ? 1.0 + (scaleFactor - 1.0) * dampFactor // Scale up more gently
-        : 1.0 - (1.0 - scaleFactor) * dampFactor; // Scale down more gently
+        ? 1.0 + (scaleFactor - 1.0) * dampFactor
+        : 1.0 - (1.0 - scaleFactor) * dampFactor;
 
-    // Get the current ratio from the provider
     final ratio = ref.read(ratioControllerProvider);
-
-    final newRatio = isFirstSquare
-        ? ratio * dampedScale // Scale the first square (numerator)
-        : ratio / dampedScale; // Scale the second square (denominator)
-
-    // Update the ratio in the provider
+    final newRatio = isFirstSquare ? ratio * dampedScale : ratio / dampedScale;
     ref.read(ratioControllerProvider.notifier).set(newRatio);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen to the timer to trigger the "show correct answer" animation
+    ref.listen(
+        timerControllerProvider.select(
+          (value) => value == 0,
+        ), (_, isRoundOver) {
+      setState(() {
+        _correctRatio = isRoundOver
+            ? ref.read(gameControllerProvider).value!.currentRound.correctRatio
+            : null;
+        _isUpdatingFirstSquare = isRoundOver ? null : _isUpdatingFirstSquare;
+      });
+    });
+
+    final userRatio = ref.watch(ratioControllerProvider);
+
+    // If _correctRatio is set, animate from the user's ratio to the correct one.
+    // Otherwise, just display the current user ratio.
+    if (_correctRatio != null) {
+      return TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: userRatio, end: _correctRatio),
+        duration: const Duration(milliseconds: 2000),
+        curve: Curves.easeInOutCubic,
+        builder: (context, animatedRatio, child) =>
+            _buildRatioUI(context, animatedRatio),
+      );
+    } else {
+      return _buildRatioUI(context, userRatio);
+    }
+  }
+
+  /// Builds the UI based on a given ratio (which can be static or animated).
+  Widget _buildRatioUI(BuildContext context, double currentRatio) {
     return AspectRatio(
       aspectRatio: 1.0,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Get the available size for the container
           final containerSize = constraints.maxWidth;
 
-          // Get the current ratio from the provider
-          final ratio = ref.watch(ratioControllerProvider);
+          final userRatio = ref.watch(ratioControllerProvider);
+          final bool isFirstLargerByUser = userRatio >= 1;
+          final double smallerSizeByUser = containerSize *
+              (isFirstLargerByUser ? 1 / sqrt(userRatio) : sqrt(userRatio));
 
-          // Calculate the size of the smaller square based on the ratio
-          final sqrtRatio = ratio >= 1 ? sqrt(ratio) : 1 / sqrt(1 / ratio);
-          final smallerSizeProportion = ratio >= 1 ? 1 / sqrtRatio : sqrtRatio;
+          final double sizeA;
+          final double sizeB;
+          if (currentRatio >= 1) {
+            sizeA = containerSize;
+            sizeB = containerSize / sqrt(currentRatio);
+          } else {
+            sizeA = containerSize * sqrt(currentRatio);
+            sizeB = containerSize;
+          }
 
-          final smallerSize = containerSize * smallerSizeProportion;
-          final isFirstLarger = ratio >= 1;
+          final squareA = _buildSquare(
+            size: sizeA,
+            containerSize: containerSize,
+            isActive: _isUpdatingFirstSquare == true,
+            isFirstSquare: true,
+          );
+
+          final squareB = _buildSquare(
+            size: sizeB,
+            containerSize: containerSize,
+            isActive: _isUpdatingFirstSquare == false,
+            isFirstSquare: false,
+          );
 
           return Listener(
             onPointerDown: (event) =>
                 _pointerLocations[event.pointer] = event.position,
-            onPointerMove: (PointerMoveEvent event) =>
+            onPointerMove: (event) =>
                 _pointerLocations[event.pointer] = event.position,
-            onPointerUp: (PointerUpEvent event) =>
-                _pointerLocations.remove(event.pointer),
-            onPointerCancel: (PointerCancelEvent event) =>
-                _pointerLocations.remove(event.pointer),
+            onPointerUp: (event) => _pointerLocations.remove(event.pointer),
+            onPointerCancel: (event) => _pointerLocations.remove(event.pointer),
             child: GestureDetector(
-              onScaleStart: (ScaleStartDetails startDetails) {
-                // Determine which square is being manipulated at the start of the gesture
+              onScaleStart: (details) {
+                if (_correctRatio != null) {
+                  return; // Use internal state for check
+                }
+
                 final RenderBox? box = context.findRenderObject() as RenderBox?;
-                if (box == null) return;
-                if (startDetails.pointerCount != 2 ||
+                if (box == null ||
+                    details.pointerCount != 2 ||
                     _pointerLocations.length != 2) {
-                  // Only handle two-finger gestures
                   setState(() => _isUpdatingFirstSquare = null);
                   return;
                 }
 
                 final Offset center = box.size.center(Offset.zero);
-                // Convert global pointer positions to local and calculate distances to center
                 final positions = _pointerLocations.values.toList();
                 final localPos1 = box.globalToLocal(positions[0]);
                 final localPos2 = box.globalToLocal(positions[1]);
-                final distance1 = (localPos1 - center).distance;
-                final distance2 = (localPos2 - center).distance;
-                final double distanceFromCenter = (distance1 + distance2) / 2;
+                final double distanceFromCenter =
+                    ((localPos1 - center).distance +
+                            (localPos2 - center).distance) /
+                        2;
 
-                // Make the threshold halfway between the inner and outer square
-                final double threshold =
-                    smallerSize / 2 + (containerSize - smallerSize) / 4;
-
-                // If pointer is closer to the center than the threshold, we're interacting with inner square
+                final double threshold = smallerSizeByUser / 2 +
+                    (containerSize - smallerSizeByUser) / 4;
                 final bool isInteractingWithInnerSquare =
                     distanceFromCenter < threshold;
 
                 setState(() {
-                  _isUpdatingFirstSquare =
-                      (isFirstLarger && !isInteractingWithInnerSquare) ||
-                          (!isFirstLarger && isInteractingWithInnerSquare);
+                  _isUpdatingFirstSquare = (isFirstLargerByUser &&
+                          !isInteractingWithInnerSquare) ||
+                      (!isFirstLargerByUser && isInteractingWithInnerSquare);
                 });
               },
               onScaleUpdate: (details) {
-                // Only proceed if we've determined which square is being updated
                 if (_isUpdatingFirstSquare == null) return;
-
                 _handleScaleUpdate(_isUpdatingFirstSquare!, details);
               },
               onScaleEnd: (_) => setState(() => _isUpdatingFirstSquare = null),
@@ -122,21 +172,9 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 child: Center(
                   child: Stack(
                     alignment: Alignment.center,
-                    children: [
-                      _buildLargeSquare(
-                          containerSize,
-                          (_isUpdatingFirstSquare == true && isFirstLarger) ||
-                              (_isUpdatingFirstSquare == false &&
-                                  !isFirstLarger),
-                          isFirstLarger),
-                      _buildSmallSquare(
-                          smallerSize,
-                          containerSize,
-                          (_isUpdatingFirstSquare == true && !isFirstLarger) ||
-                              (_isUpdatingFirstSquare == false &&
-                                  isFirstLarger),
-                          isFirstLarger),
-                    ],
+                    children: currentRatio >= 1
+                        ? [squareA, squareB]
+                        : [squareB, squareA],
                   ),
                 ),
               ),
@@ -147,87 +185,55 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     );
   }
 
-  Container _buildLargeSquare(double size, bool isActive, bool isFirstLarger) {
-    final label = ref.watch(gameControllerProvider.select((game) {
-      if (game.value == null) return ' ';
-      return isFirstLarger
-          ? game.value!.currentRound.itemA.title
-          : game.value!.currentRound.itemB.title;
-    }));
-    final squareColor = isFirstLarger
+  /// A single, unified builder for creating an animatable square.
+  Widget _buildSquare({
+    required double size,
+    required double containerSize,
+    required bool isActive,
+    required bool isFirstSquare,
+  }) {
+    final gameValue = ref.watch(gameControllerProvider).value;
+    final label = gameValue == null
+        ? ' '
+        : isFirstSquare
+            ? gameValue.currentRound.itemA.title
+            : gameValue.currentRound.itemB.title;
+
+    final squareColor = isFirstSquare
         ? Theme.of(context).colorScheme.secondaryContainer
         : Theme.of(context).colorScheme.tertiaryContainer;
-    final onSquareColor = isFirstLarger
+    final onSquareColor = isFirstSquare
         ? Theme.of(context).colorScheme.onSecondaryContainer
         : Theme.of(context).colorScheme.onTertiaryContainer;
-    return Container(
+
+    return AnimatedContainer(
+      duration: _correctRatio != null
+          ? Duration.zero
+          : const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
       width: size,
       height: size,
       decoration: BoxDecoration(
         color: squareColor,
         border: Border.all(
+          width: 2.0,
           color: isActive
               ? Theme.of(context).colorScheme.outline
               : Theme.of(context).colorScheme.outlineVariant,
         ),
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16.0 * (size / containerSize)),
       ),
       child: Align(
-        alignment: isFirstLarger ? Alignment.topCenter : Alignment.bottomCenter,
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: onSquareColor,
-                fontWeight: FontWeight.bold,
-              ),
-        ).animate(target: label.trim().isEmpty ? 0 : 1).fadeIn(),
-      ),
-    );
-  }
-
-  Container _buildSmallSquare(double smallerSize, double largerSize,
-      bool isActive, bool isFirstLarger) {
-    final label = ref.watch(gameControllerProvider.select((game) {
-      if (game.value == null) return ' ';
-      return isFirstLarger
-          ? game.value!.currentRound.itemB.title
-          : game.value!.currentRound.itemA.title;
-    }));
-    final squareColor = isFirstLarger
-        ? Theme.of(context).colorScheme.tertiaryContainer
-        : Theme.of(context).colorScheme.secondaryContainer;
-    final onSquareColor = isFirstLarger
-        ? Theme.of(context).colorScheme.onTertiaryContainer
-        : Theme.of(context).colorScheme.onSecondaryContainer;
-    return Container(
-      width: smallerSize,
-      height: smallerSize,
-      decoration: BoxDecoration(
-        color: squareColor,
-        border: Border.all(
-          color: isActive
-              ? Theme.of(context).colorScheme.outline
-              : Theme.of(context).colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(16.0 * (smallerSize / largerSize)),
-      ),
-      child: Transform.translate(
-        offset: (smallerSize < 0.8 * largerSize)
-            ? isFirstLarger
-                ? const Offset(0, 24)
-                : const Offset(0, -24)
-            : Offset.zero,
-        child: Align(
-          alignment:
-              isFirstLarger ? Alignment.bottomCenter : Alignment.topCenter,
+        alignment: isFirstSquare ? Alignment.topCenter : Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Text(
             label,
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: onSquareColor,
                   fontWeight: FontWeight.bold,
                 ),
-            softWrap: false,
-            overflow: TextOverflow.visible,
           ).animate(target: label.trim().isEmpty ? 0 : 1).fadeIn(),
         ),
       ),
