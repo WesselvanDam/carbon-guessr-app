@@ -47,16 +47,9 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     final double relativeScale = details.scale / _previousScale!;
     debugPrint(
         'Relative scale: $relativeScale (current: ${details.scale}, previous: $_previousScale)');
-    // Optionally ignore very small changes
-    if (relativeScale > 0.98 && relativeScale < 1.02) return;
-
-    const dampFactor = 1;
-    final double dampedScale = relativeScale > 1.0
-        ? 1.0 + (relativeScale - 1.0) * dampFactor
-        : 1.0 - (1.0 - relativeScale) * dampFactor;
 
     final ratio = ref.read(ratioControllerProvider);
-    final newRatio = isFirstSquare ? ratio * dampedScale : ratio / dampedScale;
+    final newRatio = isFirstSquare ? ratio * relativeScale : ratio / relativeScale;
     ref.read(ratioControllerProvider.notifier).set(newRatio);
 
     // Update _previousScale for the next update
@@ -247,7 +240,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            label,
+            'label',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: onSquareColor,

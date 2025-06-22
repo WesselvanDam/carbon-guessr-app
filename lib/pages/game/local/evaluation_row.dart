@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../utils/extensions.dart';
@@ -103,7 +104,7 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                   ),
                 ],
               ),
-            ),
+            ).animate().fadeIn(),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,7 +173,7 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                   ),
                 ],
               ),
-            ),
+            ).animate().fadeIn(),
         ],
       ),
     );

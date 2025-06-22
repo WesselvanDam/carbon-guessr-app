@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../models/game/game.model.dart';
 import '../pages/collection/collection_page.dart';
 import '../pages/game/game_page.dart';
-import '../pages/home/homePage.dart';
+import '../pages/home/home_page.dart';
 
 part 'routes.g.dart';
 
