@@ -26,6 +26,9 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   // Track which square is being updated during a gesture
   bool? _isUpdatingFirstSquare;
 
+  // Track the previous scale for relative scaling
+  double? _previousScale;
+
   @override
   void initState() {
     super.initState();
@@ -37,18 +40,27 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     // Disable interaction while animating to the correct ratio
     if (_correctRatio != null) return;
 
-    final double scaleFactor = details.scale;
-    debugPrint('Scale factor: $scaleFactor');
-    if (scaleFactor > 0.98 && scaleFactor < 1.02) return;
+    // If this is the first update in a gesture, initialize _previousScale
+    _previousScale ??= details.scale;
 
-    const dampFactor = 0.1;
-    final double dampedScale = scaleFactor > 1.0
-        ? 1.0 + (scaleFactor - 1.0) * dampFactor
-        : 1.0 - (1.0 - scaleFactor) * dampFactor;
+    // Calculate the relative scale since the last update
+    final double relativeScale = details.scale / _previousScale!;
+    debugPrint(
+        'Relative scale: $relativeScale (current: ${details.scale}, previous: $_previousScale)');
+    // Optionally ignore very small changes
+    if (relativeScale > 0.98 && relativeScale < 1.02) return;
+
+    const dampFactor = 1;
+    final double dampedScale = relativeScale > 1.0
+        ? 1.0 + (relativeScale - 1.0) * dampFactor
+        : 1.0 - (1.0 - relativeScale) * dampFactor;
 
     final ratio = ref.read(ratioControllerProvider);
     final newRatio = isFirstSquare ? ratio * dampedScale : ratio / dampedScale;
     ref.read(ratioControllerProvider.notifier).set(newRatio);
+
+    // Update _previousScale for the next update
+    _previousScale = details.scale;
   }
 
   @override
@@ -137,7 +149,10 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 if (box == null ||
                     details.pointerCount != 2 ||
                     _pointerLocations.length != 2) {
-                  setState(() => _isUpdatingFirstSquare = null);
+                  setState(() {
+                    _isUpdatingFirstSquare = null;
+                    _previousScale = null;
+                  });
                   return;
                 }
 
@@ -159,13 +174,17 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                   _isUpdatingFirstSquare = (isFirstLargerByUser &&
                           !isInteractingWithInnerSquare) ||
                       (!isFirstLargerByUser && isInteractingWithInnerSquare);
+                  _previousScale = 1.0;
                 });
               },
               onScaleUpdate: (details) {
                 if (_isUpdatingFirstSquare == null) return;
                 _handleScaleUpdate(_isUpdatingFirstSquare!, details);
               },
-              onScaleEnd: (_) => setState(() => _isUpdatingFirstSquare = null),
+              onScaleEnd: (_) => setState(() {
+                _isUpdatingFirstSquare = null;
+                _previousScale = null;
+              }),
               child: SizedBox(
                 width: containerSize,
                 height: containerSize,
