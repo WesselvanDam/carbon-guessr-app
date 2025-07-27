@@ -5,17 +5,17 @@ import '../../models/collection/collection.model.dart';
 import '../../models/collection/item.model.dart';
 import '../../models/collection/source.dart';
 import '../../router/router.dart';
-import '../../services/collection/collection_repository.dart';
-import '../../services/collection/collection_service.dart';
 import '../client/http_client.dart';
+import 'collection_api.dart';
+import 'collection_repository.dart';
 
 part 'collection_providers.g.dart';
 
 /// Provider for the CollectionService
 @riverpod
-CollectionService collectionService(Ref ref, String collectionId) {
+CollectionApi collectionService(Ref ref, String collectionId) {
   final dio = ref.watch(httpClientProvider);
-  final service = CollectionService(dio);
+  final service = CollectionApi(dio);
 
   return service;
 }

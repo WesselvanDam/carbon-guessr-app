@@ -6,7 +6,7 @@ part of 'collection_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$collectionServiceHash() => r'33c5db503f15517b0b33f32bdcc992245fc4676e';
+String _$collectionServiceHash() => r'fc48e0e43c63d1bdcc7a4260f59d71e638872ba3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -38,7 +38,7 @@ const collectionServiceProvider = CollectionServiceFamily();
 /// Provider for the CollectionService
 ///
 /// Copied from [collectionService].
-class CollectionServiceFamily extends Family<CollectionService> {
+class CollectionServiceFamily extends Family<CollectionApi> {
   /// Provider for the CollectionService
   ///
   /// Copied from [collectionService].
@@ -82,7 +82,7 @@ class CollectionServiceFamily extends Family<CollectionService> {
 /// Provider for the CollectionService
 ///
 /// Copied from [collectionService].
-class CollectionServiceProvider extends AutoDisposeProvider<CollectionService> {
+class CollectionServiceProvider extends AutoDisposeProvider<CollectionApi> {
   /// Provider for the CollectionService
   ///
   /// Copied from [collectionService].
@@ -119,7 +119,7 @@ class CollectionServiceProvider extends AutoDisposeProvider<CollectionService> {
 
   @override
   Override overrideWith(
-    CollectionService Function(CollectionServiceRef provider) create,
+    CollectionApi Function(CollectionServiceRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -136,7 +136,7 @@ class CollectionServiceProvider extends AutoDisposeProvider<CollectionService> {
   }
 
   @override
-  AutoDisposeProviderElement<CollectionService> createElement() {
+  AutoDisposeProviderElement<CollectionApi> createElement() {
     return _CollectionServiceProviderElement(this);
   }
 
@@ -157,13 +157,13 @@ class CollectionServiceProvider extends AutoDisposeProvider<CollectionService> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CollectionServiceRef on AutoDisposeProviderRef<CollectionService> {
+mixin CollectionServiceRef on AutoDisposeProviderRef<CollectionApi> {
   /// The parameter `collectionId` of this provider.
   String get collectionId;
 }
 
 class _CollectionServiceProviderElement
-    extends AutoDisposeProviderElement<CollectionService>
+    extends AutoDisposeProviderElement<CollectionApi>
     with CollectionServiceRef {
   _CollectionServiceProviderElement(super.provider);
 

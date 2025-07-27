@@ -6,7 +6,7 @@ part of 'ratio_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ratioControllerHash() => r'2e1facbd65c62a5c54914cac7810bfeb1c75e0c8';
+String _$ratioControllerHash() => r'7ac610c6a8ea01eed4b67fcaea798320e74f7ff2';
 
 /// See also [RatioController].
 @ProviderFor(RatioController)

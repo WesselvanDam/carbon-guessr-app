@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/game/game.model.dart';
-import '../../providers/collection/collection_providers.dart';
-import '../../providers/game/game_providers.dart';
+import '../../services/collection/collection_providers.dart';
+import '../../services/game/game_providers.dart';
 import 'local/ratio_controller.dart';
 import 'local/timer_controller.dart';
 
@@ -10,7 +10,7 @@ part 'game_controller.g.dart';
 
 @riverpod
 class GameController extends _$GameController {
-  late double ratioBoundary;
+  late double _ratioBoundary;
 
   @override
   FutureOr<GameModel> build() async {
@@ -18,7 +18,7 @@ class GameController extends _$GameController {
     final gid = ref.watch(gameIdProvider);
 
     // Set the ratio boundary based on the collection's metadata
-    ratioBoundary = collection.ratioBoundary;
+    _ratioBoundary = collection.ratioBoundary;
 
     final gameService = ref.watch(gameServiceProvider);
 
@@ -52,7 +52,7 @@ class GameController extends _$GameController {
     update((state) => gameService.submitEstimate(
           game: state,
           estimate: ratio,
-          ratioBoundary: ratioBoundary,
+          ratioBoundary: _ratioBoundary,
         ));
   }
 

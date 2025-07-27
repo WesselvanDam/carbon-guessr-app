@@ -6,12 +6,12 @@ import '../../models/collection/item.model.dart';
 import '../../models/collection/localization_data.dart';
 import '../../models/collection/source.dart';
 
-part 'collection_service.g.dart';
+part 'collection_api.g.dart';
 
 /// Service for fetching collection data from the API
 @RestApi()
-abstract class CollectionService {
-  factory CollectionService(Dio dio, {String? baseUrl}) = _CollectionService;
+abstract class CollectionApi {
+  factory CollectionApi(Dio dio, {String? baseUrl}) = _CollectionApi;
 
   /// Fetches all available collections from the API
   @GET('/collections.json')
@@ -40,8 +40,8 @@ class CollectionsResponse {
   CollectionsResponse({required this.data});
 
   factory CollectionsResponse.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> items = json['data'] as List<dynamic>;
-    final Map<String, CollectionModel> data = {
+    final items = json['data'] as List<dynamic>;
+    final data = {
       for (final item in items)
         (item['id'] as String):
             CollectionModel.fromJson(item as Map<String, dynamic>)

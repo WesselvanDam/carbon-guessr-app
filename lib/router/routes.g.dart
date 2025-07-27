@@ -14,6 +14,10 @@ RouteBase get $shellRoute => ShellRouteData.$route(
       factory: $ShellRouteExtension._fromState,
       routes: [
         GoRouteData.$route(
+          path: '/onboarding',
+          factory: $OnboardingRouteExtension._fromState,
+        ),
+        GoRouteData.$route(
           path: '/',
           factory: $HomeRouteExtension._fromState,
           routes: [
@@ -34,6 +38,24 @@ RouteBase get $shellRoute => ShellRouteData.$route(
 
 extension $ShellRouteExtension on ShellRoute {
   static ShellRoute _fromState(GoRouterState state) => const ShellRoute();
+}
+
+extension $OnboardingRouteExtension on OnboardingRoute {
+  static OnboardingRoute _fromState(GoRouterState state) =>
+      const OnboardingRoute();
+
+  String get location => GoRouteData.$location(
+        '/onboarding',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
 
 extension $HomeRouteExtension on HomeRoute {

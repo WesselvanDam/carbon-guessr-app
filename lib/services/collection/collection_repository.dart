@@ -2,25 +2,25 @@ import '../../models/collection/collection.model.dart';
 import '../../models/collection/item.model.dart';
 import '../../models/collection/localization_data.dart';
 import '../../models/collection/source.dart';
-import 'collection_service.dart';
+import 'collection_api.dart';
 
 /// Repository for handling collection data operations
 class CollectionRepository {
-  CollectionRepository(this._service, this._collectionId);
-  final CollectionService _service;
-  final String _collectionId;
+  CollectionRepository(this._api, this._cid);
+  final CollectionApi _api;
+  final String _cid;
 
   /// Fetches the list of all available collections
   Future<Map<String, CollectionModel>> getAllCollections() async {
-    final response = await _service.fetchAllCollections();
+    final response = await _api.fetchAllCollections();
     return response.data;
   }
 
   /// Fetches the info data for the collection
-  Future<CollectionModel> getInfo() => _service.fetchInfo(_collectionId);
+  Future<CollectionModel> getInfo() => _api.fetchInfo(_cid);
 
   /// Fetches a collection item by ID
-  Future<ItemModel> getItem(int id) => _service.fetchItem(_collectionId, id);
+  Future<ItemModel> getItem(int id) => _api.fetchItem(_cid, id);
 
   /// Fetches all collection items for the given IDs
   Future<List<ItemModel>> getItems(List<int> ids) {
@@ -29,7 +29,7 @@ class CollectionRepository {
   }
 
   /// Fetches a source by ID
-  Future<Source> getSource(int id) => _service.fetchSource(_collectionId, id);
+  Future<Source> getSource(int id) => _api.fetchSource(_cid, id);
 
   /// Fetches all sources for the given IDs
   Future<List<Source>> getAllSources(List<int> ids) {
@@ -39,7 +39,7 @@ class CollectionRepository {
 
   /// Fetches a localized data item by ID and locale
   Future<LocalizationData> getLocalizationData(int id, String locale) =>
-      _service.fetchLocalizationData(_collectionId, id, locale);
+      _api.fetchLocalizationData(_cid, id, locale);
 
   /// Fetches all localized data items for the given IDs and locale
   Future<List<LocalizationData>> getAllLocalizationDatas(
@@ -51,7 +51,7 @@ class CollectionRepository {
   /// Gets a collection item with localized text
   Future<ItemModel> getLocalizedItem(int id, String locale) async {
     // Fetch both the base data and the localized data
-    final item = await _service.fetchItem(_collectionId, id);
+    final item = await _api.fetchItem(_cid, id);
     final l10n = await getLocalizationData(id, locale);
 
     // Return a new collection item with localized data

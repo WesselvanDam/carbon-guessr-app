@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../providers/collection/collection_providers.dart';
-import '../../../providers/game/game_providers.dart';
+import '../../../services/collection/collection_providers.dart';
+import '../../../services/game/game_providers.dart';
 import '../../../utils/extensions.dart';
 import '../game_controller.dart';
 import 'game_time.dart';

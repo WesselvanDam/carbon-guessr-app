@@ -3,14 +3,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/game/game.model.dart';
 import '../../router/router.dart';
-import '../../services/game/game_service.dart';
+import 'game_repository.dart';
 
 part 'game_providers.g.dart';
 
 /// Provider for the GameService
 @riverpod
-GameService gameService(Ref ref) {
-  return GameService();
+GameRepository gameService(Ref ref) {
+  return GameRepository();
 }
 
 @riverpod

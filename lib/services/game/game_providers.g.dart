@@ -6,13 +6,13 @@ part of 'game_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$gameServiceHash() => r'8abf4472ef1930f357c6eb7893d3936bdab39a9f';
+String _$gameServiceHash() => r'd0b82e5774a536144922f6a0aeb7563cc75b83f5';
 
 /// Provider for the GameService
 ///
 /// Copied from [gameService].
 @ProviderFor(gameService)
-final gameServiceProvider = AutoDisposeProvider<GameService>.internal(
+final gameServiceProvider = AutoDisposeProvider<GameRepository>.internal(
   gameService,
   name: r'gameServiceProvider',
   debugGetCreateSourceHash:
@@ -23,7 +23,7 @@ final gameServiceProvider = AutoDisposeProvider<GameService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GameServiceRef = AutoDisposeProviderRef<GameService>;
+typedef GameServiceRef = AutoDisposeProviderRef<GameRepository>;
 String _$gameIdHash() => r'e609580336950c8a690fd1483211e3d75c2d2605';
 
 /// See also [gameId].

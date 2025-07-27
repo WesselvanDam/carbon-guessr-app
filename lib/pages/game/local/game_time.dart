@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../providers/game/game_providers.dart';
+import '../../../services/game/game_providers.dart';
 import '../../../utils/extensions.dart';
 import '../game_controller.dart';
 import 'timer_controller.dart';

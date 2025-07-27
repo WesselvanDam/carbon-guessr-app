@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/game/game.model.dart';
-import '../../providers/collection/collection_providers.dart';
 import '../../router/routes.dart';
-import '../../services/game/game_service.dart';
+import '../../services/collection/collection_providers.dart';
+import '../../services/game/game_repository.dart';
 import '../../utils/extensions.dart';
 
 class CollectionPage extends ConsumerWidget {
@@ -22,7 +22,7 @@ class CollectionPage extends ConsumerWidget {
       data: (info) {
         void startGameCallback(GameMode mode) => GameRoute(
               cid: info.id,
-              gid: GameService.newGameId,
+              gid: GameRepository.newGameId,
               mode: mode,
             ).go(context);
 

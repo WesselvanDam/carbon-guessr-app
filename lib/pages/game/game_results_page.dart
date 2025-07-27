@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../models/collection/item.model.dart';
 import '../../models/game/game.model.dart';
 import '../../models/game/round.model.dart';
-import '../../providers/collection/collection_providers.dart';
-import '../../providers/game/game_providers.dart';
 import '../../router/routes.dart';
-import '../../services/game/game_service.dart';
+import '../../services/collection/collection_providers.dart';
+import '../../services/game/game_providers.dart';
+import '../../services/game/game_repository.dart';
 import '../../utils/extensions.dart';
 import '../../widgets/score_pill.dart';
 import 'game_controller.dart';
@@ -73,19 +73,8 @@ class GameResultsPage extends ConsumerWidget {
           // Feedback message
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.primary.withOpacity(0.15),
-                  Theme.of(context).colorScheme.secondary.withOpacity(0.10),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                width: 1.5,
-              ),
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             child: Row(
@@ -131,7 +120,7 @@ class GameResultsPage extends ConsumerWidget {
                 onPressed: () {
                   GameRoute(
                     cid: ref.read(currentCollectionProvider).value!.id,
-                    gid: GameService.newGameId,
+                    gid: GameRepository.newGameId,
                     mode: ref.read(gameModeProvider),
                   ).go(context);
                   ref.invalidate(gameControllerProvider);
@@ -491,7 +480,7 @@ class _ItemDetailsDialogState extends ConsumerState<ItemDetailsDialog> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(

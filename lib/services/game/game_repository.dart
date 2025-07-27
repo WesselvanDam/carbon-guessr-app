@@ -1,13 +1,12 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 
 import '../../models/collection/item.model.dart';
 import '../../models/game/game.model.dart';
 import '../../models/game/round.model.dart';
 
 /// Service responsible for pure game logic and calculations
-class GameService {
+class GameRepository {
   static String get newGameId => DateTime.now()
       .millisecondsSinceEpoch
       .toString()
@@ -79,8 +78,6 @@ class GameService {
     double ratioBoundary, {
     int maxScore = 100,
   }) {
-    debugPrint(
-        'Ratio Boundary: $ratioBoundary, Estimate: $estimate, Truth: $truth');
     if (estimate <= 0 || truth <= 0 || ratioBoundary <= 0) {
       throw ArgumentError(
           'Ratios (estimate, groundTruth, minRatio) must be positive.');
@@ -133,8 +130,7 @@ class GameService {
     required double estimate,
     required double ratioBoundary,
   }) {
-    if (game.isCompleted ||
-        game.currentRoundIndex >= game.rounds.length) {
+    if (game.isCompleted || game.currentRoundIndex >= game.rounds.length) {
       throw Exception('Cannot submit estimate for completed session');
     }
 

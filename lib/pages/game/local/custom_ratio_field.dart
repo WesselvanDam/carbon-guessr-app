@@ -29,13 +29,6 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   // Track the previous scale for relative scaling
   double? _previousScale;
 
-  @override
-  void initState() {
-    super.initState();
-    // Initialize with no correction animation
-    _correctRatio = null;
-  }
-
   void _handleScaleUpdate(bool isFirstSquare, ScaleUpdateDetails details) {
     // Disable interaction while animating to the correct ratio
     if (_correctRatio != null) return;
@@ -240,7 +233,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            'label',
+            label,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: onSquareColor,

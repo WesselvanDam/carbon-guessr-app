@@ -1,16 +1,15 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../providers/collection/collection_providers.dart';
 import '../../../router/router.dart';
+import '../../../services/collection/collection_providers.dart';
 
 part 'ratio_controller.g.dart';
 
 @riverpod
 class RatioController extends _$RatioController {
-  double minRatio = 0.01;
+  double _minRatio = 0.01;
 
   @override
   double build() {
@@ -25,7 +24,7 @@ class RatioController extends _$RatioController {
       collectionProvider(cid)
           .select((collection) => collection.valueOrNull?.ratioBoundary),
       (_, ratioBoundary) {
-        minRatio =
+        _minRatio =
             pow(10, (log(ratioBoundary ?? 0.01) / log(10)).floor()).toDouble();
       },
       fireImmediately: true,
@@ -35,7 +34,7 @@ class RatioController extends _$RatioController {
   }
 
   void set(double ratio) {
-    state = ratio.clamp(minRatio, 1 / minRatio);
+    state = ratio.clamp(_minRatio, 1 / _minRatio);
   }
 
   void reset() {

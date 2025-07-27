@@ -35,7 +35,9 @@ class RiverpodProviderObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (provider.name?.contains('timerControllerProvider') == true ||
-        provider.name?.contains('ratioControllerProvider') == true) return;
+        provider.name?.contains('ratioControllerProvider') == true) {
+      return;
+    }
     debugPrint(
       '\x1B[33m'
       '$provider Updated:\n'

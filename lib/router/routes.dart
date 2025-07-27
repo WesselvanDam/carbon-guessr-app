@@ -4,12 +4,17 @@ import 'package:go_router/go_router.dart';
 import '../models/game/game.model.dart';
 import '../pages/collection/collection_page.dart';
 import '../pages/game/game_page.dart';
+
 import '../pages/home/home_page.dart';
+import '../pages/onboarding/onboarding_page.dart';
 
 part 'routes.g.dart';
 
 @TypedShellRoute<ShellRoute>(
   routes: [
+    TypedGoRoute<OnboardingRoute>(
+      path: '/onboarding',
+    ),
     TypedGoRoute<HomeRoute>(
       path: '/',
       routes: [
@@ -38,9 +43,15 @@ class HomeRoute extends GoRouteData {
   const HomeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const HomePage();
-  }
+  Widget build(BuildContext context, GoRouterState state) => const HomePage();
+}
+
+class OnboardingRoute extends GoRouteData {
+  const OnboardingRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const OnboardingPage();
 }
 
 class CollectionRoute extends GoRouteData {

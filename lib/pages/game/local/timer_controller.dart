@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../providers/game/game_providers.dart';
+import '../../../services/game/game_providers.dart';
 import '../../../utils/extensions.dart';
 
 part 'timer_controller.g.dart';

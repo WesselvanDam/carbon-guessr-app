@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../providers/collection/collection_providers.dart';
 import '../../../router/router.dart';
+import '../../../services/collection/collection_providers.dart';
 
 class GameIntro extends ConsumerWidget {
   const GameIntro({
