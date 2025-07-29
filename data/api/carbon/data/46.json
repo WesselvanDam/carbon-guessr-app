@@ -1,0 +1,11 @@
+{
+  "id": 46,
+  "title": "Ferry, car passenger",
+  "quantity": "50 km",
+  "description": "Average emissions for a single passenger with a car aboard a ferry for a distance of 50 km (e.g. Calais-Dover).",
+  "value": 6.4665,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

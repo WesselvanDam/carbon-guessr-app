@@ -1,10 +1,11 @@
 {
   "id": 42,
-  "title": "1 kg of wheat bread",
-  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
-  "value": 1.573823063,
-  "category": "Food",
+  "title": "Short flight, average passenger",
+  "quantity": "1500 km",
+  "description": "Average emissions for a single passenger for a short haul flight of 1500 km (e.g. Rome-Copenhagen). Emissions from aviation have both direct (CO2, CH4 and N2O) and indirect (non-CO2 emissions e.g. water vapour, contrails, NOx) climate change effects. Both types of effects are included.",
+  "value": 191.79,
+  "category": "Transportation",
   "sources": [
-    1
+    2
   ]
 }

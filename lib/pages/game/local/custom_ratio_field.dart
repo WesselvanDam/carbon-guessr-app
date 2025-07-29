@@ -38,11 +38,10 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
 
     // Calculate the relative scale since the last update
     final double relativeScale = details.scale / _previousScale!;
-    debugPrint(
-        'Relative scale: $relativeScale (current: ${details.scale}, previous: $_previousScale)');
 
     final ratio = ref.read(ratioControllerProvider);
-    final newRatio = isFirstSquare ? ratio * relativeScale : ratio / relativeScale;
+    final newRatio =
+        isFirstSquare ? ratio * relativeScale : ratio / relativeScale;
     ref.read(ratioControllerProvider.notifier).set(newRatio);
 
     // Update _previousScale for the next update
@@ -190,6 +189,16 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     );
   }
 
+  /// Calculates the width of a text string given a style.
+  double _calculateTextWidth(String text, TextStyle style) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+    return textPainter.size.width;
+  }
+
   /// A single, unified builder for creating an animatable square.
   Widget _buildSquare({
     required double size,
@@ -210,6 +219,13 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     final onSquareColor = isFirstSquare
         ? Theme.of(context).colorScheme.onSecondaryContainer
         : Theme.of(context).colorScheme.onTertiaryContainer;
+    final labelStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
+          color: onSquareColor,
+          fontWeight: FontWeight.bold,
+        );
+
+    final double labelWidth = _calculateTextWidth(label, labelStyle);
+    final labelFits = labelWidth <= size - 16.0; // 16.0 for padding
 
     return AnimatedContainer(
       duration: _correctRatio != null
@@ -231,15 +247,16 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       child: Align(
         alignment: isFirstSquare ? Alignment.topCenter : Alignment.bottomCenter,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: onSquareColor,
-                  fontWeight: FontWeight.bold,
-                ),
-          ).animate(target: label.trim().isEmpty ? 0 : 1).fadeIn(),
+            style: labelStyle,
+            softWrap: false,
+            overflow: TextOverflow.visible,
+          )
+              .animate(target: (label.trim().isEmpty || !labelFits) ? 0 : 1)
+              .fadeIn(),
         ),
       ),
     );

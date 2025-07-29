@@ -1,10 +1,11 @@
 {
   "id": 41,
-  "title": "1 kg of tomatoes",
-  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
-  "value": 2.0887066549999997,
-  "category": "Food",
+  "title": "Domestic flight, average passenger",
+  "quantity": "500 km",
+  "description": "Average emissions for a single passenger for a domestic flight of 500 km (e.g. London-Edinburgh). Emissions from aviation have both direct (CO2, CH4 and N2O) and indirect (non-CO2 emissions e.g. water vapour, contrails, NOx) climate change effects. Both types of effects are included.",
+  "value": 114.64,
+  "category": "Transportation",
   "sources": [
-    1
+    2
   ]
 }

@@ -1,10 +1,11 @@
 {
   "id": 43,
-  "title": "1 L of wine",
-  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
-  "value": 1.788762819,
-  "category": "Food",
+  "title": "Long flight, economy class",
+  "quantity": "6000 km",
+  "description": "Average emissions for a single passenger flying economy class on a long haul flight of 6000 km (e.g. Amsterdam-New York). Emissions from aviation have both direct (CO2, CH4 and N2O) and indirect (non-CO2 emissions e.g. water vapour, contrails, NOx) climate change effects. Both types of effects are included.",
+  "value": 654.96,
+  "category": "Transportation",
   "sources": [
-    1
+    2
   ]
 }

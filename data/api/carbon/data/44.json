@@ -1,0 +1,11 @@
+{
+  "id": 44,
+  "title": "Long flight, business class",
+  "quantity": "6000 km",
+  "description": "Average emissions for a single passenger flying business class on a long haul flight of 6000 km (e.g. Amsterdam-New York). Emissions from aviation have both direct (CO2, CH4 and N2O) and indirect (non-CO2 emissions e.g. water vapour, contrails, NOx) climate change effects. Both types of effects are included.",
+  "value": 1899.36,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

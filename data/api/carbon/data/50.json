@@ -1,0 +1,11 @@
+{
+  "id": 50,
+  "title": "Electric car ride",
+  "quantity": "50 km",
+  "description": "Average emissions for a 50 km ride in an electric car (EV). This includes average payload, weather effects, driving styles, usage of air conditioning, etc.",
+  "value": 2.0235,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

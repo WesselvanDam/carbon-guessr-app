@@ -1,0 +1,11 @@
+{
+  "id": 51,
+  "title": "Local bus ride, per passenger",
+  "quantity": "5 km",
+  "description": "Average emissions per passenger for a 5 km ride in a local public transit bus.",
+  "value": 0.51925,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

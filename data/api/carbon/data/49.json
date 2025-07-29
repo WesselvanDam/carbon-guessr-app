@@ -1,0 +1,11 @@
+{
+  "id": 49,
+  "title": "Plug-in hybrid car ride",
+  "quantity": "50 km",
+  "description": "Average emissions for a 50 km ride in a plug-in hybrid car. This includes average payload, weather effects, driving styles, usage of air conditioning, etc.",
+  "value": 5.2305,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

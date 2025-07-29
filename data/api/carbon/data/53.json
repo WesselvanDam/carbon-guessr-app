@@ -1,0 +1,11 @@
+{
+  "id": 53,
+  "title": "Regional train ride, per passenger",
+  "quantity": "50 km",
+  "description": "Average emissions per passenger for a 50 km train ride.",
+  "value": 1.773,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

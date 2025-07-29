@@ -1,0 +1,11 @@
+{
+  "id": 47,
+  "title": "Diesel car ride",
+  "quantity": "50 km",
+  "description": "Average emissions for a 50 km ride in a diesel-fueled car. This includes average payload, weather effects, driving styles, usage of air conditioning, etc.",
+  "value": 8.52,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

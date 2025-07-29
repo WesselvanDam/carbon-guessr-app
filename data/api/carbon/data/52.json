@@ -1,0 +1,11 @@
+{
+  "id": 52,
+  "title": "Coach bus ride, per passenger",
+  "quantity": "100 km",
+  "description": "Average emissions per passenger for a 100 km ride in a long-distance coach bus.",
+  "value": 2.727,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}

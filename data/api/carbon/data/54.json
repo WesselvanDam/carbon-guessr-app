@@ -1,0 +1,11 @@
+{
+  "id": 54,
+  "title": "Metro or tram ride, per passenger",
+  "quantity": "5 km",
+  "description": "Average emissions per passenger for a 5 km ride on light rail such as metro or tram.",
+  "value": 0.143,
+  "category": "Transportation",
+  "sources": [
+    2
+  ]
+}
