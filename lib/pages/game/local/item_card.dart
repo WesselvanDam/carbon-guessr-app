@@ -45,21 +45,17 @@ class ItemCard extends ConsumerWidget {
     ));
 
     final colorScheme = Theme.of(context).colorScheme;
-    final Color mainColor =
-        isFirst ? colorScheme.secondary : colorScheme.tertiary;
-    final Color mainContainer = isFirst
-        ? colorScheme.secondaryContainer
-        : colorScheme.tertiaryContainer;
-    final Color onMainContainer = isFirst
-        ? colorScheme.onSecondaryContainer
-        : colorScheme.onTertiaryContainer;
+    final Color mainContainer =
+        isFirst ? colorScheme.primary : colorScheme.tertiaryContainer;
+    final Color onMainContainer =
+        isFirst ? colorScheme.onPrimary : colorScheme.onTertiaryFixedVariant;
 
     return Material(
       color: mainContainer,
       borderRadius: BorderRadius.circular(16.0),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: item == null ? null : () => showDetails(item, context),        
+        onTap: item == null ? null : () => showDetails(item, context),
         child: Container(
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.all(16),
@@ -88,15 +84,20 @@ class ItemCard extends ConsumerWidget {
                 child: Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: Icon(Icons.info_outline, size: 18.0, color: mainColor),
+                      icon: Icon(
+                        Icons.info_outline,
+                        size: 18.0,
+                        color: onMainContainer,
+                      ),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.all(4.0),
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.standard,
                       ),
-                      onPressed:
-                          item == null ? null : () => showDetails(item, context),
+                      onPressed: item == null
+                          ? null
+                          : () => showDetails(item, context),
                     ).animate(target: item == null ? 0 : 1).fadeIn()),
               ),
             ],

@@ -14,6 +14,7 @@ abstract class ItemModel with _$ItemModel {
     required double value,
     required String category,
     required List<int> sources,
+    @Default(true) bool isItemA,
   }) = _ItemModel;
 
   factory ItemModel.fromJson(Map<String, dynamic> json) =>

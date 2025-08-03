@@ -20,7 +20,7 @@ class GameRepository {
     // Create the rounds
     final rounds = List.generate(items.length ~/ 2, (index) {
       final itemA = items[index * 2];
-      final itemB = items[index * 2 + 1];
+      final itemB = items[index * 2 + 1].copyWith(isItemA: false);
 
       final correctRatio = itemA.value / itemB.value;
 

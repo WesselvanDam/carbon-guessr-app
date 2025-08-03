@@ -19,6 +19,9 @@ class SubmitButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isRoundOver =
         ref.watch(timerControllerProvider.select((state) => state == 0));
+    final isLastRound = ref.watch(gameControllerProvider.select((state) =>
+        state.value?.currentRoundIndex ==
+        (state.value?.rounds.length ?? 0) - 1));
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 600),
@@ -60,7 +63,7 @@ class SubmitButton extends ConsumerWidget {
               key: const ValueKey('next'),
               onPressed: () => _nextRound(ref),
               icon: const Icon(Icons.arrow_forward),
-              label: const Text('Next Round'),
+              label: Text(isLastRound ? 'Finish Game' : 'Next Round'),
               style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 foregroundColor: Theme.of(context).colorScheme.onSecondary,

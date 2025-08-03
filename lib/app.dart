@@ -14,12 +14,10 @@ class App extends ConsumerWidget {
     final router =
         ref.watch(routerProvider); // Initialize collection data manager
 
-    final textTheme = createTextTheme(context);
-    final theme = MaterialTheme(textTheme);
     return MaterialApp.router(
       title: 'QuoScient',
       debugShowCheckedModeBanner: false,
-      theme: theme.light(),
+      theme: AppTheme.light,
       routerConfig: router,
       locale: TranslationProvider.of(context).flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,

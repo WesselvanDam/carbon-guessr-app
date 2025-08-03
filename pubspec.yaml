@@ -8,8 +8,10 @@ environment:
   sdk: '>=3.4.1 <4.0.0'
 
 dependencies:
+  confetti: ^0.8.0
   cupertino_icons: ^1.0.6
   dio: ^5.8.0+1
+  flex_color_scheme: ^8.2.0
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.2

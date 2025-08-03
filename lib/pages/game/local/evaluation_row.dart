@@ -73,10 +73,12 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.onSurface,
         );
+
     return SizedBox(
       height: 48,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (isRoundOver && currentRound != null)
             // Show the true ratio if the estimate is submitted
@@ -85,7 +87,7 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 3),
                     child: RichText(
                       text: currentRound.correctRatio.ratioToReadableTextSpan(
                         style: style,
@@ -101,6 +103,8 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
                   ),
                 ],
               ),
@@ -149,6 +153,8 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
                 ),
               ],
             ),
@@ -170,6 +176,8 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
                   ),
                 ],
               ),

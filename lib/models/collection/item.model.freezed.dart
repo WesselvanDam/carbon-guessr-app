@@ -22,6 +22,7 @@ mixin _$ItemModel {
   double get value;
   String get category;
   List<int> get sources;
+  bool get isItemA;
 
   /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
@@ -47,17 +48,18 @@ mixin _$ItemModel {
             (identical(other.value, value) || other.value == value) &&
             (identical(other.category, category) ||
                 other.category == category) &&
-            const DeepCollectionEquality().equals(other.sources, sources));
+            const DeepCollectionEquality().equals(other.sources, sources) &&
+            (identical(other.isItemA, isItemA) || other.isItemA == isItemA));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, title, quantity, description,
-      value, category, const DeepCollectionEquality().hash(sources));
+      value, category, const DeepCollectionEquality().hash(sources), isItemA);
 
   @override
   String toString() {
-    return 'ItemModel(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
+    return 'ItemModel(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources, isItemA: $isItemA)';
   }
 }
 
@@ -73,7 +75,8 @@ abstract mixin class $ItemModelCopyWith<$Res> {
       String description,
       double value,
       String category,
-      List<int> sources});
+      List<int> sources,
+      bool isItemA});
 }
 
 /// @nodoc
@@ -95,6 +98,7 @@ class _$ItemModelCopyWithImpl<$Res> implements $ItemModelCopyWith<$Res> {
     Object? value = null,
     Object? category = null,
     Object? sources = null,
+    Object? isItemA = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -125,6 +129,10 @@ class _$ItemModelCopyWithImpl<$Res> implements $ItemModelCopyWith<$Res> {
           ? _self.sources
           : sources // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      isItemA: null == isItemA
+          ? _self.isItemA
+          : isItemA // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -139,7 +147,8 @@ class _ItemModel implements ItemModel {
       required this.description,
       required this.value,
       required this.category,
-      required final List<int> sources})
+      required final List<int> sources,
+      this.isItemA = true})
       : _sources = sources;
   factory _ItemModel.fromJson(Map<String, dynamic> json) =>
       _$ItemModelFromJson(json);
@@ -163,6 +172,10 @@ class _ItemModel implements ItemModel {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_sources);
   }
+
+  @override
+  @JsonKey()
+  final bool isItemA;
 
   /// Create a copy of ItemModel
   /// with the given fields replaced by the non-null parameter values.
@@ -193,17 +206,18 @@ class _ItemModel implements ItemModel {
             (identical(other.value, value) || other.value == value) &&
             (identical(other.category, category) ||
                 other.category == category) &&
-            const DeepCollectionEquality().equals(other._sources, _sources));
+            const DeepCollectionEquality().equals(other._sources, _sources) &&
+            (identical(other.isItemA, isItemA) || other.isItemA == isItemA));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, title, quantity, description,
-      value, category, const DeepCollectionEquality().hash(_sources));
+      value, category, const DeepCollectionEquality().hash(_sources), isItemA);
 
   @override
   String toString() {
-    return 'ItemModel(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources)';
+    return 'ItemModel(id: $id, title: $title, quantity: $quantity, description: $description, value: $value, category: $category, sources: $sources, isItemA: $isItemA)';
   }
 }
 
@@ -222,7 +236,8 @@ abstract mixin class _$ItemModelCopyWith<$Res>
       String description,
       double value,
       String category,
-      List<int> sources});
+      List<int> sources,
+      bool isItemA});
 }
 
 /// @nodoc
@@ -244,6 +259,7 @@ class __$ItemModelCopyWithImpl<$Res> implements _$ItemModelCopyWith<$Res> {
     Object? value = null,
     Object? category = null,
     Object? sources = null,
+    Object? isItemA = null,
   }) {
     return _then(_ItemModel(
       id: null == id
@@ -274,6 +290,10 @@ class __$ItemModelCopyWithImpl<$Res> implements _$ItemModelCopyWith<$Res> {
           ? _self._sources
           : sources // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      isItemA: null == isItemA
+          ? _self.isItemA
+          : isItemA // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

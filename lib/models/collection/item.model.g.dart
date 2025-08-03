@@ -16,6 +16,7 @@ _ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => _ItemModel(
       sources: (json['sources'] as List<dynamic>)
           .map((e) => (e as num).toInt())
           .toList(),
+      isItemA: json['isItemA'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
@@ -27,4 +28,5 @@ Map<String, dynamic> _$ItemModelToJson(_ItemModel instance) =>
       'value': instance.value,
       'category': instance.category,
       'sources': instance.sources,
+      'isItemA': instance.isItemA,
     };

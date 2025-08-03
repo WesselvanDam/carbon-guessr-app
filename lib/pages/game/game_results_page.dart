@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +13,7 @@ import '../../services/game/game_repository.dart';
 import '../../utils/extensions.dart';
 import '../../widgets/score_pill.dart';
 import 'game_controller.dart';
+import 'local/final_score.dart';
 
 class GameResultsPage extends ConsumerWidget {
   const GameResultsPage({super.key});
@@ -32,43 +34,9 @@ class GameResultsPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Trophy image or icon
-          const Icon(
-            Icons.emoji_events,
-            size: 80,
-            color: Colors.amber,
-          ),
+          CoolScoreWidget(score: totalScore),
 
-          const SizedBox(height: 24),
-
-          // Game mode info
-          Text(
-            '${GameMode.simple == GameMode.simple ? 'Simple' : 'Research'} Mode',
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-
-          const SizedBox(height: 8),
-
-          // Total score
-          Text(
-            'Final Score',
-            style: Theme.of(context).textTheme.headlineMedium,
-            textAlign: TextAlign.center,
-          ),
-
-          const SizedBox(height: 8),
-
-          Text(
-            '${totalScore.toStringAsFixed(0)} / ${maxPossibleScore.toInt()}',
-            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: _getScoreColor(scorePercentage),
-                ),
-            textAlign: TextAlign.center,
-          ),
-
-          const SizedBox(height: 16),
+          const SizedBox(height: 32),
 
           // Feedback message
           Container(
@@ -96,6 +64,9 @@ class GameResultsPage extends ConsumerWidget {
                 ),
               ],
             ),
+          ).animate().fadeIn(
+            duration: 600.ms,
+            delay: 300.ms,
           ),
 
           const SizedBox(height: 32),
@@ -140,6 +111,7 @@ class GameResultsPage extends ConsumerWidget {
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.transparent,
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -157,6 +129,9 @@ class GameResultsPage extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
             ),
+          ).animate().fadeIn(
+            duration: 600.ms,
+            delay: 500.ms,
           ),
 
           ListView.separated(
@@ -165,7 +140,10 @@ class GameResultsPage extends ConsumerWidget {
             itemCount: game.rounds.length,
             separatorBuilder: (context, index) => const Divider(height: 1),
             itemBuilder: (context, index) =>
-                _buildRoundRow(context, game.rounds[index]),
+                _buildRoundRow(context, game.rounds[index]).animate().fadeIn(
+                  duration: 600.ms,
+                  delay: 500.ms + (index * 300).ms,
+                ),
           )
         ],
       ),
@@ -206,25 +184,15 @@ class GameResultsPage extends ConsumerWidget {
 
                 const SizedBox(height: 12),
 
-                // Items side by side
-                Row(
-                  spacing: 2,
-                  children: [
-                    Expanded(
-                      child: _buildItemButton(
-                        context,
-                        round.itemA,
-                        isItemA: true,
-                      ),
-                    ),
-                    Expanded(
-                      child: _buildItemButton(
-                        context,
-                        round.itemB,
-                        isItemA: false,
-                      ),
-                    ),
-                  ],
+                IntrinsicHeight(
+                  child: Row(
+                    spacing: 2,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: _buildItemButton(context, round.itemA)),
+                      Expanded(child: _buildItemButton(context, round.itemB)),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 16), // Results section
@@ -312,18 +280,12 @@ class GameResultsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildItemButton(
-    BuildContext context,
-    ItemModel item, {
-    required bool isItemA,
-  }) {
+  Widget _buildItemButton(BuildContext context, ItemModel item) {
     final colorScheme = Theme.of(context).colorScheme;
-    final backgroundColor = isItemA
-        ? colorScheme.secondaryContainer
-        : colorScheme.tertiaryContainer;
-    final foregroundColor = isItemA
-        ? colorScheme.onSecondaryContainer
-        : colorScheme.onTertiaryContainer;
+    final Color mainContainer =
+        item.isItemA ? colorScheme.primary : colorScheme.tertiaryContainer;
+    final Color onMainContainer =
+        item.isItemA ? colorScheme.onPrimary : colorScheme.onTertiaryFixedVariant;
 
     return OutlinedButton(
       onPressed: () => _showItemDetailsDialog(context, item),
@@ -333,8 +295,8 @@ class GameResultsPage extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         side: BorderSide.none,
-        backgroundColor: backgroundColor,
-        foregroundColor: foregroundColor,
+        backgroundColor: mainContainer,
+        foregroundColor: onMainContainer,
       ),
       child: Row(
         children: [
@@ -348,7 +310,9 @@ class GameResultsPage extends ConsumerWidget {
                 ),
                 Text(
                   item.quantity,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: onMainContainer.withAlpha(180),
+                  ),
                 ),
               ],
             ),
@@ -356,7 +320,7 @@ class GameResultsPage extends ConsumerWidget {
           Icon(
             Icons.info_outline,
             size: 16,
-            color: isItemA ? colorScheme.secondary : colorScheme.tertiary,
+            color: onMainContainer,
           ),
         ],
       ),

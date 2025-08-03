@@ -21,7 +21,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   double? _correctRatio;
 
   // Track pointer locations
-  final Map<int, Offset> _pointerLocations = {};
+  final Map<int, Offset> _pointers = {};
 
   // Track which square is being updated during a gesture
   bool? _isUpdatingFirstSquare;
@@ -107,23 +107,21 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
             size: sizeA,
             containerSize: containerSize,
             isActive: _isUpdatingFirstSquare == true,
-            isFirstSquare: true,
+            isFirst: true,
           );
 
           final squareB = _buildSquare(
             size: sizeB,
             containerSize: containerSize,
             isActive: _isUpdatingFirstSquare == false,
-            isFirstSquare: false,
+            isFirst: false,
           );
 
           return Listener(
-            onPointerDown: (event) =>
-                _pointerLocations[event.pointer] = event.position,
-            onPointerMove: (event) =>
-                _pointerLocations[event.pointer] = event.position,
-            onPointerUp: (event) => _pointerLocations.remove(event.pointer),
-            onPointerCancel: (event) => _pointerLocations.remove(event.pointer),
+            onPointerDown: (event) => _pointers[event.pointer] = event.position,
+            onPointerMove: (event) => _pointers[event.pointer] = event.position,
+            onPointerUp: (event) => _pointers.remove(event.pointer),
+            onPointerCancel: (event) => _pointers.remove(event.pointer),
             child: GestureDetector(
               onScaleStart: (details) {
                 if (_correctRatio != null) {
@@ -133,7 +131,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 final RenderBox? box = context.findRenderObject() as RenderBox?;
                 if (box == null ||
                     details.pointerCount != 2 ||
-                    _pointerLocations.length != 2) {
+                    _pointers.length != 2) {
                   setState(() {
                     _isUpdatingFirstSquare = null;
                     _previousScale = null;
@@ -142,7 +140,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 }
 
                 final Offset center = box.size.center(Offset.zero);
-                final positions = _pointerLocations.values.toList();
+                final positions = _pointers.values.toList();
                 final localPos1 = box.globalToLocal(positions[0]);
                 final localPos2 = box.globalToLocal(positions[1]);
                 final double distanceFromCenter =
@@ -204,25 +202,28 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     required double size,
     required double containerSize,
     required bool isActive,
-    required bool isFirstSquare,
+    required bool isFirst,
   }) {
     final gameValue = ref.watch(gameControllerProvider).value;
     final label = gameValue == null
         ? ' '
-        : isFirstSquare
+        : isFirst
             ? gameValue.currentRound.itemA.title
             : gameValue.currentRound.itemB.title;
-
-    final squareColor = isFirstSquare
-        ? Theme.of(context).colorScheme.secondaryContainer
-        : Theme.of(context).colorScheme.tertiaryContainer;
-    final onSquareColor = isFirstSquare
-        ? Theme.of(context).colorScheme.onSecondaryContainer
-        : Theme.of(context).colorScheme.onTertiaryContainer;
+    final colorScheme = Theme.of(context).colorScheme;
+    final Color mainContainer =
+        isFirst ? colorScheme.primary : colorScheme.tertiaryContainer;
+    final Color onMainContainer =
+        isFirst ? colorScheme.onPrimary : colorScheme.onTertiaryFixedVariant;
     final labelStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
-          color: onSquareColor,
+          color: onMainContainer,
           fontWeight: FontWeight.bold,
         );
+    final borderColor = isActive
+        ? isFirst
+            ? Color.lerp(mainContainer, colorScheme.secondary, 0.5)!
+            : Color.lerp(mainContainer, colorScheme.tertiary, 0.5)!
+        : colorScheme.outlineVariant;
 
     final double labelWidth = _calculateTextWidth(label, labelStyle);
     final labelFits = labelWidth <= size - 16.0; // 16.0 for padding
@@ -235,17 +236,15 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: squareColor,
+        color: mainContainer,
         border: Border.all(
           width: 2.0,
-          color: isActive
-              ? Theme.of(context).colorScheme.outline
-              : Theme.of(context).colorScheme.outlineVariant,
+          color: borderColor,
         ),
         borderRadius: BorderRadius.circular(16.0 * (size / containerSize)),
       ),
       child: Align(
-        alignment: isFirstSquare ? Alignment.topCenter : Alignment.bottomCenter,
+        alignment: isFirst ? Alignment.topCenter : Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
