@@ -1,0 +1,11 @@
+{
+  "id": 56,
+  "title": "MacBook Pro, 16 inch",
+  "quantity": "Unit",
+  "description": "Average carbon footprint for the production and transportation of Apple's MacBook Pro 16 inch laptop, 2024 edition. This does not include the use phase and the 'end of life' phase (such as recycling and waste management). Note that the value used here is from a research done by Apple themselves.\n\nSince laptops come in a wide variety of shapes, sizes, and feature options, it is difficult to define a typical carbon footprint. Additionally, methodologies for determining the footprint differ between companies. For that reason, the value of a single model has been included in this collection instead of an average.",
+  "value": 209.25,
+  "category": "Manufacturing",
+  "sources": [
+    4
+  ]
+}

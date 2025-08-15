@@ -8,7 +8,7 @@ part 'game.model.g.dart';
 /// Enum representing the available game modes
 enum GameMode {
   simple,
-  research,
+  challenge,
 }
 
 /// Represents a full game session containing multiple rounds

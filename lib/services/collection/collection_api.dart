@@ -43,6 +43,7 @@ class CollectionsResponse {
     final items = json['data'] as List<dynamic>;
     final data = {
       for (final item in items)
+        // ignore: avoid_dynamic_calls
         (item['id'] as String):
             CollectionModel.fromJson(item as Map<String, dynamic>)
     };

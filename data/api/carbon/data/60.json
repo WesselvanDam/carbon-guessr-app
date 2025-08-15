@@ -1,0 +1,11 @@
+{
+  "id": 60,
+  "title": "Hardcover book, recycled",
+  "quantity": "Unit",
+  "description": "Average carbon footprint of a hardcover book (320 pages, 0.75 kg) for which the cover and inside papers were produced in the United States and printed in Canada, which is distributed globally, and which is recycled at the end of its 'life'. The calculation covers pulp production, paper production, transport from paper mills to printer, the printing process, and worldwide distribution. ",
+  "value": 1.85,
+  "category": "Manufacturing",
+  "sources": [
+    8
+  ]
+}

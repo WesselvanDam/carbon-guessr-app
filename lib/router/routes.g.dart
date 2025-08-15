@@ -120,7 +120,7 @@ extension $GameRouteExtension on GameRoute {
 
 const _$GameModeEnumMap = {
   GameMode.simple: 'simple',
-  GameMode.research: 'research',
+  GameMode.challenge: 'challenge',
 };
 
 extension<T extends Enum> on Map<T, String> {

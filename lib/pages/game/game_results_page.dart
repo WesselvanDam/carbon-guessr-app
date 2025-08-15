@@ -334,14 +334,6 @@ class GameResultsPage extends ConsumerWidget {
     );
   }
 
-  Color _getScoreColor(int score) {
-    return switch (score) {
-      >= 90 => Colors.green,
-      >= 70 => Colors.orange,
-      _ => Colors.red,
-    };
-  }
-
   String _getFeedbackMessage(int score) {
     if (score >= 90) {
       return 'Excellent! You have a great understanding of carbon footprints!';

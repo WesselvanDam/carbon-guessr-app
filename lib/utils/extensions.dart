@@ -27,7 +27,7 @@ extension GameModeDuration on GameMode {
   int get roundDurationInSeconds {
     return switch (this) {
       GameMode.simple => 30,
-      GameMode.research => 180,
+      GameMode.challenge => 30,
     };
   }
 }

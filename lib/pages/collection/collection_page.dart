@@ -8,6 +8,7 @@ import '../../router/routes.dart';
 import '../../services/collection/collection_providers.dart';
 import '../../services/game/game_repository.dart';
 import '../../utils/extensions.dart';
+import 'challenge_dialog.dart';
 
 class CollectionPage extends ConsumerWidget {
   const CollectionPage({required this.cid, super.key});
@@ -20,9 +21,9 @@ class CollectionPage extends ConsumerWidget {
 
     return collection.when(
       data: (info) {
-        void startGameCallback(GameMode mode) => GameRoute(
+        void startGameCallback(GameMode mode, [String? gameId]) => GameRoute(
               cid: info.id,
-              gid: GameRepository.newGameId,
+              gid: gameId ?? GameRepository.newGameId,
               mode: mode,
             ).go(context);
 
@@ -59,62 +60,64 @@ class CollectionPage extends ConsumerWidget {
             ),
             centerTitle: true,
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  info.tagline,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                  textAlign: TextAlign.start,
-                ),
-                const SizedBox(height: 8),
-                MarkdownBody(
-                  data: info.description,
-                  styleSheet: MarkdownStyleSheet(
-                    p: Theme.of(context).textTheme.bodyLarge,
-                    a: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          decoration: TextDecoration.underline,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    info.tagline,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
+                    textAlign: TextAlign.start,
                   ),
-                  onTapLink: (text, url, title) => url == null
-                      ? null
-                      : launchUrlString(
-                          url,
-                          mode: LaunchMode.externalApplication,
+                  const SizedBox(height: 8),
+                  MarkdownBody(
+                    data: info.description,
+                    styleSheet: MarkdownStyleSheet(
+                      p: Theme.of(context).textTheme.bodyLarge,
+                      a: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                    ),
+                    onTapLink: (text, url, title) => url == null
+                        ? null
+                        : launchUrlString(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Choose a Game Mode',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Choose a Game Mode',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                _buildGameModeCard(
-                  context,
-                  () => startGameCallback(GameMode.simple),
-                  'Simple',
-                  'Match pairs of items within 30 seconds. Trust your intuition.',
-                  Icons.speed,
-                  Theme.of(context).colorScheme.secondary,
-                ),
-                const SizedBox(height: 16),
-                _buildGameModeCard(
-                  context,
-                  () => startGameCallback(GameMode.research),
-                  'Research',
-                  'Take up to 3 minutes to research the items using your browser.',
-                  Icons.search,
-                  Theme.of(context).colorScheme.tertiary,
-                ),
-              ],
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildGameModeCard(
+                    context,
+                    () => startGameCallback(GameMode.simple),
+                    'Simple',
+                    'Match pairs of items within 30 seconds. Trust your intuition.',
+                    Icons.speed,
+                    Theme.of(context).colorScheme.secondary,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildGameModeCard(
+                    context,
+                    () => _showChallengeDialog(context, (gameId) => startGameCallback(GameMode.challenge, gameId)),
+                    'Challenge Friends',
+                    'Share a PIN with friends to compare scores on the same items.',
+                    Icons.people,
+                    Theme.of(context).colorScheme.tertiary,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -139,6 +142,17 @@ class CollectionPage extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showChallengeDialog(
+    BuildContext context,
+    Function(String) startGameCallback,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          ChallengeDialog(startGameCallback: startGameCallback),
     );
   }
 

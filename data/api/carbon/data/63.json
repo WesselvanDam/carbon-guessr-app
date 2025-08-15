@@ -1,0 +1,11 @@
+{
+  "id": 63,
+  "title": "T-shirt",
+  "quantity": "0.2 kg",
+  "description": "Average carbon footprint of the production and transportation of a 200 grams cotton shirt, assuming a transoceanic shipment from Thailand to Europe or the US, and 200 km of transportation over land in a truck.\n\nThe calculation does not include the use phase of the clothing (washing and drying), nor does it include the disposal (recycling, downcycling, or landfilling).",
+  "value": 5.6,
+  "category": "Manufacturing",
+  "sources": [
+    9
+  ]
+}
