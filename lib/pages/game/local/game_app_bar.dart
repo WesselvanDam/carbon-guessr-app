@@ -38,7 +38,7 @@ class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Consumer(builder: (context, ref, _) {
-            final game = ref.watch(gameControllerProvider).valueOrNull;
+            final game = ref.watch(gameControllerProvider).value;
             return Text((game?.isCompleted ?? false)
                 ? 'Game Completed!'
                 : 'Round ${(game?.currentRoundIndex ?? 0) + 1} of ${game?.rounds.length ?? 5}');

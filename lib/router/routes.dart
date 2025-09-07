@@ -39,14 +39,14 @@ class ShellRoute extends ShellRouteData {
   }
 }
 
-class HomeRoute extends GoRouteData {
+class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const HomePage();
 }
 
-class OnboardingRoute extends GoRouteData {
+class OnboardingRoute extends GoRouteData with $OnboardingRoute {
   const OnboardingRoute();
 
   @override
@@ -54,7 +54,7 @@ class OnboardingRoute extends GoRouteData {
       const OnboardingPage();
 }
 
-class CollectionRoute extends GoRouteData {
+class CollectionRoute extends GoRouteData with $CollectionRoute {
   const CollectionRoute({required this.cid});
 
   final String cid;
@@ -65,7 +65,7 @@ class CollectionRoute extends GoRouteData {
   }
 }
 
-class GameRoute extends GoRouteData {
+class GameRoute extends GoRouteData with $GameRoute {
   const GameRoute({required this.cid, required this.gid, required this.mode});
 
   final String cid;

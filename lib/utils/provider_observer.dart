@@ -6,41 +6,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class RiverpodProviderObserver extends ProviderObserver {
   @override
   void didAddProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? value,
-    ProviderContainer container,
   ) =>
       debugPrint(
         '\x1B[34m'
-        '$provider Added\x1B[0m'
+        '${context.provider} Added\x1B[0m'
         '',
       );
 
   @override
   void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
+    ProviderObserverContext context,
   ) =>
       debugPrint(
         '\x1B[35m'
-        '$provider Disposed\x1B[0m'
+        '${context.provider} Disposed\x1B[0m'
         '',
       );
 
   @override
   void didUpdateProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer container,
   ) {
-    if (provider.name?.contains('timerControllerProvider') == true ||
-        provider.name?.contains('ratioControllerProvider') == true) {
+    if (context.provider.name?.contains('timerControllerProvider') == true ||
+        context.provider.name?.contains('ratioControllerProvider') == true) {
       return;
     }
     debugPrint(
       '\x1B[33m'
-      '$provider Updated:\n'
+      '${context.provider} Updated:\n'
       '\tPrevious Value: $previousValue\n'
       '\tNew Value: $newValue\x1B[0m\n'
       '',
@@ -49,15 +46,14 @@ class RiverpodProviderObserver extends ProviderObserver {
 
   @override
   void providerDidFail(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object error,
     StackTrace stackTrace,
-    ProviderContainer container,
   ) =>
       debugPrint(
         '\x1B[31m'
         '$stackTrace\n'
-        '$provider Error: $error\x1B[0m\n'
+        '${context.provider} Error: $error\x1B[0m\n'
         '',
       );
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +22,7 @@ GoRouter router(Ref ref) {
     errorBuilder: (context, state) =>
         const Scaffold(body: Center(child: Text('404'))),
   );
-  
+
   ref.onDispose(router.dispose);
 
   return router;
@@ -31,14 +30,19 @@ GoRouter router(Ref ref) {
 
 @riverpod
 String initialLocation(Ref ref) {
-  final hasSeenOnboarding = ref.read(
-          localStorageBoolProvider(LocalStorageBoolKeys.hasSeenOnboarding)) ??
+  final hasSeenOnboarding =
+      ref.read(
+        localStorageBoolProvider(LocalStorageBoolKeys.hasSeenOnboarding),
+      ) ??
       false;
   return hasSeenOnboarding ? '/' : '/onboarding';
 }
 
 Future<String?> redirect(
-    Ref ref, BuildContext context, GoRouterState state) async {
+  Ref ref,
+  BuildContext context,
+  GoRouterState state,
+) async {
   debugPrint('Redirecting to [32m${state.uri}[0m');
 
   return null;

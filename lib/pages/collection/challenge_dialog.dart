@@ -95,11 +95,12 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant.withAlpha(100),
+            color: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest.withAlpha(100),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: Theme.of(context).colorScheme.outline.withAlpha(150),
-              width: 1,
             ),
           ),
           child: Row(
@@ -108,8 +109,8 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
               Text(
                 _gameId!,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.copy),
@@ -143,11 +144,11 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Game PIN',
               hintText: 'Enter the 8-digit PIN',
-              border: const OutlineInputBorder(),
-              prefixIcon: const Icon(Icons.pin),
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.pin),
             ),
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.bold),

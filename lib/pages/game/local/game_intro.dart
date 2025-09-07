@@ -14,7 +14,7 @@ class GameIntro extends ConsumerWidget {
     final cid = ref.watch(routerProvider.select(
       (router) => router.state.pathParameters['cid'] ?? '',
     ));
-    final collection = ref.watch(collectionProvider(cid)).valueOrNull;
+    final collection = ref.watch(collectionProvider(cid)).value;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

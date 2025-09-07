@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../router/router.dart';
@@ -22,7 +23,7 @@ class RatioController extends _$RatioController {
     // as the smallest ratio that can be achieved with the collection's items.
     ref.listen(
       collectionProvider(cid)
-          .select((collection) => collection.valueOrNull?.ratioBoundary),
+          .select((collection) => collection.value?.ratioBoundary),
       (_, ratioBoundary) {
         _minRatio =
             pow(10, (log(ratioBoundary ?? 0.01) / log(10)).floor()).toDouble();

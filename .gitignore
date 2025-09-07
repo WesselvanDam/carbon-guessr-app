@@ -49,3 +49,7 @@ app.*.map.json
 
 # VS Code settings
 .vscode/
+
+# Generated dart files
+**/*.g.dart
+**/*.freezed.dart

@@ -40,8 +40,8 @@ class ItemCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final item = ref.watch(gameControllerProvider.select(
       (game) => isFirst
-          ? game.valueOrNull?.currentRound.itemA
-          : game.valueOrNull?.currentRound.itemB,
+          ? game.value?.currentRound.itemA
+          : game.value?.currentRound.itemB,
     ));
 
     final colorScheme = Theme.of(context).colorScheme;
