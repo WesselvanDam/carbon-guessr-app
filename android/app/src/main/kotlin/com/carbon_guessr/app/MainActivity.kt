@@ -1,4 +1,4 @@
-package com.carbon_guessr.app
+package com.quoscient.app
 
 import io.flutter.embedding.android.FlutterActivity
 

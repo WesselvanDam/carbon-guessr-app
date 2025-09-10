@@ -18,8 +18,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
   final List<Widget> _pages = const [
     Center(
-        child:
-            Text('Welcome to Carbon Guessr!', style: TextStyle(fontSize: 24))),
+      child: Text('Welcome to Carbon Guessr!', style: TextStyle(fontSize: 24)),
+    ),
     Center(child: Text('Learn how to play.', style: TextStyle(fontSize: 24))),
     Center(child: Text('Ready to start?', style: TextStyle(fontSize: 24))),
   ];
@@ -48,9 +48,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Onboarding'),
-      ),
+      appBar: AppBar(title: const Text('Onboarding')),
       body: Column(
         children: [
           Expanded(
@@ -65,33 +63,49 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
               itemBuilder: (context, index) => _pages[index],
             ),
           ),
-          if (_currentPage == _pages.length - 1)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 32),
-              child: ElevatedButton(
-                onPressed: _onFinishOnboarding,
-                child: const Text('Finish Onboarding'),
-              ),
-            ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: _pages.length,
-              effect: CustomizableEffect(
-                activeDotDecoration: DotDecoration(
-                  width: 16,
-                  height: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(4),
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Expanded(child: SizedBox.shrink()),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: SmoothPageIndicator(
+                        controller: _pageController,
+                        count: _pages.length,
+                        effect: CustomizableEffect(
+                          activeDotDecoration: DotDecoration(
+                            width: 16,
+                            height: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          dotDecoration: DotDecoration(
+                            width: 12,
+                            height: 12,
+                            color: Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                dotDecoration: DotDecoration(
-                  width: 12,
-                  height: 12,
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
+                if (_currentPage == _pages.length - 1)
+                  Expanded(
+                    child: Center(
+                      child: TextButton(
+                        onPressed: _onFinishOnboarding,
+                        child: const Text('Finish'),
+                      ),
+                    ),
+                  )
+                else
+                  const Expanded(child: SizedBox.shrink()),
+              ],
             ),
           ),
         ],
