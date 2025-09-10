@@ -1,6 +1,6 @@
 {
   "id": "electricity_footprint",
-  "quantity": "electricity_footprint",
+  "quantity": "electricity footprint",
   "unit": "kg CO2eq/kWh",
   "title": "carbon footprint of electricity",
   "tagline": "Find out which countries have the greenest electricity",

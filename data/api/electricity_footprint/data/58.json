@@ -2,8 +2,11 @@
   "id": 58,
   "title": "Hungary",
   "quantity": "1 kWh",
-  "description": "Consuming 1 kWh of electricity requires *generating more* than 1 kWh because of losses occuring during transmission and distribution (T&D losses, e.g. through the electricity grid). The amount of T&D losses varies regionally as well. The carbon footprint value used here comes from the generation intensity of 2024 and the T&D losses from 2023",
+  "description": "Consuming 1 kWh of electricity requires *generating more* than 1 kWh because of losses occuring during transmission and distribution (T&D losses, e.g. through the electricity grid). The amount of T&D losses varies regionally as well. The carbon footprint value used here comes from the generation intensity of 2024 and the T&D losses from 2023.",
   "value": 0.19651852002179176,
-  "category": "",
-  "sources": []
+  "category": "Country",
+  "sources": [
+    1,
+    2
+  ]
 }

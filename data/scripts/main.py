@@ -175,10 +175,10 @@ def process_data_sheet(
         for _, row in df.iterrows():
             data_id = int(row["id"])
 
-            # Process sources (comma-separated list of IDs)
+            # Process sources (comma-separated or period-separated list of IDs)
             sources_str = str(row["sources"]) if not pd.isna(row["sources"]) else ""
-            source_ids = [
-                int(s.strip()) for s in sources_str.split(",") if s.strip().isdigit()
+            source_ids = [ # Split by both commas and periods
+                int(s.strip()) for s in sources_str.replace('.', ',').split(',') if s.strip().isdigit()
             ]
 
             # Update the source to data map
