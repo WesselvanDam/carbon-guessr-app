@@ -7,8 +7,18 @@
       "title": "everyday climate impact",
       "tagline": "Get to know what activities contribute the most to climate change",
       "description": "Ever wondered about the climate impact of your daily choices? This collection measures the [carbon footprint](https://en.wikipedia.org/wiki/Carbon_footprint) of various items and activities, such as food production, electricity usage, and transportation. It expresses these footprints in kilograms of CO2 equivalent (kg CO2eq), and by comparing these values you'll learn which activities have a large impact on our planet's climate and which are less important.",
-      "size": 63,
+      "size": 64,
       "ratioBoundary": 7.5e-05
+    },
+    {
+      "id": "electricity_footprint",
+      "quantity": "electricity_footprint",
+      "unit": "kg CO2eq/kWh",
+      "title": "carbon footprint of electricity",
+      "tagline": "Find out which countries have the greenest electricity",
+      "description": "Electricity powers many devices you use everyday: phones and laptops, fridges and microwaves, lamps and fans, and even some cars, buses and trains! The climate impact of using these devices is determined in part by where you live: the electricity in your area may come from low-carbon sources (wind, solar, nuclear, etc.) or high carbon sources (coal, oil and gas). This collection measures the [carbon footprint](https://en.wikipedia.org/wiki/Carbon_footprint) of electricity per country in kilograms of CO2 equivalent (kg CO2eq), and by comparing these values you'll learn which countries have the greenest electricity. Note, however, that due to regional differences (and, for example, whether you have solar panels on your roof) the value for your country may not be representative for the electricity coming from your own power outlets",
+      "size": 151,
+      "ratioBoundary": 0.016311
     }
   ]
 }

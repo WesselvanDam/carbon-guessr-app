@@ -1,0 +1,11 @@
+{
+  "id": 64,
+  "title": "Google Drive storage, per year",
+  "quantity": "1 GB",
+  "description": "Average carbon footprint associated with cloud data storage, due to electricity used by the data centres. The value is representative for Google's cloud storage in Europe, and does not included the uploading phase of storing data in the cloud. In other area's, the value might be different due to differences in the electricity mix.",
+  "value": 0.98,
+  "category": "Infrastructure",
+  "sources": [
+    10
+  ]
+}

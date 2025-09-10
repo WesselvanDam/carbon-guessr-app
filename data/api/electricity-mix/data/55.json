@@ -1,0 +1,9 @@
+{
+  "id": 55,
+  "title": "Haiti",
+  "quantity": "1 kWh",
+  "description": "Consuming 1 kWh of electricity requires *generating more* than 1 kWh because of losses occuring during transmission and distribution (T&D losses, e.g. through the electricity grid). The amount of T&D losses varies regionally as well. The carbon footprint value used here comes from the generation intensity of 2022 and the T&D losses from 2022",
+  "value": 0.6284196771196284,
+  "category": "",
+  "sources": []
+}

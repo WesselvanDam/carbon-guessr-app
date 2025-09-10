@@ -2,7 +2,7 @@
   "id": 36,
   "title": "Sunflower oil",
   "quantity": "1 L",
-  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses)",
+  "description": "Average emissions across the supply chain (land use change, transport, processing, packaging, retail, and losses). Note that the value is a global average, and therefore the food available at your location may have a significantly different footprint, although the transport, retail and packaging phases typically make up but a small fraction of the emissions.",
   "value": 3.5994784650000007,
   "category": "Food Production",
   "sources": [
