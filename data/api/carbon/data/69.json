@@ -1,0 +1,13 @@
+{
+  "id": 69,
+  "title": "Washing machine, US",
+  "quantity": "1 cycle",
+  "description": "Average carbon footprint stemming from the electricity use of running a washing machine from the American market one full cycle, including power used when idle between cycles.\n\nThe calculation is made using the average energy consumption per cycle of washing machines sold in 2020 in Canada, multiplied by the carbon footprint per kWh of electricity in the United States, thus assuming that the average Canadian washing machine resembles the American one.",
+  "value": 0.1858250847457627,
+  "category": "Electricity use",
+  "sources": [
+    11,
+    12,
+    13
+  ]
+}

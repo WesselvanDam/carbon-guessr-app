@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../models/game/game.model.dart';
@@ -69,5 +71,23 @@ extension ReadableRatio on double {
     final String left = this < 1 ? '1' : toStringAsFixed(2);
     final String right = this <= 1 ? (1 / this).toStringAsFixed(2) : '1';
     return '$left : $right';
+  }
+}
+
+extension SignificantFigures on double {
+  /// Rounds a double to a specified number of significant figures
+  num toSignificantFigures(int n) {
+    if (isNaN || isInfinite || this == 0) {
+      return this;
+    }
+    final d = (log(abs()) / ln10).floor() + 1;
+    final power = n - d;
+    final magnitude = pow(10, power);
+    final shifted = (this * magnitude).round();
+    final result = shifted / magnitude;
+    if (result == result.toInt()) {
+      return result.toInt();
+    }
+    return result;
   }
 }

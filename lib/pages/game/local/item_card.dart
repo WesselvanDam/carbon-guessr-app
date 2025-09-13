@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/collection/item.model.dart';
 import '../game_controller.dart';
+import 'item_details_dialog.dart';
 
 class ItemCard extends ConsumerWidget {
   const ItemCard({super.key, this.isFirst = false});
@@ -14,48 +15,40 @@ class ItemCard extends ConsumerWidget {
 
   final bool isFirst;
 
-  void showDetails(ItemModel item, BuildContext context) {
-    showDialog<void>(
+  void _showItemDetailsDialog(BuildContext context, ItemModel item) {
+    showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          item.title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        content: Text(
-          item.description,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
+      builder: (context) =>
+          ItemDetailsDialog(item: item, showValue: false, showSources: false),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final item = ref.watch(gameControllerProvider.select(
-      (game) => isFirst
-          ? game.value?.currentRound.itemA
-          : game.value?.currentRound.itemB,
-    ));
+    final item = ref.watch(
+      gameControllerProvider.select(
+        (game) => isFirst
+            ? game.value?.currentRound.itemA
+            : game.value?.currentRound.itemB,
+      ),
+    );
 
     final colorScheme = Theme.of(context).colorScheme;
-    final Color mainContainer =
-        isFirst ? colorScheme.primary : colorScheme.tertiaryContainer;
-    final Color onMainContainer =
-        isFirst ? colorScheme.onPrimary : colorScheme.onTertiaryFixedVariant;
+    final Color mainContainer = isFirst
+        ? colorScheme.primary
+        : colorScheme.tertiaryContainer;
+    final Color onMainContainer = isFirst
+        ? colorScheme.onPrimary
+        : colorScheme.onTertiaryFixedVariant;
 
     return Material(
       color: mainContainer,
       borderRadius: BorderRadius.circular(16.0),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: item == null ? null : () => showDetails(item, context),
+        onTap: item == null
+            ? null
+            : () => _showItemDetailsDialog(context, item),
         child: Container(
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.all(16),
@@ -66,39 +59,40 @@ class ItemCard extends ConsumerWidget {
               Text(
                 item == null ? ' ' : '${item.category} · ${item.quantity}',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: onMainContainer.withAlpha(180),
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: onMainContainer.withAlpha(180),
+                  fontWeight: FontWeight.w600,
+                ),
               ).animate(target: item == null ? 0 : 1).fadeIn(),
               const SizedBox(height: 8.0),
               Text(
                 item?.title ?? ' ',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: onMainContainer,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: onMainContainer,
+                  fontWeight: FontWeight.bold,
+                ),
               ).animate(target: item == null ? 0 : 1).fadeIn(),
               const Expanded(child: SizedBox.shrink()),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.info_outline,
-                        size: 18.0,
-                        color: onMainContainer,
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.all(4.0),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.standard,
-                      ),
-                      onPressed: item == null
-                          ? null
-                          : () => showDetails(item, context),
-                    ).animate(target: item == null ? 0 : 1).fadeIn()),
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.info_outline,
+                      size: 18.0,
+                      color: onMainContainer,
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(4.0),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.standard,
+                    ),
+                    onPressed: item == null
+                        ? null
+                        : () => _showItemDetailsDialog(context, item),
+                  ).animate(target: item == null ? 0 : 1).fadeIn(),
+                ),
               ),
             ],
           ),

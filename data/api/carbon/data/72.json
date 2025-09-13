@@ -1,0 +1,13 @@
+{
+  "id": 72,
+  "title": "Laundry dryer, EU",
+  "quantity": "1 cycle",
+  "description": "Average carbon footprint stemming from the electricity use of running a laundry drier from the European Union (EU) market one full cycle, including power used when idle between two cycles.\n\nThe calculation is made using the average annual energy consumption of laundry machines sold in 2020 in the EU, multiplied by the carbon footprint per kWh of electricity in the EU.",
+  "value": 0.3547808411214953,
+  "category": "Electricity use",
+  "sources": [
+    11,
+    12,
+    14
+  ]
+}

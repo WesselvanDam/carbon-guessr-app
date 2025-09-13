@@ -1,0 +1,13 @@
+{
+  "id": 74,
+  "title": "Mid-range smartphone, US",
+  "quantity": "1 year",
+  "description": "Average annual carbon footprint stemming from the electricity use of charging a mid-range smartphone in the United States.\n\nThe calculation is made using the average annual energy consumption of this type of smartphones sold in 2020 in the EU, multiplied by the carbon footprint per kWh of electricity in the US, thus assuming that the average European mid-range smartphone resembles the American one.",
+  "value": 3.85536,
+  "category": "Electricity use",
+  "sources": [
+    11,
+    12,
+    14
+  ]
+}

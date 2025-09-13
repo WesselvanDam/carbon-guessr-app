@@ -1,0 +1,13 @@
+{
+  "id": 66,
+  "title": "Fridge freezer, EU",
+  "quantity": "1 day",
+  "description": "Average daily carbon footprint stemming from the electricity use of running a refrigerator-freezer from the European Union (EU) market.\n\nThe calculation is made using the average annual energy consumption of this type of refrigerators sold in 2020 in the EU, multiplied by the carbon footprint per kWh of electricity in the EU.",
+  "value": 0.12541255852156058,
+  "category": "Electricity use",
+  "sources": [
+    11,
+    12,
+    14
+  ]
+}

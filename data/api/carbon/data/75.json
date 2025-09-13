@@ -1,0 +1,13 @@
+{
+  "id": 75,
+  "title": "High-end smartphone, EU",
+  "quantity": "1 year",
+  "description": "Average annual carbon footprint stemming from the electricity use of charging a high-end smartphone in the European Union.\n\nThe calculation is made using the average annual energy consumption of this type of smartphones sold in 2020 in the EU, multiplied by the carbon footprint per kWh of electricity in the EU.",
+  "value": 3.0875394,
+  "category": "Electricity use",
+  "sources": [
+    11,
+    12,
+    14
+  ]
+}

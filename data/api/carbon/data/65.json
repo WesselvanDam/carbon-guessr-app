@@ -1,0 +1,13 @@
+{
+  "id": 65,
+  "title": "Fridge freezer, US",
+  "quantity": "1 day",
+  "description": "Average daily carbon footprint stemming from the electricity use of running a refrigerator-freezer from the American market, with automatic defrost and bottom-mounted freezer, but without through-the-door ice service.\n\nThe calculation is made using the average annual energy consumption of this type of refrigerators ('Type 5') sold in 2021 in Canada, multiplied by the carbon footprint per kWh of electricity in the United States, thus assuming that the average Canadian Type 5 fridge-freezer resembles the American one.",
+  "value": 0.6382718685831622,
+  "category": "Electricity use",
+  "sources": [
+    11,
+    12,
+    13
+  ]
+}

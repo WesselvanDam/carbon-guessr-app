@@ -11,6 +11,7 @@ abstract class Source with _$Source {
     required String title,
     required String mla,
     required String url,
+    @JsonKey(name: 'cited_by')
     required List<int> citedBy,
   }) = _Source;
 

@@ -21,7 +21,7 @@ CollectionApi collectionService(Ref ref, String collectionId) {
 }
 
 /// Provider for the CollectionRepository
-@riverpod
+@Riverpod(keepAlive: true)
 CollectionRepository collectionRepository(Ref ref, String collectionId) {
   final service = ref.watch(collectionServiceProvider(collectionId));
   return CollectionRepository(service, collectionId);
@@ -82,10 +82,9 @@ Future<List<ItemModel>> collectionItemsByIds(
 /// Provider for sources of a specific collection item
 @riverpod
 Future<List<Source>> collectionItemSources(
-    Ref ref, String collectionId, int itemId) async {
+    Ref ref, String collectionId, List<int> sources) {
   final repository = ref.watch(collectionRepositoryProvider(collectionId));
-  final item = await repository.getItem(itemId);
-  return repository.getAllSources(item.sources);
+  return repository.getAllSources(sources);
 }
 
 /// Provider for a localized collection item
