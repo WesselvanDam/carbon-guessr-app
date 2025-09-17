@@ -18,7 +18,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_markdown_plus: ^1.0.3
-  flutter_riverpod: ^3.0.0-dev.17
+  flutter_riverpod: ^3.0.0
   flutter_web_plugins:
     sdk: flutter
   freezed_annotation: ^3.1.0
@@ -27,7 +27,7 @@ dependencies:
   intl: ^0.20.2
   json_annotation: ^4.9.0
   retrofit: ^4.4.2
-  riverpod_annotation: ^3.0.0-dev.17
+  riverpod_annotation: ^3.0.0
   shared_preferences: ^2.2.2
   skeletonizer: ^2.1.0+1
   slang: ^4.1.0
@@ -46,13 +46,11 @@ dev_dependencies:
   json_serializable: ^6.8.0
   lint: ^2.3.0
   retrofit_generator: ^10.0.0
-  riverpod_generator: ^3.0.0-dev.17
-  riverpod_lint: ^3.0.0-dev.17
+  riverpod_generator: ^3.0.0
+  riverpod_lint: ^3.0.0
 
 dependency_overrides:
-  # analyzer: 7.3.0
   analyzer_plugin: 0.13.4
-  # custom_lint_visitor: 1.0.0+7.3.0
 
 flutter:
   uses-material-design: true

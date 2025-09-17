@@ -9,7 +9,7 @@ part 'http_client.g.dart';
 const String _baseUrl =
     'https://raw.githubusercontent.com/WesselvanDam/carbon-guessr-app/refs/heads/main/data/api';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Dio httpClient(Ref ref) {
   final dio = Dio();
 

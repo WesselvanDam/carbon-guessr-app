@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RiverpodProviderObserver extends ProviderObserver {
+base class RiverpodProviderObserver extends ProviderObserver {
   @override
   void didAddProvider(
     ProviderObserverContext context,

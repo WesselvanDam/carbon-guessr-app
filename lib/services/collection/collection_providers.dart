@@ -12,7 +12,7 @@ import 'collection_repository.dart';
 part 'collection_providers.g.dart';
 
 /// Provider for the CollectionService
-@riverpod
+@Riverpod(keepAlive: true)
 CollectionApi collectionService(Ref ref, String collectionId) {
   final dio = ref.watch(httpClientProvider);
   final service = CollectionApi(dio);
