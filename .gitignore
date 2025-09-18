@@ -53,3 +53,6 @@ app.*.map.json
 # Generated dart files
 **/*.g.dart
 **/*.freezed.dart
+
+# Temporary Excel files
+~$*.xlsx
