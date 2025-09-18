@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'app.dart';
+import 'core/app.dart';
 import 'i18n/strings.g.dart';
-import 'services/local_storage/local_storage_providers.dart';
-import 'utils/provider_observer.dart';
+import 'local_storage/local_storage_providers.dart';
+import 'logs/provider_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

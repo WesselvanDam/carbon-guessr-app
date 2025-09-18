@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/game/game.model.dart';
-import '../pages/collection/collection_page.dart';
-import '../pages/game/game_page.dart';
+import '../constants/game_mode.dart';
+import '../src/features/collection/pages/collection_page.dart';
+import '../src/features/game/pages/game_page.dart';
+import '../src/features/home/pages/home_page.dart';
+import '../src/features/onboarding/pages/onboarding_page.dart';
 
-import '../pages/home/home_page.dart';
-import '../pages/onboarding/onboarding_page.dart';
 
 part 'routes.g.dart';
 
