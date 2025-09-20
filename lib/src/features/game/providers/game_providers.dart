@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../constants/game_mode.dart';
 import '../../../../router/router.dart';
+import '../../collection/providers/collection_providers.dart';
 import '../repository/game_repository.dart';
 
 part 'game_providers.g.dart';
@@ -15,17 +18,32 @@ GameRepository gameService(Ref ref) {
 
 @riverpod
 String gameId(Ref ref) {
-  return ref.watch(routerProvider.select(
-    (router) => router.state.pathParameters['gid'] ?? '',
-  ));
+  return ref.watch(
+    routerProvider.select((router) => router.state.pathParameters['gid'] ?? ''),
+  );
 }
 
 @riverpod
 GameMode gameMode(Ref ref) {
-  final mode = ref.watch(routerProvider.select(
-    (router) => GameMode.values.byName(
-      router.state.uri.queryParameters['mode'] ?? GameMode.simple.name,
+  final mode = ref.watch(
+    routerProvider.select(
+      (router) => GameMode.values.byName(
+        router.state.uri.queryParameters['mode'] ?? GameMode.simple.name,
+      ),
     ),
-  ));
+  );
   return mode;
+}
+
+@riverpod
+double minRatio(Ref ref) {
+  final cid = ref.watch(
+    routerProvider.select((router) => router.state.pathParameters['cid'] ?? ''),
+  );
+
+  final ratioBoundary = cid.isEmpty
+      ? 0.01
+      : ref.watch(collectionProvider(cid)).value?.ratioBoundary ?? 0.01;
+
+  return pow(10, (log(ratioBoundary) / log(10)).floor()).toDouble();
 }
