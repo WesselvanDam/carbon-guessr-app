@@ -168,9 +168,6 @@ def process_data_sheet(
         data_dir = os.path.join(output_dir, "data")
         log_and_ensure_directory_exists(data_dir)
 
-        # Dictionary to map source IDs to data IDs
-        source_to_data_map: Dict[int, List[int]] = {}
-
         # Process each row
         for _, row in df.iterrows():
             data_id = int(row["id"])
@@ -181,11 +178,6 @@ def process_data_sheet(
                 int(s.strip()) for s in sources_str.replace('.', ',').split(',') if s.strip().isdigit()
             ]
 
-            # Update the source to data map
-            for source_id in source_ids:
-                if source_id not in source_to_data_map:
-                    source_to_data_map[source_id] = []
-                source_to_data_map[source_id].append(data_id)  # Create the data object
             data_obj = {
                 "id": data_id,
                 "title": row["title"] if not pd.isna(row["title"]) else "",
@@ -206,7 +198,6 @@ def process_data_sheet(
 
             print(f"Created {os.path.join(data_dir, f'{data_id}.json')}")
 
-        return source_to_data_map
     except Exception as e:
         logging.error(f"Error processing data sheet: {e}")
         raise
@@ -216,7 +207,6 @@ def process_sources_sheet(
     workbook_path: str,
     sheet_name: str,
     output_dir: str,
-    cited_by_map: Dict[int, List[int]],
 ) -> None:
     """Process the sources sheet and convert each row to a JSON file."""
     try:
@@ -232,16 +222,12 @@ def process_sources_sheet(
         for _, row in df.iterrows():
             source_id = int(row["id"])
 
-            # Get the list of data IDs that cite this source
-            cited_by = cited_by_map.get(source_id, [])
-
             # Create the source object
             source_obj = {
                 "id": source_id,
                 "title": row["title"] if not pd.isna(row["title"]) else "",
                 "mla": row["mla"] if not pd.isna(row["mla"]) else "",
                 "url": row["url"] if not pd.isna(row["url"]) else "",
-                "cited_by": cited_by,
             }
 
             # Write the data to a JSON file
@@ -359,11 +345,11 @@ def process_workbook(workbook_path: str, output_base_dir: str) -> None:
     # Process the info sheet
     process_info_sheet(workbook_path, "info", output_dir)
 
-    # Process the data sheet and get the source to data mapping
-    source_to_data_map = process_data_sheet(workbook_path, "data", output_dir)
+    # Process the data sheet
+    process_data_sheet(workbook_path, "data", output_dir)
 
-    # Process the sources sheet with the source to data mapping
-    process_sources_sheet(workbook_path, "sources", output_dir, source_to_data_map)
+    # Process the sources sheet
+    process_sources_sheet(workbook_path, "sources", output_dir)
 
     # Process the l10n sheet
     process_l10n_sheet(workbook_path, "l10n", output_dir)
