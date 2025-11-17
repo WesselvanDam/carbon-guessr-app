@@ -20,3 +20,8 @@ linter:
     sort_constructors_first: true
     always_put_control_body_on_new_line: true
     always_put_required_named_parameters_first: true
+
+custom_lint:
+  rules:
+    - scoped_providers_should_specify_dependencies: false
+    - provider_dependencies: false

@@ -5,7 +5,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../local_storage/local_storage_keys.dart';
 import '../../../../local_storage/local_storage_providers.dart';
 import '../../../../router/routes.dart';
-
+import 'local/next_button.dart';
+import 'local/welcome_page.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
@@ -17,15 +18,15 @@ class OnboardingPage extends ConsumerStatefulWidget {
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final PageController _pageController = PageController();
 
-  final List<Widget> _pages = const [
-    Center(
-      child: Text('Welcome to Carbon Guessr!', style: TextStyle(fontSize: 24)),
+  final List<Widget> _pages = [
+    const WelcomePage(),
+    const Center(
+      child: Text('Learn how to play.', style: TextStyle(fontSize: 24)),
     ),
-    Center(child: Text('Learn how to play.', style: TextStyle(fontSize: 24))),
-    Center(child: Text('Ready to start?', style: TextStyle(fontSize: 24))),
+    const Center(
+      child: Text('Ready to start?', style: TextStyle(fontSize: 24)),
+    ),
   ];
-
-  int _currentPage = 0;
 
   @override
   void dispose() {
@@ -33,35 +34,22 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     super.dispose();
   }
 
-  void _onFinishOnboarding() {
-    try {
-      ref
-          .read(localStorageRepositoryProvider)
-          .setBool(LocalStorageBoolKeys.hasSeenOnboarding, true);
-      if (context.mounted) {
-        const HomeRoute().go(context);
-      }
-    } catch (e, stack) {
-      debugPrint('Error finishing onboarding: $e\n$stack');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Onboarding')),
       body: Column(
         children: [
           Expanded(
             child: PageView.builder(
               controller: _pageController,
               itemCount: _pages.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              itemBuilder: (context, index) => _pages[index],
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: _pages[index],
+                ),
+              ),
             ),
           ),
           Padding(
@@ -87,7 +75,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                           dotDecoration: DotDecoration(
                             width: 12,
                             height: 12,
-                            color: Theme.of(context).colorScheme.primaryContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -95,17 +85,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     ),
                   ),
                 ),
-                if (_currentPage == _pages.length - 1)
-                  Expanded(
-                    child: Center(
-                      child: TextButton(
-                        onPressed: _onFinishOnboarding,
-                        child: const Text('Finish'),
-                      ),
-                    ),
-                  )
-                else
-                  const Expanded(child: SizedBox.shrink()),
+                Expanded(child: NextButton(pageController: _pageController)),
               ],
             ),
           ),

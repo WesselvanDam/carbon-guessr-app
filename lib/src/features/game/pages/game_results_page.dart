@@ -31,9 +31,9 @@ class GameResultsPage extends ConsumerWidget {
     final feedbackMessage = _getFeedbackMessage(scorePercentage);
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const .all(24.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: .stretch,
         children: [
           CoolScoreWidget(score: totalScore),
 
@@ -43,9 +43,9 @@ class GameResultsPage extends ConsumerWidget {
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: .circular(8),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            padding: const .symmetric(vertical: 20, horizontal: 16),
             child: Row(
               children: [
                 Icon(
@@ -58,9 +58,9 @@ class GameResultsPage extends ConsumerWidget {
                   child: Text(
                     feedbackMessage,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: .w600,
                         ),
-                    textAlign: TextAlign.left,
+                    textAlign: .left,
                   ),
                 ),
               ],
@@ -79,9 +79,9 @@ class GameResultsPage extends ConsumerWidget {
 
           // Action buttons
           OverflowBar(
-            alignment: MainAxisAlignment.end,
-            overflowAlignment: OverflowBarAlignment.center,
-            overflowDirection: VerticalDirection.up,
+            alignment: .end,
+            overflowAlignment: .center,
+            overflowDirection: .up,
             spacing: 16,
             children: [
               TextButton(
@@ -110,23 +110,23 @@ class GameResultsPage extends ConsumerWidget {
   Widget _buildRoundDetailsCard(BuildContext context, GameModel game) {
     return Card(
       elevation: 0,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: .zero,
+      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
       color: Colors.transparent,
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: .antiAlias,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: .stretch,
         children: [
           // Header with stylized background
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
             ),
-            padding: const EdgeInsets.all(16.0),
+            padding: const .all(16.0),
             child: Text(
               'Game Breakdown',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: .bold,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
             ),
@@ -154,7 +154,7 @@ class GameResultsPage extends ConsumerWidget {
   Widget _buildRoundRow(BuildContext context, RoundModel round) {
     final score = round.score;
     final valueStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
-          fontWeight: FontWeight.bold,
+          fontWeight: .bold,
         );
     final labelStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -167,18 +167,18 @@ class GameResultsPage extends ConsumerWidget {
             : Theme.of(context).colorScheme.surfaceContainerLow,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const .all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 // Round number label
                 Text(
                   'ROUND ${round.roundNumber}',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: .bold,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                 ),
@@ -188,7 +188,7 @@ class GameResultsPage extends ConsumerWidget {
                 IntrinsicHeight(
                   child: Row(
                     spacing: 2,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: .stretch,
                     children: [
                       Expanded(child: _buildItemButton(context, round.itemA)),
                       Expanded(child: _buildItemButton(context, round.itemB)),
@@ -200,26 +200,26 @@ class GameResultsPage extends ConsumerWidget {
                 SizedBox(
                   height: 48,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: .stretch,
                     children: [
                       // User estimate
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: .spaceEvenly,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              padding: const .symmetric(vertical: 2),
                               child: Text(
                                 round.userEstimate?.ratioToReadableString() ??
                                     'N/A',
-                                textAlign: TextAlign.center,
+                                textAlign: .center,
                                 style: valueStyle,
                               ),
                             ),
                             Text(
                               'YOUR GUESS',
                               style: labelStyle,
-                              textAlign: TextAlign.center,
+                              textAlign: .center,
                             ),
                           ],
                         ),
@@ -228,20 +228,20 @@ class GameResultsPage extends ConsumerWidget {
                       // Correct ratio
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: .spaceEvenly,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              padding: const .symmetric(vertical: 2),
                               child: Text(
                                 round.correctRatio.ratioToReadableString(),
-                                textAlign: TextAlign.center,
+                                textAlign: .center,
                                 style: valueStyle,
                               ),
                             ),
                             Text(
                               'TRUE RATIO',
                               style: labelStyle,
-                              textAlign: TextAlign.center,
+                              textAlign: .center,
                             ),
                           ],
                         ),
@@ -250,14 +250,14 @@ class GameResultsPage extends ConsumerWidget {
                       // Points
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: .spaceEvenly,
                           children: [
                             ScorePill(
                               score: score,
                               style: valueStyle.copyWith(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: .bold,
                               ),
-                              padding: const EdgeInsets.symmetric(
+                              padding: const .symmetric(
                                 horizontal: 12,
                                 vertical: 2,
                               ),
@@ -265,7 +265,7 @@ class GameResultsPage extends ConsumerWidget {
                             Text(
                               'POINTS',
                               style: labelStyle,
-                              textAlign: TextAlign.center,
+                              textAlign: .center,
                             ),
                           ],
                         ),
@@ -291,11 +291,9 @@ class GameResultsPage extends ConsumerWidget {
     return OutlinedButton(
       onPressed: () => _showItemDetailsDialog(context, item),
       style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        side: BorderSide.none,
+        padding: const .symmetric(vertical: 8, horizontal: 12),
+        shape: RoundedRectangleBorder(borderRadius: .circular(8)),
+        side: .none,
         backgroundColor: mainContainer,
         foregroundColor: onMainContainer,
       ),
@@ -303,11 +301,11 @@ class GameResultsPage extends ConsumerWidget {
         children: [
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text(
                   item.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: .bold),
                 ),
                 Text(
                   item.quantity,
