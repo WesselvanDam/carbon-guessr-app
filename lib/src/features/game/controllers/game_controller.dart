@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../collection/providers/collection_providers.dart';
@@ -10,7 +11,7 @@ part 'game_controller.g.dart';
 
 @riverpod
 class GameController extends _$GameController {
-  late double _ratioBoundary;
+  double _ratioBoundary = 0.001;
 
   @override
   FutureOr<GameModel> build() async {
@@ -38,7 +39,7 @@ class GameController extends _$GameController {
   }
 
   void onSubmit() {
-    final gameService = ref.watch(gameServiceProvider);
+    final gameService = ref.read(gameServiceProvider);
     if (!state.hasValue || state.value == null) {
       return;
     }

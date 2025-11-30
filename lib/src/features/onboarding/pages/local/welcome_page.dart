@@ -17,10 +17,11 @@ class WelcomePage extends ConsumerWidget {
     const baseItem = ItemModel(
       id: 1,
       title: 'Square A',
-      description: 'This is a sample item used in onboarding.',
+      description:
+          'Congratulations! You have found the description of this item. Once you are playing an actual game, this is where you would find additional information about the item, which will help you in determining the correct ratio between this item and the other item in the round.',
       value: 100,
-      quantity: 'Units',
-      category: 'Category',
+      quantity: '',
+      category: '',
       sources: [],
     );
 
@@ -28,7 +29,7 @@ class WelcomePage extends ConsumerWidget {
       correctRatio: 2,
       roundNumber: 0,
       itemA: baseItem,
-      itemB: baseItem.copyWith(id: 2, title: 'Square B Long Title', value: 200),
+      itemB: baseItem.copyWith(id: 2, title: 'Square B', value: 200),
     );
 
     final game = GameModel(rounds: [round]);
@@ -44,20 +45,22 @@ class WelcomePage extends ConsumerWidget {
       ],
       child: SingleChildScrollView(
         child: Column(
-          spacing: 16,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 24,
           children: [
             Text(
-              'Welcome to Quoscient!',
+              'Welcome To Quoscient!',
               style: baseStyle.copyWith(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
             ),
             Text(
               'To continue, pinch the squares until square B is twice the size of square A.',
-              style: baseStyle.copyWith(fontSize: 18),
-              textAlign: TextAlign.center,
+              style: baseStyle.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const CustomRatioField(),
             Consumer(

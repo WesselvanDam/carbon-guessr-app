@@ -71,7 +71,9 @@ class CollectionCard extends ConsumerWidget {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
                     ),
-                    onPressed: () =>
+                    onPressed: collection.id == 'onboarding_collection'
+                        ? null
+                        :() =>
                         CollectionRoute(cid: collection.id).go(context),
                   ),
                 ],

@@ -11,7 +11,7 @@ base class RiverpodProviderObserver extends ProviderObserver {
   ) =>
       debugPrint(
         '\x1B[34m'
-        '${context.provider} Added\x1B[0m'
+        '${context.provider}<${context.provider.hashCode}> Added\x1B[0m'
         '',
       );
 

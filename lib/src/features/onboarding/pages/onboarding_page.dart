@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../../../local_storage/local_storage_keys.dart';
-import '../../../../local_storage/local_storage_providers.dart';
-import '../../../../router/routes.dart';
+import 'local/goal_page.dart';
+import 'local/lets_start_page.dart';
 import 'local/next_button.dart';
+import 'local/round_explanation_page.dart';
 import 'local/welcome_page.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
@@ -20,12 +20,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
   final List<Widget> _pages = [
     const WelcomePage(),
-    const Center(
-      child: Text('Learn how to play.', style: TextStyle(fontSize: 24)),
-    ),
-    const Center(
-      child: Text('Ready to start?', style: TextStyle(fontSize: 24)),
-    ),
+    const GoalPage(),
+    const RoundExplanationPage(),
+    const LetsStartPage(),
   ];
 
   @override
@@ -43,12 +40,10 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
             child: PageView.builder(
               controller: _pageController,
               itemCount: _pages.length,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: _pages[index],
-                ),
+              physics: const NeverScrollableScrollPhysics(), 
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
+                child: _pages[index],
               ),
             ),
           ),

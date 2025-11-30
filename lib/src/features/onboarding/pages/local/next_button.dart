@@ -6,6 +6,7 @@ import '../../../../../local_storage/local_storage_keys.dart';
 import '../../../../../local_storage/local_storage_providers.dart';
 import '../../../../../router/routes.dart';
 import '../../../game/controllers/ratio_controller.dart';
+import '../../../game/controllers/timer_controller.dart';
 
 class NextButton extends ConsumerStatefulWidget {
   const NextButton({required this.pageController, super.key});
@@ -30,10 +31,11 @@ class _NextButtonState extends ConsumerState<NextButton> {
     });
   }
 
-  @override
-  void dispose() {
-    widget.pageController.removeListener(() {});
-    super.dispose();
+  void _toNextPageCallback() {
+    widget.pageController.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _onFinishOnboarding() {
@@ -45,44 +47,38 @@ class _NextButtonState extends ConsumerState<NextButton> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    void toNextPageCallback() {
-      widget.pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-
+  void Function()? _callBackForCurrentPage() {
     if (_currentPage == 0) {
-      return Consumer(
-        builder: (context, ref, child) {
-          final ratio = ref.watch(ratioControllerProvider);
-          final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.005;
-          return TextButton(
-                onPressed: isRatioCorrect ? toNextPageCallback : null,
-                child: const Text('Next'),
-              )
-              .animate(target: isRatioCorrect ? 1 : 0)
-              .fade(duration: 300.ms);
-        },
-      );
+      final ratio = ref.watch(ratioControllerProvider);
+      final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.005;
+      return isRatioCorrect ? _toNextPageCallback : null;
     }
 
     if (_currentPage == 1) {
-      return TextButton(
-        onPressed: toNextPageCallback,
-        child: const Text('Next'),
-      ).animate().fadeIn(duration: 300.ms);
+      return _toNextPageCallback;
     }
 
     if (_currentPage == 2) {
-      return TextButton(
-        onPressed: _onFinishOnboarding,
-        child: const Text('Finish'),
-      ).animate().fadeIn(duration: 300.ms);
+      final hasSubmitted = ref.watch(
+        timerControllerProvider.select((timer) => timer == 0),
+      );
+      return hasSubmitted ? _toNextPageCallback : null;
     }
 
-    return const SizedBox.shrink();
+    if (_currentPage == 3) {
+      return _onFinishOnboarding;
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final callBackForCurrentPage = _callBackForCurrentPage();
+
+    return TextButton(
+      onPressed: callBackForCurrentPage,
+      child: Text(_currentPage == 3 ? "Let's go!" : 'Next'),
+    ).animate().fadeIn(duration: 300.ms);
   }
 }

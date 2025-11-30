@@ -11,7 +11,6 @@ import '../../../../../router/router.dart';
 import '../../../../shared/utils/extensions.dart';
 import '../../../collection/providers/collection_providers.dart';
 
-
 class ItemDetailsDialog extends ConsumerWidget {
   const ItemDetailsDialog({
     required this.item,
@@ -38,7 +37,6 @@ class ItemDetailsDialog extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              // Header
               Row(
                 children: [
                   Expanded(
@@ -57,29 +55,25 @@ class ItemDetailsDialog extends ConsumerWidget {
                 ],
               ),
 
-              // Quantity
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  item.quantity,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
+              if (item.quantity.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    item.quantity,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
 
-              // Force double spacing between quantity and the next section
-              const SizedBox.shrink(),
-
-              // Value
               if (showValue)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -97,36 +91,34 @@ class ItemDetailsDialog extends ConsumerWidget {
                   ),
                 ),
 
-              // Category
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.category,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: const Text('Category'),
-                subtitle: Text(item.category),
-              ),
-
-              const SizedBox(height: 8),
-
-              // Description
-              MarkdownBody(
-                data: item.description,
-                styleSheet: MarkdownStyleSheet(
-                  p: Theme.of(context).textTheme.bodyLarge,
-                  a: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    decoration: TextDecoration.underline,
+              if (item.category.isNotEmpty)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.category,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
+                  title: const Text('Category'),
+                  subtitle: Text(item.category),
                 ),
-                onTapLink: (text, url, title) => url == null
-                    ? null
-                    : launchUrlString(
-                        url,
-                        mode: LaunchMode.externalApplication,
-                      ),
-              ),
+
+              if (item.description.isNotEmpty)
+                MarkdownBody(
+                  data: item.description,
+                  styleSheet: MarkdownStyleSheet(
+                    p: Theme.of(context).textTheme.bodyLarge,
+                    a: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  onTapLink: (text, url, title) => url == null
+                      ? null
+                      : launchUrlString(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        ),
+                ),
 
               // Sources
               if (showSources && item.sources.isEmpty)

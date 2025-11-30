@@ -102,15 +102,15 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       gameControllerProvider.select((game) => game.value?.currentRound),
     );
 
-    if (round == null) {
-      return const SizedBox.shrink();
-    }
-
     return AspectRatio(
       aspectRatio: 1.0,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final containerSize = constraints.maxWidth;
+
+          if (round == null) {
+            return SizedBox.square(dimension: containerSize);
+          }
 
           final userRatio = ref.watch(ratioControllerProvider);
           final bool isFirstLargerByUser = userRatio >= 1;
@@ -318,7 +318,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 ).animate(target: labelFits ? 1 : 0).fadeIn(),
                 const SizedBox(height: 8.0),
                 Text(
-                  '${item.category} · ${item.quantity}',
+                  '${item.category}${item.category.isNotEmpty ? ' · ' : ''}${item.quantity}',
                   style: categoryStyle,
                   softWrap: true,
                   maxLines: 2,
