@@ -37,9 +37,9 @@ base class RiverpodProviderObserver extends ProviderObserver {
     }
     debugPrint(
       '\x1B[33m'
-      '${context.provider} Updated:\n'
+      '${context.provider} Updated:\x1B[0m\n'
       '\tPrevious Value: $previousValue\n'
-      '\tNew Value: $newValue\x1B[0m\n'
+      '\tNew Value: $newValue\n'
       '',
     );
   }

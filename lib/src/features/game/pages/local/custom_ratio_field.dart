@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../data/models/item.model.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/ratio_controller.dart';
 import '../../controllers/timer_controller.dart';
+import 'item_details_dialog.dart';
 
 class CustomRatioField extends ConsumerStatefulWidget {
-  // correctRatio is no longer needed here
   const CustomRatioField({super.key});
 
   @override
@@ -40,27 +41,42 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     final double relativeScale = details.scale / _previousScale!;
 
     final ratio = ref.read(ratioControllerProvider);
-    final newRatio =
-        isFirstSquare ? ratio * relativeScale : ratio / relativeScale;
+    final newRatio = isFirstSquare
+        ? ratio * relativeScale
+        : ratio / relativeScale;
     ref.read(ratioControllerProvider.notifier).set(newRatio);
 
     // Update _previousScale for the next update
     _previousScale = details.scale;
   }
 
+  void _showItemDetailsDialog(BuildContext context, ItemModel item) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          ItemDetailsDialog(item: item, showValue: false, showSources: false),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Listen to the timer to trigger the "show correct answer" animation
-    ref.listen(
-        timerControllerProvider.select(
-          (value) => value == 0,
-        ), (_, isRoundOver) {
-      setState(() {
-        _correctRatio = isRoundOver
-            ? ref.read(gameControllerProvider).value!.currentRound.correctRatio
-            : null;
-        _isUpdatingFirstSquare = isRoundOver ? null : _isUpdatingFirstSquare;
-      });
+    ref.listen(timerControllerProvider.select((value) => value == 0), (
+      _,
+      isRoundOver,
+    ) {
+      if (mounted) {
+        setState(() {
+          _correctRatio = isRoundOver
+              ? ref
+                    .read(gameControllerProvider)
+                    .value!
+                    .currentRound
+                    .correctRatio
+              : null;
+          _isUpdatingFirstSquare = isRoundOver ? null : _isUpdatingFirstSquare;
+        });
+      }
     });
 
     final userRatio = ref.watch(ratioControllerProvider);
@@ -82,6 +98,14 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
 
   /// Builds the UI based on a given ratio (which can be static or animated).
   Widget _buildRatioUI(BuildContext context, double currentRatio) {
+    final round = ref.read(
+      gameControllerProvider.select((game) => game.value?.currentRound),
+    );
+
+    if (round == null) {
+      return const SizedBox.shrink();
+    }
+
     return AspectRatio(
       aspectRatio: 1.0,
       child: LayoutBuilder(
@@ -90,24 +114,24 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
 
           final userRatio = ref.watch(ratioControllerProvider);
           final bool isFirstLargerByUser = userRatio >= 1;
-          final double smallerSizeByUser = containerSize *
+          final double smallerSizeByUser =
+              containerSize *
               (isFirstLargerByUser ? 1 / sqrt(userRatio) : sqrt(userRatio));
 
-          final double sizeA;
-          final double sizeB;
-          if (currentRatio >= 1) {
-            sizeA = containerSize;
-            sizeB = containerSize / sqrt(currentRatio);
-          } else {
-            sizeA = containerSize * sqrt(currentRatio);
-            sizeB = containerSize;
-          }
+          final sizeA = currentRatio >= 1
+              ? containerSize
+              : containerSize * sqrt(currentRatio);
+          final sizeB = currentRatio >= 1
+              ? containerSize / sqrt(currentRatio)
+              : containerSize;
 
           final squareA = _buildSquare(
             size: sizeA,
             containerSize: containerSize,
             isActive: _isUpdatingFirstSquare == true,
             isFirst: true,
+            item: round.itemA,
+            otherSize: sizeB,
           );
 
           final squareB = _buildSquare(
@@ -115,6 +139,8 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
             containerSize: containerSize,
             isActive: _isUpdatingFirstSquare == false,
             isFirst: false,
+            item: round.itemB,
+            otherSize: sizeA,
           );
 
           return Listener(
@@ -125,7 +151,8 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
             child: GestureDetector(
               onScaleStart: (details) {
                 if (_correctRatio != null) {
-                  return; // Use internal state for check
+                  // Disable interaction while animating to the correct ratio
+                  return;
                 }
 
                 final RenderBox? box = context.findRenderObject() as RenderBox?;
@@ -133,6 +160,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                     details.pointerCount != 2 ||
                     _pointers.length != 2) {
                   setState(() {
+                    // Disable interaction if not exactly two pointers are down
                     _isUpdatingFirstSquare = null;
                     _previousScale = null;
                   });
@@ -145,17 +173,18 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 final localPos2 = box.globalToLocal(positions[1]);
                 final double distanceFromCenter =
                     ((localPos1 - center).distance +
-                            (localPos2 - center).distance) /
-                        2;
+                        (localPos2 - center).distance) /
+                    2;
 
-                final double threshold = smallerSizeByUser / 2 +
+                final double threshold =
+                    smallerSizeByUser / 2 +
                     (containerSize - smallerSizeByUser) / 4;
                 final bool isInteractingWithInnerSquare =
                     distanceFromCenter < threshold;
 
                 setState(() {
-                  _isUpdatingFirstSquare = (isFirstLargerByUser &&
-                          !isInteractingWithInnerSquare) ||
+                  _isUpdatingFirstSquare =
+                      (isFirstLargerByUser && !isInteractingWithInnerSquare) ||
                       (!isFirstLargerByUser && isInteractingWithInnerSquare);
                   _previousScale = 1.0;
                 });
@@ -188,13 +217,17 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   }
 
   /// Calculates the width of a text string given a style.
-  double _calculateTextWidth(String text, TextStyle style) {
+  Size _computeTextSize(String text, TextStyle style, double maxWidth) {
+    if (maxWidth < 48) return Size.infinite;
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
-      maxLines: 1,
+      maxLines: 2,
       textDirection: TextDirection.ltr,
-    )..layout();
-    return textPainter.size.width;
+    )..layout(maxWidth: maxWidth);
+    if (textPainter.didExceedMaxLines) {
+      return Size.infinite;
+    }
+    return textPainter.size;
   }
 
   /// A single, unified builder for creating an animatable square.
@@ -203,30 +236,54 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     required double containerSize,
     required bool isActive,
     required bool isFirst,
+    required ItemModel item,
+    required double otherSize,
   }) {
-    final gameValue = ref.watch(gameControllerProvider).value;
-    final label = gameValue == null
-        ? ' '
-        : isFirst
-            ? gameValue.currentRound.itemA.title
-            : gameValue.currentRound.itemB.title;
     final colorScheme = Theme.of(context).colorScheme;
-    final Color mainContainer =
-        isFirst ? colorScheme.primary : colorScheme.tertiaryContainer;
-    final Color onMainContainer =
-        isFirst ? colorScheme.onPrimary : colorScheme.onTertiaryFixedVariant;
-    final labelStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
-          color: onMainContainer,
-          fontWeight: FontWeight.bold,
-        );
+    final textTheme = Theme.of(context).textTheme;
+
+    final Color mainContainer = isFirst
+        ? colorScheme.primary
+        : colorScheme.tertiaryContainer;
+    final Color onMainContainer = isFirst
+        ? colorScheme.onPrimary
+        : colorScheme.onTertiaryFixedVariant;
+
+    final labelStyle = textTheme.titleMedium!.copyWith(
+      color: onMainContainer,
+      fontWeight: FontWeight.bold,
+    );
+    final categoryStyle = textTheme.labelLarge!.copyWith(
+      color: onMainContainer.withAlpha(220),
+      fontWeight: FontWeight.w600,
+    );
+
     final borderColor = isActive
         ? isFirst
-            ? Color.lerp(mainContainer, colorScheme.secondary, 0.5)!
-            : Color.lerp(mainContainer, colorScheme.tertiary, 0.5)!
+              ? Color.lerp(mainContainer, colorScheme.secondary, 0.5)!
+              : Color.lerp(mainContainer, colorScheme.tertiary, 0.5)!
         : colorScheme.outlineVariant;
 
-    final double labelWidth = _calculateTextWidth(label, labelStyle);
-    final labelFits = labelWidth <= size - 16.0; // 16.0 for padding
+    final padding = 16.0 * (size / containerSize);
+    // Calculate max width and height for the ListView content
+    final maxWidth = size - 2 * padding;
+    final maxHeight = size - 2 * padding - 8 - 16;
+
+    final labelSize = _computeTextSize(item.title, labelStyle, maxWidth);
+    // If the label is too wide, the category should not be shown
+    final categorySize = labelSize.width <= maxWidth
+        ? _computeTextSize(
+            '${item.category} · ${item.quantity}',
+            categoryStyle,
+            maxWidth,
+          )
+        : Size.infinite;
+
+    final labelFits =
+        labelSize.height <= maxHeight && labelSize.width <= maxWidth;
+    final categoryFits =
+        (labelSize.height + categorySize.height + 8) <= maxHeight &&
+        categorySize.width <= maxWidth;
 
     return AnimatedContainer(
       duration: _correctRatio != null
@@ -237,26 +294,51 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       height: size,
       decoration: BoxDecoration(
         color: mainContainer,
-        border: Border.all(
-          width: 2.0,
-          color: borderColor,
-        ),
+        border: Border.all(width: 2.0, color: borderColor),
         borderRadius: BorderRadius.circular(16.0 * (size / containerSize)),
       ),
-      child: Align(
-        alignment: isFirst ? Alignment.topCenter : Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: labelStyle,
-            softWrap: false,
-            overflow: TextOverflow.visible,
-          )
-              .animate(target: (label.trim().isEmpty || !labelFits) ? 0 : 1)
-              .fadeIn(),
-        ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          AnimatedPadding(
+            duration: 100.milliseconds,
+            padding: .all(padding),
+            child: ListView(
+              padding: .zero,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                Text(
+                  item.title,
+                  style: labelStyle,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: .visible,
+                ).animate(target: labelFits ? 1 : 0).fadeIn(),
+                const SizedBox(height: 8.0),
+                Text(
+                  '${item.category} · ${item.quantity}',
+                  style: categoryStyle,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: .visible,
+                ).animate(target: categoryFits ? 1 : 0).fadeIn(),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: IconButton(
+              icon: Icon(Icons.info_outline, size: 18, color: onMainContainer),
+              style: TextButton.styleFrom(
+                padding: const .all(8),
+                tapTargetSize: .shrinkWrap,
+              ),
+              onPressed: () => _showItemDetailsDialog(context, item),
+            ).animate(target: size > 48 ? 1 : 0).fadeIn(),
+          ),
+        ],
       ),
     );
   }

@@ -60,7 +60,7 @@ class _NextButtonState extends ConsumerState<NextButton> {
           final ratio = ref.watch(ratioControllerProvider);
           final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.005;
           return TextButton(
-                onPressed: toNextPageCallback,
+                onPressed: isRatioCorrect ? toNextPageCallback : null,
                 child: const Text('Next'),
               )
               .animate(target: isRatioCorrect ? 1 : 0)

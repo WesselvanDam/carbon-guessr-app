@@ -6,13 +6,14 @@ part 'ratio_controller.g.dart';
 
 @riverpod
 class RatioController extends _$RatioController {
+  static const double _defaultRatio = 3;
   late double _minRatio;
 
   @override
   double build() {
     _minRatio = ref.watch(minRatioProvider);
 
-    return 1.5;
+    return _defaultRatio;
   }
 
   void set(double ratio) {
@@ -20,6 +21,6 @@ class RatioController extends _$RatioController {
   }
 
   void reset() {
-    state = 1.5;
+    state = _defaultRatio;
   }
 }

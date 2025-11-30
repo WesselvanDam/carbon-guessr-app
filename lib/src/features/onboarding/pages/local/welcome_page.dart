@@ -20,7 +20,7 @@ class WelcomePage extends ConsumerWidget {
       description: 'This is a sample item used in onboarding.',
       value: 100,
       quantity: 'Units',
-      category: 'Sample Category',
+      category: 'Category',
       sources: [],
     );
 
@@ -28,7 +28,7 @@ class WelcomePage extends ConsumerWidget {
       correctRatio: 2,
       roundNumber: 0,
       itemA: baseItem,
-      itemB: baseItem.copyWith(id: 2, title: 'Square B', value: 200),
+      itemB: baseItem.copyWith(id: 2, title: 'Square B Long Title', value: 200),
     );
 
     final game = GameModel(rounds: [round]);
@@ -37,7 +37,10 @@ class WelcomePage extends ConsumerWidget {
 
     return ProviderScope(
       overrides: [
-        gameControllerProvider.overrideWithBuild((ref, notifier) => game),
+        gameControllerProvider.overrideWithBuild((ref, notifier) {
+          ref.keepAlive();
+          return game;
+        }),
       ],
       child: SingleChildScrollView(
         child: Column(
@@ -60,7 +63,6 @@ class WelcomePage extends ConsumerWidget {
             Consumer(
               builder: (context, ref, child) {
                 final ratio = ref.watch(ratioControllerProvider);
-                debugPrint('Current ratio: $ratio');
                 final style = Theme.of(context).textTheme.headlineMedium!
                     .copyWith(fontWeight: FontWeight.bold);
                 return Column(
