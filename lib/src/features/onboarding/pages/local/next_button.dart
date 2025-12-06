@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../local_storage/local_storage_keys.dart';
-import '../../../../../local_storage/local_storage_providers.dart';
+import '../../../../../local_storage/local_storage_repository.dart';
 import '../../../../../router/routes.dart';
 import '../../../game/controllers/ratio_controller.dart';
 import '../../../game/controllers/timer_controller.dart';

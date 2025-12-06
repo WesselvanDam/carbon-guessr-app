@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../data/models/collection.model.dart';
 import '../../../../../data/models/item.model.dart';
-import '../../../../shared/utils/extensions.dart';
-import '../../../collection/providers/collection_providers.dart';
 import '../../../game/controllers/game_controller.dart';
-import '../../../game/controllers/ratio_controller.dart';
 import '../../../game/controllers/timer_controller.dart';
 import '../../../game/models/game.model.dart';
 import '../../../game/models/round.model.dart';

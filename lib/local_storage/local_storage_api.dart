@@ -1,4 +1,17 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'local_storage_providers.dart';
+
+
+part 'local_storage_api.g.dart';
+
+/// A provider for the [LocalStorageApi].
+@riverpod
+LocalStorageApi localStorageApi(Ref ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return LocalStorageApi(prefs);
+}
 
 class LocalStorageApi {
   LocalStorageApi(this._prefs);

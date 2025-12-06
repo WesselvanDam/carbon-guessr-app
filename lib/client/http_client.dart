@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
+
+import 'talker.dart';
 
 part 'http_client.g.dart';
 
@@ -19,9 +22,6 @@ Dio httpClient(Ref ref) {
     InterceptorsWrapper(
       onRequest: (options, handler) => handler.next(options),
       onResponse: (response, handler) {
-        debugPrint(
-          'HTTP Response: ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.path}',
-        );
         if (response.data is String && (response.data as String).isNotEmpty) {
           try {
             response.data = jsonDecode(response.data as String);
@@ -32,16 +32,12 @@ Dio httpClient(Ref ref) {
         }
         return handler.next(response);
       },
-      onError: (DioException e, handler) {
-        // Print the stack trace for debugging
-        debugPrint(
-          'HTTP Error: ${e.message} (${e.response?.statusCode})\n'
-          'Request: ${e.requestOptions.method} ${e.requestOptions.path}\n'
-          'Stack trace: ${e.stackTrace}',
-        );
-        // Handle errors globally
-        return handler.next(e);
-      },
+    ),
+  );
+  dio.interceptors.add(
+    TalkerDioLogger(
+      talker: talker,
+      settings: const TalkerDioLoggerSettings(printResponseData: false),
     ),
   );
 

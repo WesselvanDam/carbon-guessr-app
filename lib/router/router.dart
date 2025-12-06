@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
+import '../client/talker.dart';
 import '../local_storage/local_storage_keys.dart';
 import '../local_storage/local_storage_providers.dart';
 import 'routes.dart';
@@ -16,6 +18,7 @@ GoRouter router(Ref ref) {
 
   final router = GoRouter(
     navigatorKey: key,
+    observers: [TalkerRouteObserver(talker)],
     initialLocation: initialLocation,
     routes: $appRoutes,
     redirect: (context, state) => redirect(ref, context, state),
@@ -43,7 +46,5 @@ Future<String?> redirect(
   BuildContext context,
   GoRouterState state,
 ) async {
-  debugPrint('Redirecting to [32m${state.uri}[0m');
-
   return null;
 }

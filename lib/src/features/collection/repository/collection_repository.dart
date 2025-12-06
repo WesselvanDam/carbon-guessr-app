@@ -1,9 +1,19 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../data/api/collection_api.dart';
 import '../../../../data/models/collection.model.dart';
 import '../../../../data/models/item.model.dart';
 import '../../../../data/models/localization_data.dart';
 import '../../../../data/models/source.dart';
+
+part 'collection_repository.g.dart';
+
+/// Provider for the CollectionRepository
+@Riverpod(keepAlive: true)
+CollectionRepository collectionRepository(Ref ref, String collectionId) {
+  final api = ref.watch(collectionApiProvider(collectionId));
+  return CollectionRepository(api, collectionId);
+}
 
 /// Repository for handling collection data operations
 class CollectionRepository {
@@ -44,7 +54,9 @@ class CollectionRepository {
 
   /// Fetches all localized data items for the given IDs and locale
   Future<List<LocalizationData>> getAllLocalizationDatas(
-      List<int> ids, String locale) {
+    List<int> ids,
+    String locale,
+  ) {
     final futures = ids.map((id) => getLocalizationData(id, locale));
     return Future.wait(futures);
   }
@@ -56,9 +68,6 @@ class CollectionRepository {
     final l10n = await getLocalizationData(id, locale);
 
     // Return a new collection item with localized data
-    return item.copyWith(
-      title: l10n.title,
-      description: l10n.description,
-    );
+    return item.copyWith(title: l10n.title, description: l10n.description);
   }
 }

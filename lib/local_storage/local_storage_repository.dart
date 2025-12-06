@@ -1,11 +1,22 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'local_storage_api.dart';
 import 'local_storage_keys.dart';
+
+
+part 'local_storage_repository.g.dart';
+
+/// A provider for the [LocalStorageRepository].
+@riverpod
+LocalStorageRepository localStorageRepository(Ref ref) {
+  final localStorageApi = ref.watch(localStorageApiProvider);
+  return LocalStorageRepository(localStorageApi);
+}
 
 class LocalStorageRepository {
   LocalStorageRepository(this._api);
 
   final LocalStorageApi _api;
-
 
   /// Saves a boolean value to local storage using the enum key.
   Future<void> saveBool(LocalStorageBoolKeys key, bool value) async {
@@ -45,7 +56,9 @@ class LocalStorageRepository {
   }
 
   Future<void> setStringList(
-      LocalStorageStringListKeys key, List<String> value) async {
+    LocalStorageStringListKeys key,
+    List<String> value,
+  ) async {
     await _api.setStringList(key.name, value);
   }
 

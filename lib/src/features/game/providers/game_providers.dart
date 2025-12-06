@@ -6,15 +6,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../constants/game_mode.dart';
 import '../../../../router/router.dart';
 import '../../collection/providers/collection_providers.dart';
-import '../repository/game_repository.dart';
 
 part 'game_providers.g.dart';
 
-/// Provider for the GameService
-@riverpod
-GameRepository gameService(Ref ref) {
-  return GameRepository();
-}
 
 @riverpod
 String gameId(Ref ref) {

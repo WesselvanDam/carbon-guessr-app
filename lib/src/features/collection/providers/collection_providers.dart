@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../client/http_client.dart';
-import '../../../../data/api/collection_api.dart';
 import '../../../../data/models/collection.model.dart';
 import '../../../../data/models/item.model.dart';
 import '../../../../data/models/source.dart';
@@ -11,22 +9,7 @@ import '../repository/collection_repository.dart';
 
 part 'collection_providers.g.dart';
 
-/// Provider for the CollectionService
-@Riverpod(keepAlive: true)
-CollectionApi collectionService(Ref ref, String collectionId) {
-  final dio = ref.watch(httpClientProvider);
-  final service = CollectionApi(dio);
-
-  return service;
-}
-
-/// Provider for the CollectionRepository
-@Riverpod(keepAlive: true)
-CollectionRepository collectionRepository(Ref ref, String collectionId) {
-  final service = ref.watch(collectionServiceProvider(collectionId));
-  return CollectionRepository(service, collectionId);
-}
-
+/// Provider for all collections
 @Riverpod(keepAlive: true)
 Future<Map<String, CollectionModel>> collections(Ref ref) {
   final repository = ref.watch(collectionRepositoryProvider(''));
@@ -36,7 +19,7 @@ Future<Map<String, CollectionModel>> collections(Ref ref) {
 /// Provider for the collection info
 @riverpod
 Future<CollectionModel> collection(Ref ref, String collectionId) async {
-  // Try to get all collections info from the provider
+  // Try to get all collections info from the collectionsProvider
   final collectionsInfoAsync = await ref.watch(collectionsProvider.future);
 
   // If the collection is already present, return it

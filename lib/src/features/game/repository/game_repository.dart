@@ -1,12 +1,21 @@
 import 'dart:math';
 
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../../../../data/models/item.model.dart';
 import '../models/game.model.dart';
 import '../models/round.model.dart';
 
 
+part 'game_repository.g.dart';
 
-/// Service responsible for pure game logic and calculations
+/// Provider for the GameRepository
+@riverpod
+GameRepository gameRepository(Ref ref) {
+  return GameRepository();
+}
+
+/// Repository responsible for pure game logic and calculations
 class GameRepository {
   static String get newGameId => DateTime.now()
       .millisecondsSinceEpoch

@@ -1,9 +1,9 @@
-import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../collection/providers/collection_providers.dart';
 import '../models/game.model.dart';
 import '../providers/game_providers.dart';
+import '../repository/game_repository.dart';
 import 'ratio_controller.dart';
 import 'timer_controller.dart';
 
@@ -11,19 +11,15 @@ part 'game_controller.g.dart';
 
 @riverpod
 class GameController extends _$GameController {
-  double _ratioBoundary = 0.001;
 
   @override
   FutureOr<GameModel> build() async {
     final collection = (await ref.watch(currentCollectionProvider.future))!;
     final gid = ref.watch(gameIdProvider);
 
-    // Set the ratio boundary based on the collection's metadata
-    _ratioBoundary = collection.ratioBoundary;
+    final gameRepository = ref.watch(gameRepositoryProvider);
 
-    final gameService = ref.watch(gameServiceProvider);
-
-    final itemIds = gameService.generateItemIds(
+    final itemIds = gameRepository.generateItemIds(
       gid: gid,
       collectionSize: collection.size,
       rounds: 5,
@@ -33,42 +29,39 @@ class GameController extends _$GameController {
       collectionItemsByIdsProvider(collection.id, itemIds).future,
     );
 
-    final session = gameService.createGameSession(items: items);
+    final session = gameRepository.createGameSession(items: items);
 
     return session;
   }
 
   void onSubmit() {
-    final gameService = ref.read(gameServiceProvider);
+    final gameRepository = ref.read(gameRepositoryProvider);
     if (!state.hasValue || state.value == null) {
       return;
     }
 
-    // Cancel the timer
     ref.read(timerControllerProvider.notifier).stop();
 
-    // Get the current estimate from the ratio controller
     final ratio = ref.read(ratioControllerProvider);
+    final ratioBoundary = ref.read(minRatioProvider);
 
-    // Submit the estimate
     update(
-      (state) => gameService.submitEstimate(
+      (state) => gameRepository.submitEstimate(
         game: state,
         estimate: ratio,
-        ratioBoundary: _ratioBoundary,
+        ratioBoundary: ratioBoundary,
       ),
     );
   }
 
   void onNextRound() {
-    final gameService = ref.watch(gameServiceProvider);
+    final gameRepository = ref.watch(gameRepositoryProvider);
     if (!state.hasValue || state.value == null) {
       return;
     }
 
-    // Reset the ratio controller
     ref.read(ratioControllerProvider.notifier).reset();
 
-    update((state) => gameService.nextRound(state));
+    update((state) => gameRepository.nextRound(state));
   }
 }

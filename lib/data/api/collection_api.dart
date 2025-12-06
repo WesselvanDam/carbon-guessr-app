@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../client/http_client.dart';
 import '../models/collection.model.dart';
 import '../models/item.model.dart';
 import '../models/localization_data.dart';
@@ -9,7 +11,14 @@ import '../models/source.dart';
 
 part 'collection_api.g.dart';
 
-/// Service for fetching collection data from the API
+/// Provider for the CollectionApi
+@Riverpod(keepAlive: true)
+CollectionApi collectionApi(Ref ref, String collectionId) {
+  final dio = ref.watch(httpClientProvider);
+  return CollectionApi(dio);
+}
+
+/// API for fetching collection data from the remote server
 @RestApi()
 abstract class CollectionApi {
   factory CollectionApi(Dio dio, {String? baseUrl}) = _CollectionApi;
