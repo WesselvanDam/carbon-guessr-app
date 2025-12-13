@@ -63,17 +63,36 @@ class Collections extends _$Collections {
     final lastCollectionFetchTime = ref
         .read(localStorageRepositoryProvider)
         .getInt(.lastCollectionFetchTime);
-    final supabase = ref.read(supabaseApiProvider(''));
-    final remoteCollections = await supabase.fetchUpdatedCollections(
+    final supabase = ref.read(supabaseApiProvider(null));
+    final updatedCollections = await supabase.fetchUpdatedCollections(
       lastCollectionFetchTime,
     );
+
+    clearOutdatedCache(updatedCollections.values.toList());
 
     ref
         .read(localStorageRepositoryProvider)
         .setInt(
           .lastCollectionFetchTime,
-          DateTime.now().millisecondsSinceEpoch,
+          DateTime.now().toUtc().millisecondsSinceEpoch,
         );
-    return remoteCollections;
+    return updatedCollections;
+  }
+
+  Future<void> clearOutdatedCache(
+    List<CollectionModel> outdatedCollections,
+  ) async {
+    if (outdatedCollections.isEmpty) return;
+    talker.debug(
+      'Clearing cache for outdated collections: ${outdatedCollections.map((e) => e.id).join(', ')}',
+    );
+    ref.read(
+      localDbClientProvider.selectAsync((db) {
+        for (final collection in outdatedCollections) {
+          db.delete('${collection.id}-items');
+          db.delete('${collection.id}-sources');
+        }
+      }),
+    );
   }
 }

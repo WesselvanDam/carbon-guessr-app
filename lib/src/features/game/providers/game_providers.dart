@@ -12,20 +12,21 @@ part 'game_providers.g.dart';
 @riverpod
 String gameId(Ref ref) {
   return ref.watch(
-    routerProvider.select((router) => router.state.pathParameters['gid'] ?? ''),
+    routerProvider.select((router) {
+      final gid = router.state.pathParameters['gid'];
+      return gid ?? '';
+    }),
   );
 }
 
 @riverpod
 GameMode gameMode(Ref ref) {
-  final mode = ref.watch(
-    routerProvider.select(
-      (router) => GameMode.values.byName(
-        router.state.uri.queryParameters['mode'] ?? GameMode.simple.name,
-      ),
-    ),
+  return ref.watch(
+    routerProvider.select((router) {
+      final mode = router.state.uri.queryParameters['mode'];
+      return GameMode.values.byName(mode ?? GameMode.simple.name);
+    }),
   );
-  return mode;
 }
 
 @riverpod

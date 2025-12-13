@@ -11,7 +11,7 @@ part 'supabase_api.g.dart';
 
 /// Provider for the SupabaseApi
 @Riverpod(keepAlive: true)
-SupabaseApi supabaseApi(Ref ref, String collectionId) {
+SupabaseApi supabaseApi(Ref ref, String? collectionId) {
   final supabase = ref.watch(supabaseClientProvider);
   return SupabaseApi(supabase, collectionId);
 }
@@ -21,7 +21,7 @@ class SupabaseApi {
   SupabaseApi(this._client, this._collectionId);
 
   final SupabaseClient _client;
-  final String _collectionId;
+  final String? _collectionId;
 
   /// Fetches all available collections from the API
   Future<Map<String, CollectionModel>> fetchCollections({
@@ -39,21 +39,7 @@ class SupabaseApi {
     return {for (final model in models) model.id: model};
   }
 
-  /// Fetches the info data for the collection
-  Future<CollectionModel> fetchCollection() async {
-    final response = await _client
-        .from('collections')
-        .select()
-        .eq('id', _collectionId)
-        .single()
-        .catchError((error) {
-          talker.error('Error fetching collection info: $error');
-          return {};
-        });
-
-    return CollectionModel.fromJson(response);
-  }
-
+  /// Fetches collections updated since the given timestamp
   Future<Map<String, CollectionModel>> fetchUpdatedCollections(
     int? lastFetchTime,
   ) async {
@@ -64,6 +50,7 @@ class SupabaseApi {
           'updated_at',
           DateTime.fromMillisecondsSinceEpoch(
             lastFetchTime ?? 0,
+            isUtc: true,
           ).toIso8601String(),
         )
         .catchError((error) {
@@ -80,7 +67,7 @@ class SupabaseApi {
   /// Fetches all collection items for the given IDs
   Future<List<ItemModel>> fetchItems(List<int> ids) async {
     final response = await _client
-        .from(_collectionId)
+        .from(_collectionId!)
         .select()
         .inFilter('id', ids)
         .catchError((error) {
@@ -89,21 +76,6 @@ class SupabaseApi {
         });
 
     return response.map<ItemModel>((json) => ItemModel.fromJson(json)).toList();
-  }
-
-  /// Fetches a collection item by ID
-  Future<ItemModel> fetchItem(int id) async {
-    final response = await _client
-        .from(_collectionId)
-        .select()
-        .eq('id', id)
-        .single()
-        .catchError((error) {
-          talker.error('Error fetching item: $error');
-          return {};
-        });
-
-    return ItemModel.fromJson(response);
   }
 
   /// Fetches all sources for the given IDs
