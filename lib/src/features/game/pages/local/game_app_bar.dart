@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/utils/extensions.dart';
-import '../../../collection/providers/collection_providers.dart';
+import '../../../collection/providers/current_collection.dart';
 import '../../controllers/game_controller.dart';
 import '../../providers/game_providers.dart';
 import 'game_time.dart';

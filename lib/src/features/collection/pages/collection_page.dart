@@ -7,7 +7,7 @@ import '../../../../constants/game_mode.dart';
 import '../../../../router/routes.dart';
 import '../../../shared/utils/extensions.dart';
 import '../../game/repository/game_repository.dart';
-import '../providers/collection_providers.dart';
+import '../providers/current_collection.dart';
 import 'challenge_dialog.dart';
 
 class CollectionPage extends ConsumerWidget {
@@ -17,15 +17,15 @@ class CollectionPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collection = ref.watch(collectionProvider(cid));
+    final collection = ref.watch(currentCollectionProvider);
 
     return collection.when(
       data: (info) {
         void startGameCallback(GameMode mode, [String? gameId]) => GameRoute(
-              cid: info.id,
-              gid: gameId ?? GameRepository.newGameId,
-              mode: mode,
-            ).go(context);
+          cid: info.id,
+          gid: gameId ?? GameRepository.newGameId,
+          mode: mode,
+        ).go(context);
 
         return Scaffold(
           appBar: AppBar(
@@ -41,9 +41,11 @@ class CollectionPage extends ConsumerWidget {
                 style: OutlinedButton.styleFrom(
                   shape: const CircleBorder(),
                   side: BorderSide(
-                      color:
-                          Theme.of(context).colorScheme.onSurface.withAlpha(50),
-                      width: 2),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(50),
+                    width: 2,
+                  ),
                 ),
               ),
             ),
@@ -69,8 +71,8 @@ class CollectionPage extends ConsumerWidget {
                   Text(
                     info.tagline,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(height: 8),
@@ -79,9 +81,9 @@ class CollectionPage extends ConsumerWidget {
                     styleSheet: MarkdownStyleSheet(
                       p: Theme.of(context).textTheme.bodyLarge,
                       a: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            decoration: TextDecoration.underline,
-                          ),
+                        color: Theme.of(context).colorScheme.primary,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                     onTapLink: (text, url, title) => url == null
                         ? null
@@ -94,8 +96,8 @@ class CollectionPage extends ConsumerWidget {
                   Text(
                     'Choose a Game Mode',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -110,7 +112,10 @@ class CollectionPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   _buildGameModeCard(
                     context,
-                    () => _showChallengeDialog(context, (gameId) => startGameCallback(GameMode.challenge, gameId)),
+                    () => _showChallengeDialog(
+                      context,
+                      (gameId) => startGameCallback(GameMode.challenge, gameId),
+                    ),
                     'Challenge Friends',
                     'Share a PIN with friends to compare scores on the same items.',
                     Icons.people,
@@ -124,22 +129,14 @@ class CollectionPage extends ConsumerWidget {
       },
       error: (error, stack) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Select Game Mode'),
-          ),
-          body: Center(
-            child: Text('Error loading collection: $error'),
-          ),
+          appBar: AppBar(title: const Text('Select Game Mode')),
+          body: Center(child: Text('Error loading collection: $error')),
         );
       },
       loading: () {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Select Game Mode'),
-          ),
-          body: const Center(
-            child: CircularProgressIndicator(),
-          ),
+          appBar: AppBar(title: const Text('Select Game Mode')),
+          body: const Center(child: CircularProgressIndicator()),
         );
       },
     );
@@ -184,8 +181,8 @@ class CollectionPage extends ConsumerWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(

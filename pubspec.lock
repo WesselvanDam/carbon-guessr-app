@@ -41,6 +41,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  app_links:
+    dependency: transitive
+    description:
+      name: app_links
+      sha256: "5f88447519add627fe1cbcab4fd1da3d4fed15b9baf29f28b22535c95ecee3e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.4.1"
+  app_links_linux:
+    dependency: transitive
+    description:
+      name: app_links_linux
+      sha256: f5f7173a78609f3dfd4c2ff2c95bd559ab43c80a87dc6a095921d96c05688c81
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
+  app_links_platform_interface:
+    dependency: transitive
+    description:
+      name: app_links_platform_interface
+      sha256: "05f5379577c513b534a29ddea68176a4d4802c46180ee8e2e966257158772a3f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
+  app_links_web:
+    dependency: transitive
+    description:
+      name: app_links_web
+      sha256: af060ed76183f9e2b87510a9480e56a5352b6c249778d07bd2c95fc35632a555
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   args:
     dependency: transitive
     description:
@@ -69,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: build
-      sha256: dfb67ccc9a78c642193e0c2d94cb9e48c2c818b3178a86097d644acdcde6a8d9
+      sha256: c1668065e9ba04752570ad7e038288559d1e2ca5c6d0131c0f5f55e39e777413
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.3"
   build_config:
     dependency: transitive
     description:
@@ -313,6 +345,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  envied:
+    dependency: "direct main"
+    description:
+      name: envied
+      sha256: "4cfe31953c13977d1118b4f14cc5dfb683d8bb4c35d5b0c64b29d5b2e30712e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.2"
+  envied_generator:
+    dependency: "direct dev"
+    description:
+      name: envied_generator
+      sha256: "04467955af3b8f8a249b2f20686f00c89a979cb077aef7d0918642978b28bdeb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.2"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -445,6 +501,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  functions_client:
+    dependency: transitive
+    description:
+      name: functions_client
+      sha256: "94074d62167ae634127ef6095f536835063a7dc80f2b1aa306d2346ff9023996"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   glob:
     dependency: transitive
     description:
@@ -469,6 +533,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.1"
+  gotrue:
+    dependency: transitive
+    description:
+      name: gotrue
+      sha256: "636b7d8de00c96cb580c705f9eb12bc107df893595854f1efa08c6b1b449e5e5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.16.0"
   graphs:
     dependency: transitive
     description:
@@ -485,6 +557,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.3.4"
+  gtk:
+    dependency: transitive
+    description:
+      name: gtk
+      sha256: e8ce9ca4b1df106e4d72dad201d345ea1a036cc12c360f1a7d5a758f78ffa42c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   hotreloader:
     dependency: transitive
     description:
@@ -501,6 +581,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
+  http_interceptor:
+    dependency: "direct main"
+    description:
+      name: http_interceptor
+      sha256: "288c6ded4a2c66de2730a16b30cbd29d05d042a5e61304d9b4be0e16378f4082"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -565,6 +653,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.11.1"
+  jwt_decode:
+    dependency: transitive
+    description:
+      name: jwt_decode
+      sha256: d2e9f68c052b2225130977429d30f187aa1981d789c76ad104a32243cfdebfbb
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -686,7 +782,7 @@ packages:
     source: hosted
     version: "2.2.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
@@ -773,6 +869,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.2"
+  postgrest:
+    dependency: transitive
+    description:
+      name: postgrest
+      sha256: "57637e331af3863fa1f555907ff24c30d69c3ad3ff127d89320e70e8d5e585f5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   protobuf:
     dependency: transitive
     description:
@@ -797,6 +901,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  realtime_client:
+    dependency: transitive
+    description:
+      name: realtime_client
+      sha256: "32173d33c34c73e1c15b2cdb14d511a62290b322a4c788450678c6479d3e85d5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.0"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   retrofit:
     dependency: "direct main"
     description:
@@ -813,6 +933,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.0.6"
+  retry:
+    dependency: transitive
+    description:
+      name: retry
+      sha256: "822e118d5b3aafed083109c72d5f484c6dc66707885e07c0fbcb8b986bba7efc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   riverpod:
     dependency: transitive
     description:
@@ -853,6 +981,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  riverpod_sqflite:
+    dependency: "direct main"
+    description:
+      name: riverpod_sqflite
+      sha256: "38ad3e714cf24c6fc0dc2536c2672db3b40a423633e8ba2a18e5a8dfcbbc1baa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3"
   rxdart:
     dependency: transitive
     description:
@@ -1006,10 +1142,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: "9098ab86015c4f1d8af6486b547b11100e73b193e1899015033cb3e14ad20243"
+      sha256: "07b277b67e0096c45196cbddddf2d8c6ffc49342e88bf31d460ce04605ddac75"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.1.1"
   source_helper:
     dependency: transitive
     description:
@@ -1042,6 +1178,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.1"
+  sqflite:
+    dependency: "direct main"
+    description:
+      name: sqflite
+      sha256: e2297b1da52f127bc7a3da11439985d9b536f75070f3325e62ada69a5c585d03
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.2"
+  sqflite_android:
+    dependency: transitive
+    description:
+      name: sqflite_android
+      sha256: ecd684501ebc2ae9a83536e8b15731642b9570dc8623e0073d227d0ee2bfea88
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.2+2"
+  sqflite_common:
+    dependency: transitive
+    description:
+      name: sqflite_common
+      sha256: "6ef422a4525ecc601db6c0a2233ff448c731307906e92cabc9ba292afaae16a6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.6"
+  sqflite_darwin:
+    dependency: transitive
+    description:
+      name: sqflite_darwin
+      sha256: "279832e5cde3fe99e8571879498c9211f3ca6391b0d818df4e17d9fff5c6ccb3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.2"
+  sqflite_platform_interface:
+    dependency: transitive
+    description:
+      name: sqflite_platform_interface
+      sha256: "8dd4515c7bdcae0a785b0062859336de775e8c65db81ae33dd5445f35be61920"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   stack_trace:
     dependency: transitive
     description:
@@ -1058,6 +1234,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  storage_client:
+    dependency: transitive
+    description:
+      name: storage_client
+      sha256: "1c61b19ed9e78f37fdd1ca8b729ab8484e6c8fe82e15c87e070b861951183657"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   stream_channel:
     dependency: transitive
     description:
@@ -1082,14 +1266,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  supabase:
+    dependency: transitive
+    description:
+      name: supabase
+      sha256: fc5bf5518f1594a0809203fa406a5094239dd1a8d090db6ebf24d6e238fcd8b3
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.0"
+  supabase_flutter:
+    dependency: "direct main"
+    description:
+      name: supabase_flutter
+      sha256: "01fff52de41853373e1465acc2a3a3c9859a30357b84a548c3583d9ef0b02972"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.3"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: c254ade258ec8282947a0acbbc90b9575b4f19673533ee46f2f6e9b3aeefd7c0
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   talker:
     dependency: transitive
     description:
       name: talker
-      sha256: "1f94c986b282ccb4efdb3bf0b2549bf314aa20c9e35cbde2c8111d6dd31a7b9a"
+      sha256: bdddfd356e0bd399b7b15628880fef40078d10259b119f2384305776e77763a5
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.4"
+    version: "5.1.5"
   talker_dio_logger:
     dependency: "direct main"
     description:
@@ -1106,14 +1314,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.4"
+  talker_http_logger:
+    dependency: "direct main"
+    description:
+      name: talker_http_logger
+      sha256: "5ea63ed43a15f5170b367f5f2e9df1ea4ffbfe414064286f709a990c9a09b257"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.5"
   talker_logger:
     dependency: transitive
     description:
       name: talker_logger
-      sha256: c2d58daa0d99518c83b4941967e7527dc4d98328b145bbf07a638bbaf4f0e039
+      sha256: a19f0741102cb98634d999a13b44fe3fe5f4c0ac75602d0308a046b130b5f3b3
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.4"
+    version: "5.1.5"
   talker_riverpod_logger:
     dependency: "direct main"
     description:
@@ -1322,6 +1538,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.3"
+  yet_another_json_isolate:
+    dependency: transitive
+    description:
+      name: yet_another_json_isolate
+      sha256: fe45897501fa156ccefbfb9359c9462ce5dec092f05e8a56109db30be864f01e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
 sdks:
   dart: ">=3.10.0 <4.0.0"
   flutter: ">=3.35.0"

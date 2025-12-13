@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../router/router.dart';
-import '../../../collection/providers/collection_providers.dart';
+import '../../../collection/providers/current_collection.dart';
 
 class GameIntro extends ConsumerWidget {
   const GameIntro({
@@ -11,10 +10,7 @@ class GameIntro extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cid = ref.watch(routerProvider.select(
-      (router) => router.state.pathParameters['cid'] ?? '',
-    ));
-    final collection = ref.watch(collectionProvider(cid)).value;
+    final collection = ref.watch(currentCollectionProvider).value;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

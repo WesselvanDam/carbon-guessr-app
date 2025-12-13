@@ -5,11 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../../../client/talker.dart';
+import '../../../../../data/models/collection.model.dart';
 import '../../../../../data/models/item.model.dart';
 import '../../../../../data/models/source.dart';
 import '../../../../../router/router.dart';
 import '../../../../shared/utils/extensions.dart';
-import '../../../collection/providers/collection_providers.dart';
+import '../../../collection/providers/current_collection.dart';
+import '../../providers/sources.dart';
 
 class ItemDetailsDialog extends ConsumerWidget {
   const ItemDetailsDialog({
@@ -132,108 +135,117 @@ class ItemDetailsDialog extends ConsumerWidget {
                   subtitle: const Text('No sources available.'),
                 ),
 
-              if (showSources && item.sources.isNotEmpty)
-                Consumer(
-                  builder: (context, ref, child) {
-                    final cid = ref.watch(
-                      routerProvider.select(
-                        (router) => router.state.pathParameters['cid'],
-                      ),
-                    );
-                    if (cid == null || cid.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-
-                    final sources = ref.watch(
-                      collectionItemSourcesProvider(cid, item.sources),
-                    );
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8,
-                      children: [
-                        const Divider(height: 32),
-
-                        // Sources
-                        Text(
-                          'Sources',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: item.sources.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.link, size: 14),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Skeletonizer(
-                                      enabled: sources.isLoading,
-                                      effect: ShimmerEffect(
-                                        baseColor: Theme.of(
-                                          context,
-                                        ).colorScheme.surfaceDim,
-                                        highlightColor: Theme.of(
-                                          context,
-                                        ).colorScheme.surfaceContainerHighest,
-                                      ),
-                                      switchAnimationConfig:
-                                          const SwitchAnimationConfig(
-                                            duration: Duration(
-                                              milliseconds: 500,
-                                            ),
-                                          ),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: switch (sources) {
-                                          AsyncLoading() => const Text(
-                                            'Placeholder source (2025)',
-                                          ),
-                                          AsyncError() => const Text(
-                                            'Failed to load sources.',
-                                          ),
-                                          AsyncData<List<Source>>(
-                                            :final value,
-                                          ) =>
-                                            GestureDetector(
-                                              onTap: () => launchUrlString(
-                                                value[index].url,
-                                                mode: LaunchMode
-                                                    .externalApplication,
-                                              ),
-                                              child: Text(
-                                                value[index].title,
-                                                style: TextStyle(
-                                                  color: Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
-                                              ),
-                                            ),
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ),
+              if (showSources &&
+                  item.sources.isNotEmpty &&
+                  collection.value != null)
+                SourceList(collection: collection.value!, item: item),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class SourceList extends ConsumerStatefulWidget {
+  const SourceList({required this.collection, required this.item, super.key});
+
+  final CollectionModel collection;
+  final ItemModel item;
+
+  @override
+  ConsumerState<SourceList> createState() => _SourceListState();
+}
+
+class _SourceListState extends ConsumerState<SourceList> {
+  late final Future<List<Source>> _fetchSources;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSources = ref
+        .read(sourcesProvider(widget.collection.id).notifier)
+        .getSourcesByIds(widget.item.sources);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Source>>(
+      future: _fetchSources,
+      builder: (context, sources) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8,
+          children: [
+            const Divider(height: 32),
+
+            // Sources
+            Text('Sources', style: Theme.of(context).textTheme.titleMedium),
+
+            Skeletonizer(
+              enabled: sources.connectionState == ConnectionState.waiting,
+              effect: ShimmerEffect(
+                baseColor: Theme.of(context).colorScheme.surfaceDim,
+                highlightColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.item.sources.length,
+                itemBuilder: (context, index) {
+                  Widget child;
+                  if (sources.connectionState == ConnectionState.waiting) {
+                    child = const Text('Placeholder source (2025)');
+                  } else if (sources.hasError) {
+                    child = const Text('Failed to load sources.');
+                  } else {
+                    if (sources.data == null) {
+                      talker.debug('Sources data is null');
+                      return const SizedBox();
+                    }
+                    if (index >= sources.data!.length) {
+                      talker.debug(
+                        'Index $index out of bounds for sources data of length ${sources.data!.length}',
+                      );
+
+                      return const Text('Source not found');
+                    }
+
+                    final source = sources.data![index];
+                    child = GestureDetector(
+                      onTap: () => launchUrlString(
+                        source.url,
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      child: Text(
+                        source.title,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.link, size: 14),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: SizedBox(width: double.infinity, child: child),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

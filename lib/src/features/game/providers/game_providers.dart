@@ -5,10 +5,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../constants/game_mode.dart';
 import '../../../../router/router.dart';
-import '../../collection/providers/collection_providers.dart';
+import '../../collection/providers/current_collection.dart';
 
 part 'game_providers.g.dart';
-
 
 @riverpod
 String gameId(Ref ref) {
@@ -31,13 +30,8 @@ GameMode gameMode(Ref ref) {
 
 @riverpod
 double minRatio(Ref ref) {
-  final cid = ref.watch(
-    routerProvider.select((router) => router.state.pathParameters['cid'] ?? ''),
-  );
-
-  final ratioBoundary = cid.isEmpty
-      ? 0.01
-      : ref.watch(collectionProvider(cid)).value?.ratioBoundary ?? 0.01;
+  final ratioBoundary =
+      ref.watch(currentCollectionProvider).value?.ratioBoundary ?? 0.01;
 
   return pow(10, (log(ratioBoundary) / log(10)).floor()).toDouble();
 }

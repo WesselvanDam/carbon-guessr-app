@@ -15,10 +15,6 @@ Any commands will be run in PowerShell, so please use PowerShell syntax (no '&&'
 - Use camelCase for variables, methods, and function names.
 - Prefix private members with an underscore (_).
 
-## Error Handling
-- Use `try-catch` blocks for async operations.
-- Log errors with sufficient context for debugging.
-
 ## Testing
 - Write unit tests for all business logic.
 - Write widget tests for UI components.

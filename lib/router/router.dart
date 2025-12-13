@@ -5,7 +5,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 
 import '../client/talker.dart';
 import '../local_storage/local_storage_keys.dart';
-import '../local_storage/local_storage_providers.dart';
+import '../local_storage/local_storage_repository.dart';
 import 'routes.dart';
 
 part 'router.g.dart';
@@ -34,9 +34,9 @@ GoRouter router(Ref ref) {
 @riverpod
 String initialLocation(Ref ref) {
   final hasSeenOnboarding =
-      ref.read(
-        localStorageBoolProvider(LocalStorageBoolKeys.hasSeenOnboarding),
-      ) ??
+      ref
+          .read(localStorageRepositoryProvider)
+          .getBool(LocalStorageBoolKeys.hasSeenOnboarding) ??
       false;
   return hasSeenOnboarding ? '/' : '/onboarding';
 }

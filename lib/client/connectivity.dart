@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'connectivity.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<bool> hasInternetConnection(Ref ref) async* {
   final connectionStream = InternetConnection().onStatusChange;
 

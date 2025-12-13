@@ -56,3 +56,6 @@ app.*.map.json
 
 # Temporary Excel files
 ~$*.xlsx
+
+# Environment files
+.env

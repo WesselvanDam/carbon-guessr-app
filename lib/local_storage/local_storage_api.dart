@@ -7,7 +7,7 @@ import 'local_storage_providers.dart';
 part 'local_storage_api.g.dart';
 
 /// A provider for the [LocalStorageApi].
-@riverpod
+@Riverpod(keepAlive: true)
 LocalStorageApi localStorageApi(Ref ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return LocalStorageApi(prefs);

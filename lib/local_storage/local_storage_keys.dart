@@ -6,6 +6,6 @@ enum LocalStorageStringKeys { tmp }
 
 enum LocalStorageDoubleKeys { tmp }
 
-enum LocalStorageIntKeys { tmp }
+enum LocalStorageIntKeys { lastCollectionFetchTime }
 
 enum LocalStorageStringListKeys { tmp }

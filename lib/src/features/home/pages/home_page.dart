@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+import '../../../../client/talker.dart';
 import '../../../../router/routes.dart';
 import 'local/select_collection.dart';
 
@@ -18,6 +20,14 @@ class HomePage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
+                  icon: const Icon(Icons.bug_report),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => TalkerScreen(talker: talker),
+                    ),
+                  ),
+                ),
+                IconButton(
                   icon: const Icon(Icons.question_mark),
                   onPressed: () {
                     // Navigate to the onboarding page
@@ -29,11 +39,7 @@ class HomePage extends ConsumerWidget {
             ),
             const SizedBox(height: 48),
             // App logo/icon
-            const Icon(
-              Icons.eco,
-              size: 80,
-              color: Colors.green,
-            ),
+            const Icon(Icons.eco, size: 80, color: Colors.green),
 
             const SizedBox(height: 24),
 
@@ -52,9 +58,7 @@ class HomePage extends ConsumerWidget {
             ),
 
             // Collections List
-            const Expanded(
-              child: CollectionSelector(),
-            ),
+            const Expanded(child: CollectionSelector()),
           ],
         ),
       ),

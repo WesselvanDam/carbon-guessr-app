@@ -7,7 +7,7 @@ import '../../../../data/models/item.model.dart';
 import '../../../../router/routes.dart';
 import '../../../shared/utils/extensions.dart';
 import '../../../shared/widgets/score_pill.dart';
-import '../../collection/providers/collection_providers.dart';
+import '../../collection/providers/current_collection.dart';
 import '../controllers/game_controller.dart';
 import '../models/game.model.dart';
 import '../models/round.model.dart';

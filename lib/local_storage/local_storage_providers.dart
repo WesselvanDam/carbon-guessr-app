@@ -1,8 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'local_storage_keys.dart';
-import 'local_storage_repository.dart';
 
 part 'local_storage_providers.g.dart';
 
@@ -14,11 +12,3 @@ part 'local_storage_providers.g.dart';
 @Riverpod(keepAlive: true)
 SharedPreferencesWithCache sharedPreferences(Ref ref) =>
     throw UnimplementedError();
-
-
-/// A provider that retrieves a boolean value from local storage.
-@riverpod
-bool? localStorageBool(Ref ref, LocalStorageBoolKeys key) {
-  final repository = ref.watch(localStorageRepositoryProvider);
-  return repository.getBool(key);
-}

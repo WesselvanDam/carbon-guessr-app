@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../collection/providers/collection_providers.dart';
+import '../../providers/collections.dart';
 import 'collection_card.dart';
 
 class CollectionSelector extends ConsumerWidget {
