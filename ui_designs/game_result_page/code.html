@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Carbon Footprint Game Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Nunito', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                bg: '#f8fafc',      // Slate 50
+                primary: '#2563eb', // Blue 600
+                primaryDark: '#1e40af', // Blue 800
+                secondary: '#ff6b4a', // Coral
+                secondaryDark: '#c2410c', // Orange 700
+                accent: '#f97316',  // Orange 500
+                text: '#0f172a',    // Slate 900
+                textLight: '#64748b', // Slate 500
+              },
+            },
+            boxShadow: {
+              'game-btn': '0 6px 0 0 #1e40af', 
+              'game-btn-active': '0 0 0 0 #1e40af',
+              'soft': '0 10px 40px -10px rgba(37, 99, 235, 0.15)',
+              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+            },
+            animation: {
+                'pop-in': 'pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                'progress-grow': 'progress-grow 1.5s ease-out forwards',
+            },
+            keyframes: {
+                'pop-in': {
+                    '0%': { opacity: '0', transform: 'scale(0.95)' },
+                    '100%': { opacity: '1', transform: 'scale(1)' },
+                },
+                'progress-grow': {
+                    '0%': { strokeDashoffset: '540' },
+                    '100%': { strokeDashoffset: '100' }, 
+                }
+            }
+          },
+        },
+      };
+    </script>
+<style>::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-brand-bg text-brand-text font-sans min-h-[100dvh] flex flex-col selection:bg-brand-secondary selection:text-white">
+<header class="px-4 py-4 flex items-center justify-between gap-3 sticky top-0 z-50 bg-brand-bg/95 backdrop-blur-sm">
+<button aria-label="Exit Game" class="w-12 h-12 rounded-2xl bg-white border-b-4 border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<div class="flex-1 text-center">
+<span class="text-xs font-black uppercase text-brand-textLight tracking-widest">Summary</span>
+</div>
+<div class="w-12 h-12"></div> 
+</header>
+<main class="flex-grow flex flex-col items-center w-full max-w-md mx-auto pb-32 px-4">
+<div class="w-full bg-white rounded-[2rem] shadow-soft p-6 mb-8 mt-2 flex flex-col items-center animate-pop-in border border-slate-100 relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full blur-2xl opacity-60"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
+<h2 class="relative text-xs font-black text-brand-primary uppercase tracking-[0.2em] mb-4">Final Score</h2>
+<div class="relative w-48 h-48 flex-shrink-0">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-slate-100" cx="96" cy="96" fill="transparent" r="86" stroke="currentColor" stroke-linecap="round" stroke-width="16"></circle>
+<circle class="text-brand-primary animate-progress-grow" cx="96" cy="96" fill="transparent" r="86" stroke="currentColor" stroke-dasharray="540" stroke-dashoffset="540" stroke-linecap="round" stroke-width="16"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-6xl font-black text-brand-text tracking-tighter drop-shadow-sm">393</span>
+<span class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Points</span>
+</div>
+</div>
+</div>
+<div class="w-full animate-pop-in" style="animation-delay: 0.1s;">
+<div class="flex items-center gap-2 mb-4 px-2">
+<span class="material-symbols-outlined text-brand-secondary text-xl">grid_view</span>
+<h3 class="font-black text-brand-text text-lg">Game Breakdown</h3>
+</div>
+<div class="space-y-4">
+<div class="bg-white rounded-2xl shadow-card border border-slate-200 p-4">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Round 1</span>
+<div class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full border border-green-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">add</span>86 pts
+                    </div>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
+<div class="text-brand-primary mb-1"><span class="material-symbols-outlined">inventory_2</span></div>
+<div class="font-bold text-xs text-brand-text leading-tight">Roasted Peanuts</div>
+<div class="text-[10px] text-brand-textLight mt-0.5">1 kg</div>
+</div>
+<div class="bg-orange-50 rounded-xl p-3 border border-orange-100">
+<div class="text-brand-secondary mb-1"><span class="material-symbols-outlined">smartphone</span></div>
+<div class="font-bold text-xs text-brand-text leading-tight">Smartphone</div>
+<div class="text-[10px] text-brand-textLight mt-0.5">Fairphone 5</div>
+</div>
+</div>
+<div class="flex items-center justify-between bg-slate-50 rounded-xl p-3 border border-slate-100">
+<div class="text-center flex-1 border-r border-slate-200">
+<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Your Guess</div>
+<div class="text-base font-black text-brand-text">1 : 6.6</div>
+</div>
+<div class="text-center flex-1">
+<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">True Ratio</div>
+<div class="text-base font-black text-brand-primary">1 : 9.4</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-card border border-slate-200 p-4">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Round 2</span>
+<div class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded-full border border-yellow-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">add</span>74 pts
+                    </div>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
+<div class="text-brand-primary mb-1"><span class="material-symbols-outlined">compost</span></div>
+<div class="font-bold text-xs text-brand-text leading-tight">Onions &amp; Leeks</div>
+<div class="text-[10px] text-brand-textLight mt-0.5">1 kg</div>
+</div>
+<div class="bg-orange-50 rounded-xl p-3 border border-orange-100">
+<div class="text-brand-secondary mb-1"><span class="material-symbols-outlined">nutrition</span></div>
+<div class="font-bold text-xs text-brand-text leading-tight">Apples</div>
+<div class="text-[10px] text-brand-textLight mt-0.5">1 kg</div>
+</div>
+</div>
+<div class="flex items-center justify-between bg-slate-50 rounded-xl p-3 border border-slate-100">
+<div class="text-center flex-1 border-r border-slate-200">
+<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Your Guess</div>
+<div class="text-base font-black text-brand-text">1 : 1.7</div>
+</div>
+<div class="text-center flex-1">
+<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">True Ratio</div>
+<div class="text-base font-black text-brand-primary">1 : 1.2</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-card border border-slate-200 p-4">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Round 3</span>
+<div class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full border border-green-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">add</span>83 pts
+                    </div>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
+<div class="text-brand-primary mb-1"><span class="material-symbols-outlined">directions_boat</span></div>
+<div class="font-bold text-xs text-brand-text leading-tight">Ferry Ride</div>
+<div class="text-[10px] text-brand-textLight mt-0.5">50 km</div>
+</div>
+<div class="bg-orange-50 rounded-xl p-3 border border-orange-100">
+<div class="text-brand-secondary mb-1"><span class="material-symbols-outlined">shopping_bag</span></div>
+<div class="font-bold text-xs text-brand-text leading-tight">Beet Sugar</div>
+<div class="text-[10px] text-brand-textLight mt-0.5">1 kg</div>
+</div>
+</div>
+<div class="flex items-center justify-between bg-slate-50 rounded-xl p-3 border border-slate-100">
+<div class="text-center flex-1 border-r border-slate-200">
+<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Your Guess</div>
+<div class="text-base font-black text-brand-text">5.4 : 1</div>
+</div>
+<div class="text-center flex-1">
+<div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">True Ratio</div>
+<div class="text-base font-black text-brand-primary">3.6 : 1</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-gradient-to-t from-brand-bg via-brand-bg/95 to-transparent pointer-events-none z-40">
+<div class="max-w-md mx-auto pointer-events-auto">
+<button class="w-full bg-brand-primary hover:bg-brand-primaryDark text-white font-extrabold text-lg py-4 rounded-2xl shadow-game-btn active:shadow-game-btn-active active:translate-y-[6px] transition-all flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-3xl transition-transform group-hover:-rotate-180">replay</span>
+<span>Play Again</span>
+</button>
+</div>
+</div>
+
+</body></html>
