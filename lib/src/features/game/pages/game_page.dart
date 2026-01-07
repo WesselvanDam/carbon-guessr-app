@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../shared/design_system/app_colors.dart';
 import '../controllers/game_controller.dart';
 import 'game_results_page.dart';
 import 'game_round_form.dart';
@@ -14,12 +14,11 @@ class GamePage extends ConsumerWidget {
     final game = ref.watch(gameControllerProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.bg,
       appBar: const GameAppBar(),
-      body: SingleChildScrollView(
-        child: (game.value?.isCompleted ?? false)
-            ? const GameResultsPage()
-            : const GameRoundForm(),
-      ),
+      body: (game.value?.isCompleted ?? false)
+          ? const GameResultsPage()
+          : const GameRoundForm(),
     );
   }
 }

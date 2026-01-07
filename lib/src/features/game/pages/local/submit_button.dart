@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:material_symbols_icons/symbols.dart';
+import '../../../../shared/widgets/buttons/primary_button.dart';
+import '../../../../shared/widgets/buttons/secondary_button.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/timer_controller.dart';
 
@@ -52,28 +54,26 @@ class SubmitButton extends ConsumerWidget {
         );
       },
       layoutBuilder: (currentChild, previousChildren) => Stack(
-        alignment: Alignment.centerRight,
+        alignment: Alignment.center,
         children: [
           ...previousChildren,
           currentChild!,
         ],
       ),
       child: isRoundOver
-          ? FilledButton.icon(
+          ? SecondaryButton(
               key: const ValueKey('next'),
               onPressed: () => _nextRound(ref),
-              icon: const Icon(Icons.arrow_forward),
-              label: Text(isLastRound ? 'Finish Game' : 'Next Round'),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                foregroundColor: Theme.of(context).colorScheme.onSecondary,
-              ),
+              label: isLastRound ? 'Finish Game' : 'Next Round',
+              showArrow: true,
+              fullWidth: true,
             )
-          : FilledButton.icon(
+          : PrimaryButton(
               key: const ValueKey('submit'),
               onPressed: () => _submitEstimate(ref),
-              icon: const Icon(Icons.check),
-              label: const Text('Submit Estimate'),
+              label: 'Submit Answer',
+              showArrow: true,
+              fullWidth: true,
             ),
     );
   }

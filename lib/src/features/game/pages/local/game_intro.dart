@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../../shared/design_system/app_colors.dart';
+import '../../../../shared/design_system/app_typography.dart';
 import '../../../collection/providers/current_collection.dart';
 
 class GameIntro extends ConsumerWidget {
@@ -14,30 +15,23 @@ class GameIntro extends ConsumerWidget {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RichText(
-          text: TextSpan(
-            style: Theme.of(context).textTheme.bodyLarge,
-            children: [
-              const TextSpan(text: 'Compare the ratio in '),
-              TextSpan(
-                text: collection?.quantity,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const TextSpan(text: ' (expressed in '),
-              TextSpan(
-                text: collection?.unit,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const TextSpan(text: ') between the two items below.'),
-            ],
+        Text(
+          'Compare the Footprint',
+          style: AppTypography.h3.copyWith(
+            color: AppColors.text,
           ),
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
-          'You can type a value or pinch the squares to adjust the ratio.',
-          style: Theme.of(context).textTheme.bodySmall,
+          'Drag the blue square to estimate how many times more ${collection?.quantity ?? 'CO2eq'} one item produces compared to the other.',
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.textLight,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
