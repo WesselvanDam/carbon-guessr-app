@@ -38,40 +38,58 @@ class Items extends _$Items {
     return state.value ?? {};
   }
 
-  Future<List<ItemModel>> getItemsByIds(List<int> ids) async {
-    talker.debug('Getting items by IDs: $ids');
+  Future<List<ItemModel>> getItems(List<int> ids) async {
     await future;
-    talker.debug('Persisted items loaded, checking for missing items.');
-    final persistedItems = state.value!.values
+    final items = state.value!.values
         .where((item) => ids.contains(item.id))
         .toList();
     final remainingIds = ids
-        .where((id) => !persistedItems.any((item) => item.id == id))
+        .where((id) => !items.any((item) => item.id == id))
         .toList();
-    talker.debug(
-      'Fetched ${persistedItems.length} persisted items, '
-      '${remainingIds.length} remaining to fetch from remote.',
-    );
-    final List<ItemModel> items = [...persistedItems];
 
     if (remainingIds.isNotEmpty) {
-      final hasInternet = await ref.read(
-        hasInternetConnectionProvider.selectAsync((hasInternet) => hasInternet),
-      );
-      if (!hasInternet) {
-        talker.error('No internet connection, cannot fetch remaining items');
-        throw Exception('No internet connection');
-      }
-      final supabase = ref.read(supabaseApiProvider(collectionId));
-      final fetchedItems = await supabase.fetchItems(remainingIds);
+      final fetchedItems = await _fetchItems(remainingIds);
       items.addAll(fetchedItems);
-      state = AsyncValue.data({
-        ...?state.value,
-        ...{for (final item in fetchedItems) item.id.toString(): item},
-      });
     }
 
     items.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
     return items;
+  }
+
+  Future<AsyncValue<String>> storeRemainingItems() async {
+    await future;
+    final currentItemIds =
+        state.value?.keys.map((id) => int.parse(id)).toList() ?? [];
+
+    return _fetchItems(currentItemIds, exclude: true)
+        .then<AsyncValue<String>>(
+          (value) => const AsyncData('Stored the remaining items'),
+        )
+        .catchError((error) {
+          talker.error('Error storing remaining items: $error');
+          return AsyncError<String>(error.toString(), StackTrace.current);
+        });
+  }
+
+  Future<List<ItemModel>> _fetchItems(
+    List<int> ids, {
+    bool exclude = false,
+  }) async {
+    final hasInternet = await ref.read(
+      hasInternetConnectionProvider.selectAsync((hasInternet) => hasInternet),
+    );
+    if (!hasInternet) {
+      talker.error('No internet connection, cannot fetch remaining items');
+      throw Exception('No internet connection');
+    }
+
+    final supabase = ref.read(supabaseApiProvider(collectionId));
+    final fetchedItems = await supabase.fetchItems(ids, exclude: exclude);
+    talker.debug('Fetched ${fetchedItems.length} items.');
+    state = AsyncValue.data({
+      ...?state.value,
+      ...{for (final item in fetchedItems) item.id.toString(): item},
+    });
+    return fetchedItems;
   }
 }

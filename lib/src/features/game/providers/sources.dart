@@ -58,20 +58,57 @@ class Sources extends _$Sources {
       final hasInternet = await ref.read(
         hasInternetConnectionProvider.selectAsync((hasInternet) => hasInternet),
       );
-      if (!hasInternet) {
-        talker.error('No internet connection, cannot fetch remaining items');
-        throw Exception('No internet connection');
+      if (hasInternet) {
+        final supabase = ref.read(supabaseApiProvider(collectionId));
+        final fetchedSources = await supabase.fetchSources(remainingIds);
+        sources.addAll(fetchedSources);
+        state = AsyncValue.data({
+          ...?state.value,
+          ...{
+            for (final source in fetchedSources) source.id.toString(): source,
+          },
+        });
       }
-      final supabase = ref.read(supabaseApiProvider(collectionId));
-      final fetchedSources = await supabase.fetchSources(remainingIds);
-      sources.addAll(fetchedSources);
-      state = AsyncValue.data({
-        ...?state.value,
-        ...{for (final source in fetchedSources) source.id.toString(): source},
-      });
     }
 
     sources.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
     return sources;
+  }
+
+  Future<AsyncValue<String>> storeRemainingItems() async {
+    await future;
+    final currentSourceIds =
+        state.value?.keys.map((id) => int.parse(id)).toList() ?? [];
+
+    return _fetchSources(currentSourceIds, exclude: true)
+        .then<AsyncValue<String>>(
+          (value) => const AsyncData('Stored the remaining sources'),
+        )
+        .catchError((error) {
+          talker.error('Error storing remaining sources: $error');
+          return AsyncError<String>(error.toString(), StackTrace.current);
+        });
+  }
+
+  Future<List<Source>> _fetchSources(
+    List<int> ids, {
+    bool exclude = false,
+  }) async {
+    final hasInternet = await ref.read(
+      hasInternetConnectionProvider.selectAsync((hasInternet) => hasInternet),
+    );
+    if (!hasInternet) {
+      talker.error('No internet connection, cannot fetch remaining sources');
+      throw Exception('No internet connection');
+    }
+
+    final supabase = ref.read(supabaseApiProvider(collectionId));
+    final fetchedSources = await supabase.fetchSources(ids, exclude: exclude);
+    talker.debug('Fetched ${fetchedSources.length} sources.');
+    state = AsyncValue.data({
+      ...?state.value,
+      ...{for (final source in fetchedSources) source.id.toString(): source},
+    });
+    return fetchedSources;
   }
 }

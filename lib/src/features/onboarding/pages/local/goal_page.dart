@@ -38,6 +38,7 @@ class GoalPage extends ConsumerWidget {
             child: CollectionCard(
               collection: CollectionModel(
                 id: 'onboarding_collection',
+                lastUpdated: '',
                 title: 'Surface Area of Countries',
                 tagline:
                     'Learn how countries compare in size by exploring their surface areas.',
@@ -45,6 +46,7 @@ class GoalPage extends ConsumerWidget {
                 unit: 'km²',
                 size: 195,
                 quantity: 'Example Collection',
+                ratioBoundary: 1.0,
               ),
             ),
           ),

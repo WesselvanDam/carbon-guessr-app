@@ -55,7 +55,7 @@ class SourceList extends ConsumerWidget {
                 AsyncError() => const Text('Failed to load sources.'),
                 AsyncData(:final value) =>
                   index >= value.length
-                      ? const Text('Source not found')
+                      ? const Text('Source not available')
                       : GestureDetector(
                           onTap: () => launchUrlString(
                             value[index].url,

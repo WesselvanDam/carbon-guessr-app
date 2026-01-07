@@ -9,6 +9,7 @@ import '../../../shared/utils/extensions.dart';
 import '../../game/repository/game_repository.dart';
 import '../providers/current_collection.dart';
 import 'challenge_dialog.dart';
+import 'download_dialog.dart';
 
 class CollectionPage extends ConsumerWidget {
   const CollectionPage({required this.cid, super.key});
@@ -61,6 +62,29 @@ class CollectionPage extends ConsumerWidget {
               ],
             ),
             centerTitle: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: IconButton.outlined(
+                  padding: const EdgeInsets.all(12.0),
+                  iconSize: 28,
+                  icon: const Icon(Icons.download),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => const DownloadCollectionDialog(),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    side: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withAlpha(50),
+                      width: 2,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Padding(

@@ -65,29 +65,35 @@ class SupabaseApi {
   }
 
   /// Fetches all collection items for the given IDs
-  Future<List<ItemModel>> fetchItems(List<int> ids) async {
-    final response = await _client
-        .from(_collectionId!)
-        .select()
-        .inFilter('id', ids)
-        .catchError((error) {
-          talker.error('Error fetching items: $error');
-          return [];
-        });
+  Future<List<ItemModel>> fetchItems(
+    List<int> ids, {
+    bool exclude = false,
+  }) async {
+    var query = _client.from(_collectionId!).select();
+    query = exclude
+        ? query.not('id', 'in', '(${ids.join(',')})')
+        : query.inFilter('id', ids);
+    final response = await query.catchError((error) {
+      talker.error('Error fetching items: $error');
+      return [];
+    });
 
     return response.map<ItemModel>((json) => ItemModel.fromJson(json)).toList();
   }
 
   /// Fetches all sources for the given IDs
-  Future<List<Source>> fetchSources(List<int> ids) async {
-    final response = await _client
-        .from('${_collectionId}_sources')
-        .select()
-        .inFilter('id', ids)
-        .catchError((error) {
-          talker.error('Error fetching sources: $error');
-          return [];
-        });
+  Future<List<Source>> fetchSources(
+    List<int> ids, {
+    bool exclude = false,
+  }) async {
+    var query = _client.from('${_collectionId}_sources').select();
+    query = exclude
+        ? query.not('id', 'in', '(${ids.join(',')})')
+        : query.inFilter('id', ids);
+    final response = await query.catchError((error) {
+      talker.error('Error fetching sources: $error');
+      return [];
+    });
 
     return response.map<Source>((json) => Source.fromJson(json)).toList();
   }
