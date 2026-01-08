@@ -12,12 +12,23 @@ class GamePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(gameControllerProvider);
+    final isCompleted = game.value?.isCompleted ?? false;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: const GameAppBar(),
-      body: (game.value?.isCompleted ?? false)
-          ? const GameResultsPage()
+      body: isCompleted
+          ? Stack(
+              children: [
+                const GameResultsPage(),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: const GameResultsActions(),
+                ),
+              ],
+            )
           : const GameRoundForm(),
     );
   }

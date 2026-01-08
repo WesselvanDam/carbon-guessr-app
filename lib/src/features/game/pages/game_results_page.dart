@@ -2,22 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:material_symbols_icons/symbols.dart';
 import '../../../../data/models/item.model.dart';
-import '../../../../router/routes.dart';
-import '../../../shared/utils/extensions.dart';
-import '../../../shared/widgets/score_pill.dart';
+import '../../../shared/design_system/app_colors.dart';
+import '../../../shared/design_system/app_shadows.dart';
+import '../../../shared/design_system/app_typography.dart';
+import '../../../shared/widgets/buttons/primary_button.dart';
 import '../../collection/providers/current_collection.dart';
 import '../controllers/game_controller.dart';
 import '../models/game.model.dart';
 import '../models/round.model.dart';
 import '../providers/game_providers.dart';
 import '../repository/game_repository.dart';
-import 'local/final_score.dart';
 import 'local/item_details_dialog.dart';
 
 class GameResultsPage extends ConsumerWidget {
   const GameResultsPage({super.key});
+
+  int _decimals(double ratio) {
+    if (ratio > 100) return 0;
+    if (ratio > 10) return 1;
+    return 2;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,247 +33,219 @@ class GameResultsPage extends ConsumerWidget {
     final maxPossibleScore = game.rounds.length * 100.0;
     final scorePercentage = ((totalScore / maxPossibleScore) * 100).round();
 
-    // Get a feedback message based on the score
-    final feedbackMessage = _getFeedbackMessage(scorePercentage);
-
-    return Padding(
-      padding: const .all(24.0),
+    return SingleChildScrollView(
       child: Column(
-        crossAxisAlignment: .stretch,
         children: [
-          CoolScoreWidget(score: totalScore),
-
-          const SizedBox(height: 32),
-
-          // Feedback message
+          // Score circle
           Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: .circular(8),
-            ),
-            padding: const .symmetric(vertical: 20, horizontal: 16),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.lightbulb,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 32,
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x262563EB), // rgba(37, 99, 235, 0.15)
+                  offset: Offset(0, 10),
+                  blurRadius: 40,
+                  spreadRadius: -10,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    feedbackMessage,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: .w600,
+              ],
+              border: Border.all(color: AppColors.slate100),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'FINAL SCORE',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.primary,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: 192,
+                  height: 192,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Background circle
+                      SizedBox(
+                        width: 192,
+                        height: 192,
+                        child: CircularProgressIndicator(
+                          value: 1.0,
+                          strokeWidth: 16,
+                          color: AppColors.slate100,
+                          backgroundColor: Colors.transparent,
                         ),
-                    textAlign: .left,
+                      ),
+                      // Progress circle
+                      SizedBox(
+                        width: 192,
+                        height: 192,
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween<double>(
+                            begin: 0,
+                            end: (100 - scorePercentage) / 100,
+                          ),
+                          duration: const Duration(milliseconds: 1500),
+                          curve: Curves.easeOut,
+                          builder: (context, value, child) {
+                            return CircularProgressIndicator(
+                              value: value,
+                              strokeWidth: 16,
+                              strokeCap: StrokeCap.round,
+                              color: AppColors.primary,
+                              backgroundColor: Colors.transparent,
+                            );
+                          },
+                        ),
+                      ),
+                      // Score text
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${totalScore.round()}',
+                            style: const TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 60,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.text,
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'POINTS',
+                            style: AppTypography.caption.copyWith(
+                              color: AppColors.slate400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ).animate().fadeIn(
-            duration: 600.ms,
-            delay: 300.ms,
-          ),
-
-          const SizedBox(height: 32),
-
-          // Round details
-          _buildRoundDetailsCard(context, game),
-
-          const SizedBox(height: 32),
-
-          // Action buttons
-          OverflowBar(
-            alignment: .end,
-            overflowAlignment: .center,
-            overflowDirection: .up,
-            spacing: 16,
-            children: [
-              TextButton(
-                onPressed: () => context.pop(),
-                child: const Text('Back to collection'),
-              ),
-              FilledButton.icon(
-                onPressed: () {
-                  GameRoute(
-                    cid: ref.read(currentCollectionProvider).value!.id,
-                    gid: GameRepository.newGameId,
-                    mode: ref.read(gameModeProvider),
-                  ).go(context);
-                  ref.invalidate(gameControllerProvider);
-                },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Play Again'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoundDetailsCard(BuildContext context, GameModel game) {
-    return Card(
-      elevation: 0,
-      margin: .zero,
-      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
-      color: Colors.transparent,
-      clipBehavior: .antiAlias,
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          // Header with stylized background
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            padding: const .all(16.0),
-            child: Text(
-              'Game Breakdown',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: .bold,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ).animate().fadeIn(delay: 200.ms).scale(begin: const Offset(0.8, 0.8)),
+          const SizedBox(height: 8),
+          // Game Breakdown header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                const Icon(
+                  Symbols.grid_view,
+                  color: AppColors.secondary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Game Breakdown',
+                  style: AppTypography.h4.copyWith(
+                    fontSize: 18,
+                    color: AppColors.text,
                   ),
+                ),
+              ],
             ),
-          ).animate().fadeIn(
-            duration: 600.ms,
-            delay: 500.ms,
           ),
-
+          const SizedBox(height: 16),
+          // Rounds list
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: game.rounds.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) =>
-                _buildRoundRow(context, game.rounds[index]).animate().fadeIn(
-                  duration: 600.ms,
-                  delay: 500.ms + (index * 300).ms,
-                ),
-          )
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              final round = game.rounds[index];
+              return _buildRoundCard(context, round, index)
+                  .animate()
+                  .fadeIn(
+                    delay: (400 + index * 200).ms,
+                  )
+                  .slideY(begin: 0.1, end: 0);
+            },
+          ),
+          const SizedBox(height: 100), // Space for fixed button
         ],
       ),
     );
   }
 
-  Widget _buildRoundRow(BuildContext context, RoundModel round) {
-    final score = round.score;
-    final valueStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
-          fontWeight: .bold,
-        );
-    final labelStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        );
+  Widget _buildRoundCard(BuildContext context, RoundModel round, int index) {
+    final score = round.score?.round() ?? 0;
+    final userEstimate = round.userEstimate ?? 1.0;
+    final correctRatio = round.correctRatio;
 
     return Container(
       decoration: BoxDecoration(
-        color: round.roundNumber.isEven
-            ? Theme.of(context).colorScheme.surfaceContainer
-            : Theme.of(context).colorScheme.surfaceContainerLow,
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppShadows.card,
+        border: Border.all(color: AppColors.slate200),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header
           Padding(
-            padding: const .all(16),
-            child: Column(
-              crossAxisAlignment: .start,
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Round number label
                 Text(
-                  'ROUND ${round.roundNumber}',
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: .bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                ),
-
-                const SizedBox(height: 12),
-
-                IntrinsicHeight(
-                  child: Row(
-                    spacing: 2,
-                    crossAxisAlignment: .stretch,
-                    children: [
-                      Expanded(child: _buildItemButton(context, round.itemA)),
-                      Expanded(child: _buildItemButton(context, round.itemB)),
-                    ],
+                  'ROUND ${index + 1}',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.slate400,
+                    letterSpacing: 2,
                   ),
                 ),
-
-                const SizedBox(height: 16), // Results section
-                SizedBox(
-                  height: 48,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: score >= 80
+                        ? const Color(0xFFDCFCE7) // green-100
+                        : score >= 60
+                            ? const Color(0xFFFEF3C7) // yellow-100
+                            : const Color(0xFFFEE2E2), // red-100
+                    border: Border.all(
+                      color: score >= 80
+                          ? const Color(0xFF86EFAC) // green-200
+                          : score >= 60
+                              ? const Color(0xFFFDE047) // yellow-200
+                              : const Color(0xFFFECACA), // red-200
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Row(
-                    crossAxisAlignment: .stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // User estimate
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: .spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: const .symmetric(vertical: 2),
-                              child: Text(
-                                round.userEstimate?.ratioToReadableString() ??
-                                    'N/A',
-                                textAlign: .center,
-                                style: valueStyle,
-                              ),
-                            ),
-                            Text(
-                              'YOUR GUESS',
-                              style: labelStyle,
-                              textAlign: .center,
-                            ),
-                          ],
-                        ),
+                      Icon(
+                        Symbols.add,
+                        size: 12,
+                        color: score >= 80
+                            ? const Color(0xFF15803D) // green-700
+                            : score >= 60
+                                ? const Color(0xFFCA8A04) // yellow-700
+                                : const Color(0xFFB91C1C), // red-700
                       ),
-
-                      // Correct ratio
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: .spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: const .symmetric(vertical: 2),
-                              child: Text(
-                                round.correctRatio.ratioToReadableString(),
-                                textAlign: .center,
-                                style: valueStyle,
-                              ),
-                            ),
-                            Text(
-                              'TRUE RATIO',
-                              style: labelStyle,
-                              textAlign: .center,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Points
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: .spaceEvenly,
-                          children: [
-                            ScorePill(
-                              score: score,
-                              style: valueStyle.copyWith(
-                                fontWeight: .bold,
-                              ),
-                              padding: const .symmetric(
-                                horizontal: 12,
-                                vertical: 2,
-                              ),
-                            ),
-                            Text(
-                              'POINTS',
-                              style: labelStyle,
-                              textAlign: .center,
-                            ),
-                          ],
+                      Text(
+                        '$score pts',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: score >= 80
+                              ? const Color(0xFF15803D)
+                              : score >= 60
+                                  ? const Color(0xFFCA8A04)
+                                  : const Color(0xFFB91C1C),
+                          fontSize: 10,
                         ),
                       ),
                     ],
@@ -276,72 +254,187 @@ class GameResultsPage extends ConsumerWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItemButton(BuildContext context, ItemModel item) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final Color mainContainer =
-        item.isItemA ? colorScheme.primary : colorScheme.tertiaryContainer;
-    final Color onMainContainer =
-        item.isItemA ? colorScheme.onPrimary : colorScheme.onTertiaryFixedVariant;
-
-    return OutlinedButton(
-      onPressed: () => _showItemDetailsDialog(context, item),
-      style: FilledButton.styleFrom(
-        padding: const .symmetric(vertical: 8, horizontal: 12),
-        shape: RoundedRectangleBorder(borderRadius: .circular(8)),
-        side: .none,
-        backgroundColor: mainContainer,
-        foregroundColor: onMainContainer,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: .start,
+          // Items
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
               children: [
-                Text(
-                  item.title,
-                  style: const TextStyle(fontWeight: .bold),
+                Expanded(
+                  child: _buildItemBox(round.itemA, true),
                 ),
-                Text(
-                  item.quantity,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: onMainContainer.withAlpha(180),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildItemBox(round.itemB, false),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Ratios
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.slate50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.slate100),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'YOUR GUESS',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.slate400,
+                          fontSize: 9,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        userEstimate >= 1
+                            ? '${userEstimate.toStringAsFixed(_decimals(userEstimate))} : 1'
+                            : '1 : ${(1 / userEstimate).toStringAsFixed(_decimals(1 / userEstimate))}',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.text,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 32,
+                  color: AppColors.slate200,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'TRUE RATIO',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.slate400,
+                          fontSize: 9,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        correctRatio >= 1
+                            ? '${correctRatio.toStringAsFixed(_decimals(correctRatio))} : 1'
+                            : '1 : ${(1 / correctRatio).toStringAsFixed(_decimals(1 / correctRatio))}',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Icon(
-            Icons.info_outline,
-            size: 16,
-            color: onMainContainer,
-          ),
+          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  void _showItemDetailsDialog(BuildContext context, ItemModel item) {
-    showDialog(
-      context: context,
-      builder: (context) => ItemDetailsDialog(item: item),
-    );
-  }
+  Widget _buildItemBox(ItemModel item, bool isFirst) {
+    final bgColor = isFirst ? AppColors.blue50 : AppColors.orange50;
+    final borderColor = isFirst ? AppColors.blue100 : AppColors.orange100;
+    final iconColor = isFirst ? AppColors.primary : AppColors.secondary;
 
-  String _getFeedbackMessage(int score) {
-    if (score >= 90) {
-      return 'Excellent! You have a great understanding of carbon footprints!';
-    } else if (score >= 70) {
-      return 'Good job! You have a solid understanding of carbon footprints.';
-    } else if (score >= 50) {
-      return 'Not bad! You have some understanding of carbon footprints.';
-    } else {
-      return 'Keep learning! Carbon footprints can be tricky to estimate.';
+    // Map item category to icon
+    IconData icon = Symbols.inventory_2; // default
+    if (item.category.toLowerCase().contains('food') ||
+        item.category.toLowerCase().contains('dairy')) {
+      icon = Symbols.nutrition;
+    } else if (item.category.toLowerCase().contains('transport')) {
+      icon = Symbols.directions_car;
+    } else if (item.category.toLowerCase().contains('phone') ||
+        item.category.toLowerCase().contains('electronic')) {
+      icon = Symbols.smartphone;
+    } else if (item.category.toLowerCase().contains('vegetable')) {
+      icon = Symbols.compost;
     }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            color: iconColor,
+            size: 20,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            item.title,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            item.quantity,
+            style: AppTypography.labelSmall.copyWith(
+              color: AppColors.textLight,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Fixed bottom action button
+class GameResultsActions extends ConsumerWidget {
+  const GameResultsActions({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.bg.withOpacity(0),
+            AppColors.bg.withOpacity(0.95),
+            AppColors.bg,
+          ],
+        ),
+      ),
+      child: PrimaryButton(
+        onPressed: () {
+          final cid = ref.read(currentCollectionProvider).value?.id;
+          final mode = ref.read(gameModeProvider);
+          if (cid != null) {
+            GameRoute(
+              cid: cid,
+              gid: GameRepository.newGameId,
+              mode: mode,
+            ).go(context);
+            ref.invalidate(gameControllerProvider);
+          }
+        },
+        label: 'Play Again',
+        icon: Symbols.replay,
+        fullWidth: true,
+      ),
+    );
   }
 }
