@@ -87,13 +87,13 @@ class GameResultsPage extends ConsumerWidget {
                         child: TweenAnimationBuilder<double>(
                           tween: Tween<double>(
                             begin: 0,
-                            end: (100 - scorePercentage) / 100,
+                            end: scorePercentage / 100,
                           ),
                           duration: const Duration(milliseconds: 1500),
                           curve: Curves.easeOut,
                           builder: (context, value, child) {
                             return CircularProgressIndicator(
-                              value: value,
+                              value: 1 - value,
                               strokeWidth: 16,
                               strokeCap: StrokeCap.round,
                               color: AppColors.primary,
