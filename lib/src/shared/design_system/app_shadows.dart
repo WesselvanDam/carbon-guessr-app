@@ -7,39 +7,19 @@ class AppShadows {
 
   // Button shadows - provides a "pressed button" effect
   static const List<BoxShadow> gameBtn = [
-    BoxShadow(
-      color: AppColors.primaryDark,
-      offset: Offset(0, 6),
-      blurRadius: 0,
-      spreadRadius: 0,
-    ),
+    BoxShadow(color: AppColors.primaryDark, offset: Offset(0, 6)),
   ];
 
   static const List<BoxShadow> gameBtnActive = [
-    BoxShadow(
-      color: AppColors.primaryDark,
-      offset: Offset(0, 0),
-      blurRadius: 0,
-      spreadRadius: 0,
-    ),
+    BoxShadow(color: AppColors.primaryDark),
   ];
 
   static const List<BoxShadow> gameBtnSecondary = [
-    BoxShadow(
-      color: AppColors.secondaryDark,
-      offset: Offset(0, 6),
-      blurRadius: 0,
-      spreadRadius: 0,
-    ),
+    BoxShadow(color: AppColors.secondaryDark, offset: Offset(0, 6)),
   ];
 
   static const List<BoxShadow> gameBtnSecondaryActive = [
-    BoxShadow(
-      color: AppColors.secondaryDark,
-      offset: Offset(0, 0),
-      blurRadius: 0,
-      spreadRadius: 0,
-    ),
+    BoxShadow(color: AppColors.secondaryDark),
   ];
 
   // Card shadows
@@ -47,8 +27,6 @@ class AppShadows {
     BoxShadow(
       color: Color(0x0D000000), // rgba(0, 0, 0, 0.05)
       offset: Offset(0, 8),
-      blurRadius: 0,
-      spreadRadius: 0,
     ),
   ];
 
@@ -82,7 +60,6 @@ class AppShadows {
       color: Color(0x0F000000), // rgba(0, 0, 0, 0.06)
       offset: Offset(0, 2),
       blurRadius: 4,
-      spreadRadius: 0,
     ),
   ];
 
@@ -91,7 +68,6 @@ class AppShadows {
       color: Color(0x4DFFFFFF), // rgba(255, 255, 255, 0.3)
       offset: Offset(0, 2),
       blurRadius: 4,
-      spreadRadius: 0,
     ),
   ];
 
@@ -101,7 +77,6 @@ class AppShadows {
       color: Color(0x1A000000), // rgba(0, 0, 0, 0.1)
       offset: Offset(0, 1),
       blurRadius: 3,
-      spreadRadius: 0,
     ),
   ];
 

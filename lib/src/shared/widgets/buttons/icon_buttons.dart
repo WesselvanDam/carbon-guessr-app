@@ -4,9 +4,9 @@ import '../../design_system/app_colors.dart';
 /// Rounded icon button with white background and border
 class RoundedIconButton extends StatelessWidget {
   const RoundedIconButton({
-    super.key,
     required this.icon,
     required this.onPressed,
+    super.key,
     this.size = 48,
     this.iconSize = 24,
     this.backgroundColor,
@@ -35,10 +35,7 @@ class RoundedIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.surface,
           borderRadius: BorderRadius.circular(size / 4),
-          border: Border.all(
-            color: borderColor ?? AppColors.slate200,
-            width: 1,
-          ),
+          border: Border.all(color: borderColor ?? AppColors.slate200),
         ),
         child: Icon(
           icon,
@@ -53,9 +50,9 @@ class RoundedIconButton extends StatelessWidget {
 /// Square icon button with pressed effect
 class SquareIconButton extends StatefulWidget {
   const SquareIconButton({
-    super.key,
     required this.icon,
     required this.onPressed,
+    super.key,
     this.size = 48,
     this.iconSize = 24,
     this.borderRadius = 16,
@@ -103,21 +100,16 @@ class _SquareIconButtonState extends State<SquareIconButton> {
               color: widget.borderColor ?? AppColors.slate200,
               width: _isPressed ? 0 : widget.borderWidth,
             ),
-            top: BorderSide(
-              color: widget.borderColor ?? AppColors.slate200,
-              width: 1,
-            ),
-            left: BorderSide(
-              color: widget.borderColor ?? AppColors.slate200,
-              width: 1,
-            ),
-            right: BorderSide(
-              color: widget.borderColor ?? AppColors.slate200,
-              width: 1,
-            ),
+            top: BorderSide(color: widget.borderColor ?? AppColors.slate200),
+            left: BorderSide(color: widget.borderColor ?? AppColors.slate200),
+            right: BorderSide(color: widget.borderColor ?? AppColors.slate200),
           ),
         ),
-        transform: Matrix4.translationValues(0, _isPressed ? widget.borderWidth : 0, 0),
+        transform: Matrix4.translationValues(
+          0,
+          _isPressed ? widget.borderWidth : 0,
+          0,
+        ),
         child: Icon(
           widget.icon,
           size: widget.iconSize,

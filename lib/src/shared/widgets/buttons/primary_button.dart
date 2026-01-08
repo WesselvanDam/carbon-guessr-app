@@ -7,9 +7,9 @@ import '../../design_system/app_typography.dart';
 /// Primary button with game-btn shadow effect for a "pressed button" appearance
 class PrimaryButton extends StatefulWidget {
   const PrimaryButton({
-    super.key,
     required this.onPressed,
     required this.label,
+    super.key,
     this.icon,
     this.showArrow = false,
     this.fullWidth = false,
@@ -54,24 +54,13 @@ class _PrimaryButtonState extends State<PrimaryButton> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (widget.icon != null) ...[
-              Icon(
-                widget.icon,
-                color: Colors.white,
-                size: 20,
-              ),
+              Icon(widget.icon, color: Colors.white, size: 20),
               const SizedBox(width: 8),
             ],
-            Text(
-              widget.label,
-              style: AppTypography.buttonLarge,
-            ),
+            Text(widget.label, style: AppTypography.buttonLarge),
             if (widget.showArrow) ...[
               const SizedBox(width: 8),
-              Icon(
-                Symbols.arrow_forward,
-                color: Colors.white,
-                size: 20,
-              ),
+              const Icon(Symbols.arrow_forward, color: Colors.white, size: 20),
             ],
           ],
         ),

@@ -7,7 +7,6 @@ import '../../design_system/app_typography.dart';
 /// Collection card widget for displaying collection information on the home page
 class CollectionCard extends StatelessWidget {
   const CollectionCard({
-    super.key,
     required this.title,
     required this.description,
     required this.categoryLabel,
@@ -15,6 +14,7 @@ class CollectionCard extends StatelessWidget {
     required this.unit,
     required this.icon,
     required this.onTap,
+    super.key,
     this.averageScore,
     this.proficiencyLabel,
     this.isNew = false,
@@ -83,11 +83,7 @@ class CollectionCard extends StatelessWidget {
                           color: accentColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Icon(
-                          icon,
-                          color: accentColor,
-                          size: 24,
-                        ),
+                        child: Icon(icon, color: accentColor, size: 24),
                       ),
                       const SizedBox(width: 16),
                       // Title and category
@@ -163,10 +159,7 @@ class CollectionCard extends StatelessWidget {
                         label: '$itemCount Items',
                       ),
                       const SizedBox(width: 8),
-                      _StatChip(
-                        icon: Symbols.scale,
-                        label: unit,
-                      ),
+                      _StatChip(icon: Symbols.scale, label: unit),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -175,10 +168,7 @@ class CollectionCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 16),
                     decoration: const BoxDecoration(
                       border: Border(
-                        top: BorderSide(
-                          color: AppColors.slate100,
-                          width: 1,
-                        ),
+                        top: BorderSide(color: AppColors.slate100),
                       ),
                     ),
                     child: Row(
@@ -199,7 +189,7 @@ class CollectionCard extends StatelessWidget {
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                       ),
-                                      child: CircularProgressIndicator(
+                                      child: const CircularProgressIndicator(
                                         value: 1.0,
                                         strokeWidth: 4,
                                         color: AppColors.slate100,
@@ -220,9 +210,10 @@ class CollectionCard extends StatelessWidget {
                                     Center(
                                       child: Text(
                                         '$averageScore',
-                                        style: AppTypography.labelSmall.copyWith(
-                                          fontWeight: FontWeight.w900,
-                                        ),
+                                        style: AppTypography.labelSmall
+                                            .copyWith(
+                                              fontWeight: FontWeight.w900,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -317,10 +308,7 @@ class CollectionCard extends StatelessWidget {
 }
 
 class _StatChip extends StatelessWidget {
-  const _StatChip({
-    required this.icon,
-    required this.label,
-  });
+  const _StatChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -337,17 +325,11 @@ class _StatChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: AppColors.slate500,
-          ),
+          Icon(icon, size: 14, color: AppColors.slate500),
           const SizedBox(width: 4),
           Text(
             label.toUpperCase(),
-            style: AppTypography.labelSmall.copyWith(
-              color: AppColors.slate500,
-            ),
+            style: AppTypography.labelSmall.copyWith(color: AppColors.slate500),
           ),
         ],
       ),

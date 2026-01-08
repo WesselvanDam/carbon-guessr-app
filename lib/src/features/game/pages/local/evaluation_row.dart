@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../shared/design_system/app_colors.dart';
 import '../../../../shared/design_system/app_typography.dart';
-import '../../../../shared/utils/extensions.dart';
-import '../../../../shared/widgets/score_pill.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/ratio_controller.dart';
 import '../../controllers/timer_controller.dart';
@@ -53,8 +50,9 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
       _secondTextController.text = '1';
     } else {
       _firstTextController.text = '1';
-      _secondTextController.text =
-          (1 / ratio).toStringAsFixed(decimals(1 / ratio));
+      _secondTextController.text = (1 / ratio).toStringAsFixed(
+        decimals(1 / ratio),
+      );
     }
   }
 
@@ -63,12 +61,13 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
     // Update the text controllers when the ratio changes
     ref.listen(ratioControllerProvider, (_, next) => updateControllers(next));
 
-    final currentRound = ref.watch(gameControllerProvider.select(
-      (game) => game.value?.currentRound,
-    ));
+    final currentRound = ref.watch(
+      gameControllerProvider.select((game) => game.value?.currentRound),
+    );
 
-    final isRoundOver =
-        ref.watch(timerControllerProvider.select((time) => time == 0));
+    final isRoundOver = ref.watch(
+      timerControllerProvider.select((time) => time == 0),
+    );
 
     final ratio = ref.watch(ratioControllerProvider);
 
@@ -77,9 +76,7 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
         children: [
           Text(
             'CURRENT RATIO',
-            style: AppTypography.caption.copyWith(
-              color: AppColors.slate400,
-            ),
+            style: AppTypography.caption.copyWith(color: AppColors.slate400),
           ),
           const SizedBox(height: 4),
           Container(
@@ -102,12 +99,8 @@ class _EvaluationRowState extends ConsumerState<EvaluationRow> {
               textBaseline: TextBaseline.alphabetic,
               children: [
                 Text(
-                  ratio >= 1
-                      ? ratio.toStringAsFixed(decimals(ratio))
-                      : '1',
-                  style: AppTypography.h1.copyWith(
-                    color: AppColors.primary,
-                  ),
+                  ratio >= 1 ? ratio.toStringAsFixed(decimals(ratio)) : '1',
+                  style: AppTypography.h1.copyWith(color: AppColors.primary),
                 ),
                 Text(
                   ' : ',

@@ -16,10 +16,12 @@ class AppColors {
   static const Color surface = Color(0xFFFFFFFF); // White
 
   // Additional Slate colors for borders and backgrounds
+  static const Color slate50 = Color(0xFFF8FAFC);
   static const Color slate100 = Color(0xFFF1F5F9);
   static const Color slate200 = Color(0xFFE2E8F0);
   static const Color slate300 = Color(0xFFCBD5E1);
   static const Color slate400 = Color(0xFF94A3B8);
+  static const Color slate500 = Color(0xFF64748B);
   static const Color slate600 = Color(0xFF475569);
 
   // Semantic colors

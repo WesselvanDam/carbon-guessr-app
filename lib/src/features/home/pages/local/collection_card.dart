@@ -38,9 +38,10 @@ class CollectionCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final (icon, accentColor) = _getCollectionStyle();
-    
+
     // Determine if this is a "new" collection (less than 30 days old)
-    final isNew = DateTime.now()
+    final isNew =
+        DateTime.now()
             .difference(DateTime.parse(collection.lastUpdated))
             .inDays <
         30;
@@ -91,11 +92,7 @@ class CollectionCard extends ConsumerWidget {
                           color: accentColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Icon(
-                          icon,
-                          color: accentColor,
-                          size: 24,
-                        ),
+                        child: Icon(icon, color: accentColor, size: 24),
                       ),
                       const SizedBox(width: 16),
                       // Title and category
@@ -123,7 +120,9 @@ class CollectionCard extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                '${collection.quantity.toSentenceCase()}'.toUpperCase(),
+                                collection.quantity
+                                    .toSentenceCase()
+                                    .toUpperCase(),
                                 style: AppTypography.labelSmall.copyWith(
                                   color: accentColor,
                                 ),
@@ -173,10 +172,7 @@ class CollectionCard extends ConsumerWidget {
                         label: '${collection.size} Items',
                       ),
                       const SizedBox(width: 8),
-                      _StatChip(
-                        icon: Symbols.scale,
-                        label: collection.unit,
-                      ),
+                      _StatChip(icon: Symbols.scale, label: collection.unit),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -185,10 +181,7 @@ class CollectionCard extends ConsumerWidget {
                     padding: const EdgeInsets.only(top: 16),
                     decoration: const BoxDecoration(
                       border: Border(
-                        top: BorderSide(
-                          color: AppColors.slate100,
-                          width: 1,
-                        ),
+                        top: BorderSide(color: AppColors.slate100),
                       ),
                     ),
                     child: Row(
@@ -263,10 +256,7 @@ class CollectionCard extends ConsumerWidget {
 }
 
 class _StatChip extends StatelessWidget {
-  const _StatChip({
-    required this.icon,
-    required this.label,
-  });
+  const _StatChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -276,23 +266,19 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.slate50,
+        color: AppColors.bg,
         border: Border.all(color: AppColors.slate100),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: AppColors.slate500,
-          ),
+          Icon(icon, size: 14, color: AppColors.textLight),
           const SizedBox(width: 4),
           Text(
             label.toUpperCase(),
             style: AppTypography.labelSmall.copyWith(
-              color: AppColors.slate500,
+              color: AppColors.textLight,
             ),
           ),
         ],
