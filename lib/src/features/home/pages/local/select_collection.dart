@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import '../../../../shared/design_system/app_colors.dart';
-import '../../../../shared/design_system/app_shadows.dart';
-import '../../../../shared/design_system/app_typography.dart';
+import '../../../../design_system/styles/app_colors.dart';
+import '../../../../design_system/styles/app_shadows.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../providers/collections.dart';
 import 'collection_card.dart';
 
@@ -18,56 +18,47 @@ class CollectionSelector extends ConsumerWidget {
       data: (data) {
         final collections = data.values.toList();
         return ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 20),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: collections.length + 1,
           itemBuilder: (context, index) {
             if (index == collections.length) {
               // "More coming soon" card
-              return Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.slate200,
-                    width: 2,
-                    style: BorderStyle.solid,
-                  ),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: DashedBorder(
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.slate100,
-                          ),
-                          child: const Icon(
-                            Symbols.hourglass_top,
-                            color: AppColors.slate400,
-                            size: 24,
-                          ),
+              return DashedBorder(
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.neutral100,
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'More Coming Soon!',
-                          style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.text,
-                          ),
+                        child: const Icon(
+                          Symbols.hourglass_top,
+                          color: AppColors.neutral400,
+                          size: 24,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'We are measuring more items.',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                          ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'More Coming Soon!',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.neutral900,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'All kinds of collections are on their way.',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.neutral500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
@@ -86,9 +77,9 @@ class CollectionSelector extends ConsumerWidget {
 /// Widget to create a dashed border effect
 class DashedBorder extends StatelessWidget {
   const DashedBorder({
-    super.key,
     required this.child,
-    this.color = AppColors.slate200,
+    super.key,
+    this.color = AppColors.neutral200,
     this.strokeWidth = 2,
     this.dashWidth = 8,
     this.dashSpace = 4,

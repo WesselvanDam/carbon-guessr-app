@@ -75,7 +75,7 @@ class Sources extends _$Sources {
     return sources;
   }
 
-  Future<AsyncValue<String>> storeRemainingItems() async {
+  Future<AsyncValue<String>> storeRemainingSources() async {
     await future;
     final currentSourceIds =
         state.value?.keys.map((id) => int.parse(id)).toList() ?? [];

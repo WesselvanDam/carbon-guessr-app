@@ -42,8 +42,6 @@ class _CoolScoreWidgetState extends State<CoolScoreWidget> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // The Solid Color Ring Painter
-
         // The Animated Score Text
         Animate(
           effects: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../design_system/app_colors.dart';
+import '../../styles/app_colors.dart';
 
 /// Rounded icon button with white background and border
 class RoundedIconButton extends StatelessWidget {
@@ -33,14 +33,14 @@ class RoundedIconButton extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: backgroundColor ?? AppColors.surface,
+          color: backgroundColor ?? AppColors.white,
           borderRadius: BorderRadius.circular(size / 4),
-          border: Border.all(color: borderColor ?? AppColors.slate200),
+          border: Border.all(color: borderColor ?? AppColors.neutral200),
         ),
         child: Icon(
           icon,
           size: iconSize,
-          color: iconColor ?? AppColors.slate400,
+          color: iconColor ?? AppColors.neutral400,
         ),
       ),
     );
@@ -93,16 +93,18 @@ class _SquareIconButtonState extends State<SquareIconButton> {
         width: widget.size,
         height: widget.size,
         decoration: BoxDecoration(
-          color: widget.backgroundColor ?? AppColors.surface,
+          color: widget.backgroundColor ?? AppColors.neutral50,
           borderRadius: BorderRadius.circular(widget.borderRadius),
           border: Border(
             bottom: BorderSide(
-              color: widget.borderColor ?? AppColors.slate200,
+              color: widget.borderColor ?? AppColors.neutral200,
               width: _isPressed ? 0 : widget.borderWidth,
             ),
-            top: BorderSide(color: widget.borderColor ?? AppColors.slate200),
-            left: BorderSide(color: widget.borderColor ?? AppColors.slate200),
-            right: BorderSide(color: widget.borderColor ?? AppColors.slate200),
+            top: BorderSide(color: widget.borderColor ?? AppColors.neutral200),
+            left: BorderSide(color: widget.borderColor ?? AppColors.neutral200),
+            right: BorderSide(
+              color: widget.borderColor ?? AppColors.neutral200,
+            ),
           ),
         ),
         transform: Matrix4.translationValues(
@@ -112,8 +114,9 @@ class _SquareIconButtonState extends State<SquareIconButton> {
         ),
         child: Icon(
           widget.icon,
+          weight: 800,
           size: widget.iconSize,
-          color: widget.iconColor ?? AppColors.slate400,
+          color: widget.iconColor ?? AppColors.neutral400,
         ),
       ),
     );

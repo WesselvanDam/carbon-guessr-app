@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
+
 import 'app_colors.dart';
 
 /// Design system shadows matching the Tailwind-based UI designs
 class AppShadows {
   AppShadows._();
 
-  // Button shadows - provides a "pressed button" effect
-  static const List<BoxShadow> gameBtn = [
-    BoxShadow(color: AppColors.primaryDark, offset: Offset(0, 6)),
-  ];
-
-  static const List<BoxShadow> gameBtnActive = [
-    BoxShadow(color: AppColors.primaryDark),
-  ];
-
-  static const List<BoxShadow> gameBtnSecondary = [
-    BoxShadow(color: AppColors.secondaryDark, offset: Offset(0, 6)),
-  ];
-
-  static const List<BoxShadow> gameBtnSecondaryActive = [
-    BoxShadow(color: AppColors.secondaryDark),
-  ];
-
   // Card shadows
+  // TODO: use AppColors for shadow colors where appropriate
   static const List<BoxShadow> gameCard = [
     BoxShadow(
-      color: Color(0x0D000000), // rgba(0, 0, 0, 0.05)
+      color: AppColors.neutral100, // rgba(0, 0, 0, 0.05)
       offset: Offset(0, 8),
     ),
   ];
 
   static const List<BoxShadow> card = [
     BoxShadow(
-      color: Color(0x0D000000), // rgba(0, 0, 0, 0.05)
+      color:  Color(0x0D000000), // rgba(0, 0, 0, 0.05)
       offset: Offset(0, 4),
       blurRadius: 6,
       spreadRadius: -1,

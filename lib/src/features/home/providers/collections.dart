@@ -11,6 +11,8 @@ import '../../../../data/api/supabase_api.dart';
 import '../../../../data/json.dart';
 import '../../../../data/models/collection.model.dart';
 import '../../../../local_storage/local_storage_repository.dart';
+import '../../game/providers/items.dart';
+import '../../game/providers/sources.dart';
 
 part 'collections.g.dart';
 
@@ -107,5 +109,49 @@ class Collections extends _$Collections {
         db.delete('${outdatedCollections.id}-sources');
       }),
     );
+  }
+
+  Future<AsyncValue<String>> storeCollection(String collectionId) async {
+    await future;
+    final currentCollections = state.value ?? {};
+    final collection = currentCollections[collectionId];
+    if (collection == null) {
+      final errorMsg = 'Collection $collectionId not found in state.';
+      talker.error(errorMsg);
+      return AsyncError<String>(errorMsg, StackTrace.current);
+    }
+
+    // Store collection items
+    ref.read(itemsProvider(collectionId).notifier).storeRemainingItems();
+
+    // Store collection sources
+    ref.read(sourcesProvider(collectionId).notifier).storeRemainingSources();
+
+    final updatedCollection = collection.copyWith(isSaved: true);
+    state = AsyncValue.data({
+      ...currentCollections,
+      collectionId: updatedCollection,
+    });
+
+    return AsyncValue.data('Collection $collectionId stored locally.');
+  }
+
+  Future<AsyncValue<String>> unStoreCollection(String collectionId) async {
+    await future;
+    final currentCollections = state.value ?? {};
+    final collection = currentCollections[collectionId];
+    if (collection == null) {
+      final errorMsg = 'Collection $collectionId not found in state.';
+      talker.error(errorMsg);
+      return AsyncError<String>(errorMsg, StackTrace.current);
+    }
+
+    final updatedCollection = collection.copyWith(isSaved: false);
+    state = AsyncValue.data({
+      ...currentCollections,
+      collectionId: updatedCollection,
+    });
+
+    return AsyncValue.data('Collection $collectionId removed from local storage.');
   }
 }

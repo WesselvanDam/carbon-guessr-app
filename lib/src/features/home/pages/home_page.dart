@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../client/talker.dart';
 import '../../../../router/routes.dart';
-import '../../../shared/design_system/app_colors.dart';
-import '../../../shared/design_system/app_typography.dart';
-import '../../../shared/widgets/buttons/icon_buttons.dart';
+import '../../../design_system/components/appbar.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_typography.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
 import 'local/select_collection.dart';
 
 class HomePage extends ConsumerWidget {
@@ -15,91 +16,59 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: Column(
+      backgroundColor: AppColors.neutral50,
+      appBar: AppBar(
         children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: AppColors.bg.withOpacity(0.9),
-              border: const Border(
-                bottom: BorderSide(
-                  color: Color(0x80F1F5F9), // slate-100 with 50% opacity
-                  width: 0.5,
+          // User avatar placeholder
+          GestureDetector(
+            onTap: () {
+              // TODO: User profile action
+            },
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.neutral200,
+                    border: Border.all(color: AppColors.neutral50, width: 2),
+                  ),
+                  child: const Icon(
+                    Symbols.person,
+                    color: AppColors.neutral400,
+                    size: 20,
+                  ),
                 ),
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // User avatar placeholder
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: User profile action
-                    },
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.slate200,
-                            border: Border.all(
-                              color: AppColors.surface,
-                              width: 2,
-                            ),
-                          ),
-                          child: const Icon(
-                            Symbols.person,
-                            color: AppColors.slate400,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Action buttons
-                  Row(
-                    children: [
-                      RoundedIconButton(
-                        icon: Symbols.help,
-                        onPressed: () {
-                          const OnboardingRoute().go(context);
-                        },
-                        size: 40,
-                        iconSize: 24,
-                        iconColor: AppColors.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      RoundedIconButton(
-                        icon: Symbols.settings,
-                        onPressed: () {
-                          // TODO: Settings action
-                        },
-                        size: 40,
-                        iconSize: 24,
-                      ),
-                      const SizedBox(width: 8),
-                      RoundedIconButton(
-                        icon: Symbols.bug_report,
-                        onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => TalkerScreen(talker: talker),
-                          ),
-                        ),
-                        size: 40,
-                        iconSize: 24,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
+          const Spacer(),
+          // Action buttons
+          Row(
+            children: [
+              RoundedIconButton(
+                icon: Symbols.help,
+                onPressed: () => const OnboardingRoute().go(context),
+                size: 40,
+                iconColor: AppColors.primary600,
+              ),
+              const SizedBox(width: 8),
+              RoundedIconButton(
+                icon: Symbols.bug_report,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => TalkerScreen(talker: talker),
+                  ),
+                ),
+                size: 40,
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
           // Main content
           Expanded(
             child: SingleChildScrollView(
@@ -112,46 +81,33 @@ class HomePage extends ConsumerWidget {
                     alignment: Alignment.center,
                     children: [
                       // Background decorative icons
-                      Positioned(
+                      const Positioned(
                         top: -4,
                         left: -24,
                         child: Icon(
                           Symbols.eco,
                           size: 48,
-                          color: AppColors.primary.withOpacity(0.2),
+                          color: AppColors.primary300,
                         ),
                       ),
-                      Positioned(
+                      const Positioned(
                         bottom: -8,
                         right: -24,
                         child: Icon(
                           Symbols.bolt,
                           size: 40,
-                          color: AppColors.secondary.withOpacity(0.2),
+                          color: AppColors.accent300,
                         ),
                       ),
                       // Title
                       Column(
                         children: [
-                          ShaderMask(
-                            shaderCallback: (bounds) => const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.primaryDark,
-                                AppColors.primary,
-                              ],
-                            ).createShader(bounds),
-                            child: const Text(
-                              'Quoscient',
-                              style: AppTypography.h1,
-                            ),
-                          ),
+                          const Text('Quoscient', style: AppTypography.h1),
                           const SizedBox(height: 8),
                           Text(
-                            'Measure your impact. Know the score.',
+                            'Train your intuition',
                             style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.textLight,
+                              color: AppColors.neutral500,
                             ),
                           ),
                         ],
@@ -164,19 +120,18 @@ class HomePage extends ConsumerWidget {
                     children: [
                       const Icon(
                         Symbols.category,
-                        color: AppColors.secondary,
+                        color: AppColors.accent600,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Collections',
                         style: AppTypography.h4.copyWith(
-                          color: AppColors.text,
+                          color: AppColors.neutral900,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
                   // Collections list
                   const CollectionSelector(),
                 ],

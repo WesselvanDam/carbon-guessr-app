@@ -5,8 +5,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../data/models/item.model.dart';
-import '../../../../shared/design_system/app_colors.dart';
-import '../../../../shared/design_system/app_typography.dart';
+import '../../../../design_system/styles/app_colors.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/ratio_controller.dart';
 import '../../controllers/timer_controller.dart';
@@ -55,8 +55,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   void _showItemDetailsDialog(BuildContext context, ItemModel item) {
     showDialog(
       context: context,
-      builder: (context) =>
-          ItemDetailsDialog(item: item, showValue: false, showSources: false),
+      builder: (context) => ItemDetailsDialog(item: item, showExtra: false),
     );
   }
 
@@ -203,29 +202,14 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 width: containerSize,
                 height: containerSize,
                 decoration: BoxDecoration(
-                  color: AppColors.slate100,
+                  color: AppColors.neutral100,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Stack(
-                  children: [
-                    // Grid pattern background
-                    Positioned.fill(
-                      child: CustomPaint(
-                        painter: GridPatternPainter(
-                          color: AppColors.slate400.withOpacity(0.4),
-                        ),
-                      ),
-                    ),
-                    // Centered squares
-                    Center(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: currentRatio >= 1
-                            ? [squareA, squareB]
-                            : [squareB, squareA],
-                      ),
-                    ),
-                  ],
+                  alignment: Alignment.center,
+                  children: currentRatio >= 1
+                      ? [squareA, squareB]
+                      : [squareB, squareA],
                 ),
               ),
             ),
@@ -259,41 +243,38 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     required double otherSize,
   }) {
     final Color mainContainer = isFirst
-        ? AppColors.primary
-        : AppColors.secondary;
+        ? AppColors.primary600
+        : AppColors.accent600;
     final Color borderColor = isFirst
-        ? AppColors.primaryDark
-        : AppColors.secondaryDark;
+        ? AppColors.primary800
+        : AppColors.accent800;
     const Color onMainContainer = Colors.white;
-
-    final labelStyle = AppTypography.h3.copyWith(
-      color: onMainContainer,
-    );
-    final categoryStyle = AppTypography.bodyMedium.copyWith(
-      color: onMainContainer.withOpacity(0.9),
-      fontWeight: FontWeight.w700,
-    );
 
     final padding = 16.0 * (size / containerSize);
     // Calculate max width and height for the ListView content
     final maxWidth = size - 2 * padding;
     final maxHeight = size - 2 * padding - 8 - 16;
 
-    final labelSize = _computeTextSize(item.title, labelStyle, maxWidth);
+    final titleText = item.title;
+    final subtitleText = item.subtitle;
+
+    final titleStyle = AppTypography.h4.copyWith(color: onMainContainer);
+    final subtitleStyle = AppTypography.labelLarge.copyWith(
+      color: onMainContainer.withOpacity(0.9),
+      fontWeight: FontWeight.w700,
+    );
+
+    final titleSize = _computeTextSize(titleText, titleStyle, maxWidth);
     // If the label is too wide, the category should not be shown
-    final categorySize = labelSize.width <= maxWidth
-        ? _computeTextSize(
-            '${item.quantity}',
-            categoryStyle,
-            maxWidth,
-          )
+    final subtitleSize = titleSize.width <= maxWidth
+        ? _computeTextSize(subtitleText, subtitleStyle, maxWidth)
         : Size.infinite;
 
-    final labelFits =
-        labelSize.height <= maxHeight && labelSize.width <= maxWidth;
-    final categoryFits =
-        (labelSize.height + categorySize.height + 8) <= maxHeight &&
-        categorySize.width <= maxWidth;
+    final titleFits =
+        titleSize.height <= maxHeight && titleSize.width <= maxWidth;
+    final subtitleFits =
+        (titleSize.height + subtitleSize.height + 8) <= maxHeight &&
+        subtitleSize.width <= maxWidth;
 
     final scaledBorderRadius = 24.0 * (size / containerSize);
 
@@ -332,61 +313,39 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
           AnimatedPadding(
             duration: 100.milliseconds,
             padding: EdgeInsets.all(padding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            child: ListView(
+              padding: .zero,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 Text(
-                  item.title,
-                  style: labelStyle,
+                  titleText,
+                  style: titleStyle,
                   softWrap: true,
                   maxLines: 2,
-                  overflow: TextOverflow.visible,
-                ).animate(target: labelFits ? 1 : 0).fadeIn(),
+                  overflow: .visible,
+                ).animate(target: titleFits ? 1 : 0).fadeIn(),
                 const SizedBox(height: 4),
                 Text(
-                  item.quantity,
-                  style: categoryStyle,
+                  subtitleText,
+                  style: subtitleStyle,
                   softWrap: true,
                   maxLines: 1,
-                  overflow: TextOverflow.visible,
-                ).animate(target: categoryFits ? 1 : 0).fadeIn(),
+                  overflow: .visible,
+                ).animate(target: subtitleFits ? 1 : 0).fadeIn(),
               ],
             ),
           ),
-          // Corner handle (only show on first/larger square)
-          if (isFirst && size > 100)
-            Positioned(
-              bottom: -16,
-              right: -16,
-              child: Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: borderColor,
-                    width: 4,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: borderColor.withOpacity(0.4),
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Symbols.open_in_full,
-                  color: borderColor,
-                  size: 24,
-                ),
-              ).animate(target: size > 150 ? 1 : 0).scale(
-                    begin: const Offset(0.8, 0.8),
-                    end: const Offset(1, 1),
-                  ),
-            ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: IconButton(
+              icon: const Icon(Symbols.info, size: 24, color: onMainContainer),
+              style: TextButton.styleFrom(
+                padding: const .all(8),
+                tapTargetSize: .shrinkWrap,
+              ),
+              onPressed: () => _showItemDetailsDialog(context, item),
+            ).animate(target: size > 56 ? 1 : 0).fadeIn(),
+          ),
           // Corner decorations
           if (size > 80) ...[
             Positioned(
@@ -407,8 +366,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                     ),
                   ),
                   borderRadius: BorderRadius.only(
-                    topRight:
-                        Radius.circular(4 * (size / containerSize)),
+                    topRight: Radius.circular(4 * (size / containerSize)),
                   ),
                 ),
               ).animate(target: size > 120 ? 1 : 0).fadeIn(),
@@ -431,8 +389,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                     ),
                   ),
                   borderRadius: BorderRadius.only(
-                    bottomLeft:
-                        Radius.circular(4 * (size / containerSize)),
+                    bottomLeft: Radius.circular(4 * (size / containerSize)),
                   ),
                 ),
               ).animate(target: size > 120 ? 1 : 0).fadeIn(),
@@ -460,20 +417,12 @@ class GridPatternPainter extends CustomPainter {
 
     // Draw vertical lines
     for (double x = spacing; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
 
     // Draw horizontal lines
     for (double y = spacing; y < size.height; y += spacing) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }
 
@@ -499,10 +448,7 @@ class DiagonalPatternPainter extends CustomPainter {
 
     // Draw diagonal stripes
     for (double i = -size.height; i < size.width + size.height; i += spacing) {
-      canvas.drawRect(
-        Rect.fromLTWH(i, 0, lineWidth, size.height * 2),
-        paint,
-      );
+      canvas.drawRect(Rect.fromLTWH(i, 0, lineWidth, size.height * 2), paint);
     }
   }
 

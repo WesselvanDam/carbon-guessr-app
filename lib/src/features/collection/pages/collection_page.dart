@@ -1,44 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide AppBar;
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../constants/game_mode.dart';
 import '../../../../router/routes.dart';
-import '../../../shared/design_system/app_colors.dart';
-import '../../../shared/design_system/app_shadows.dart';
-import '../../../shared/design_system/app_typography.dart';
+import '../../../design_system/components/appbar.dart';
+import '../../../design_system/components/chips/info_chip.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_shadows.dart';
+import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/utils/extensions.dart';
-import '../../../shared/widgets/buttons/icon_buttons.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
+import '../../game/providers/items.dart';
 import '../../game/repository/game_repository.dart';
+import '../../home/providers/collections.dart';
 import '../providers/current_collection.dart';
 import 'challenge_dialog.dart';
-import 'download_dialog.dart';
 
 class CollectionPage extends ConsumerWidget {
   const CollectionPage({required this.cid, super.key});
 
   final String cid;
 
-  /// Maps collection IDs to appropriate icons
-  IconData _getCollectionIcon(String title, String id) {
-    final titleLower = title.toLowerCase();
-    final idLower = id.toLowerCase();
-
-    if (titleLower.contains('food') ||
-        titleLower.contains('kitchen') ||
-        idLower.contains('food')) {
-      return Symbols.restaurant;
-    } else if (titleLower.contains('transport') || idLower.contains('transport')) {
-      return Symbols.directions_car;
-    } else {
-      return Symbols.home_work;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final collection = ref.watch(currentCollectionProvider);
 
     return collection.when(
+      skipLoadingOnReload: true,
       data: (info) {
         void startGameCallback(GameMode mode, [String? gameId]) => GameRoute(
           cid: info.id,
@@ -47,237 +37,202 @@ class CollectionPage extends ConsumerWidget {
         ).go(context);
 
         return Scaffold(
-          backgroundColor: AppColors.bg,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 16),
-            child: Container(
-              color: AppColors.bg.withOpacity(0.95),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SquareIconButton(
-                        icon: Symbols.arrow_back,
-                        onPressed: () => Navigator.of(context).pop(),
-                        size: 48,
-                        iconSize: 24,
-                        borderRadius: 16,
-                        backgroundColor: AppColors.surface,
-                        iconColor: AppColors.slate400,
-                        borderColor: AppColors.slate200,
-                      ),
-                      Text(
-                        'COLLECTION',
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.textLight,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(width: 48),
-                    ],
-                  ),
+          backgroundColor: AppColors.neutral50,
+          appBar: AppBar(
+            children: [
+              SquareIconButton(
+                icon: Symbols.arrow_back,
+                onPressed: () => Navigator.of(context).pop(),
+                backgroundColor: AppColors.white,
+                iconColor: AppColors.neutral400,
+                borderColor: AppColors.neutral200,
+              ),
+              const Expanded(
+                child: Text(
+                  'COLLECTION',
+                  style: AppTypography.captionLarge,
+                  textAlign: TextAlign.center,
                 ),
               ),
-            ),
+              const SizedBox(width: 48),
+            ],
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Collection info card
-                  Container(
+                  DecoratedBox(
                     decoration: BoxDecoration(
-                      color: AppColors.surface,
+                      color: AppColors.white,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: AppColors.slate100),
+                      border: Border.all(color: AppColors.neutral100),
                       boxShadow: AppShadows.gameCard,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Top accent bar
-                        Container(
-                          height: 8,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(23),
-                              topRight: Radius.circular(23),
-                            ),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadiusGeometry.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Top accent bar
+                          const ColoredBox(
+                            color: AppColors.primary600,
+                            child: SizedBox(height: 8, width: double.infinity),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Title and icon
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          info.title.toTitleCase(),
-                                          style: AppTypography.h3.copyWith(
-                                            color: AppColors.text,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.blue50,
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
-                                            info.quantity.toSentenceCase().toUpperCase(),
-                                            style: AppTypography.labelSmall.copyWith(
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Title and icon
+                                Text(
+                                  info.title.toTitleCase(),
+                                  style: AppTypography.h3.copyWith(
+                                    color: AppColors.neutral900,
                                   ),
-                                  Container(
-                                    width: 64,
-                                    height: 64,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.blue100,
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: AppColors.blue100,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      _getCollectionIcon(info.title, info.id),
-                                      size: 32,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              // Stats row
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _StatBox(
-                                      label: 'Quantity',
-                                      value: '1 ${info.unit}',
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: _StatBox(
-                                      label: 'Items',
-                                      value: '${info.size}',
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: _StatBox(
-                                      label: 'Avg Score',
-                                      value: '--',
-                                      isHighlight: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              // Description
-                              Text(
-                                info.description,
-                                style: AppTypography.bodyMedium.copyWith(
-                                  color: AppColors.slate600,
-                                  height: 1.6,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Offline access section
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.slate50,
-                            border: Border(
-                              top: BorderSide(color: AppColors.slate100),
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.surface,
-                                  boxShadow: AppShadows.sm,
+                                const SizedBox(height: 4),
+                                InfoChip.primary(
+                                  label: info.quantity.toUpperCase(),
                                 ),
-                                child: const Icon(
-                                  Symbols.cloud_download,
-                                  color: AppColors.slate400,
-                                  size: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                const SizedBox(height: 16),
+                                // Stats row
+                                Row(
                                   children: [
-                                    Text(
-                                      'Offline Access',
-                                      style: AppTypography.bodyMedium.copyWith(
-                                        color: AppColors.text,
-                                        fontWeight: FontWeight.w700,
+                                    Expanded(
+                                      child: _StatBox(
+                                        label: 'Unit',
+                                        value: info.unit,
                                       ),
                                     ),
-                                    Text(
-                                      'Download pack (12MB)',
-                                      style: AppTypography.bodySmall.copyWith(
-                                        color: AppColors.slate400,
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: _StatBox(
+                                        label: 'Items',
+                                        value: '${info.size}',
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Expanded(
+                                      child: _StatBox(
+                                        label: 'Avg Score',
+                                        value: '--',
+                                        isHighlight: true,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              // Toggle placeholder
-                              Container(
-                                width: 44,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  color: AppColors.slate200,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    margin: const EdgeInsets.all(2),
-                                    width: 20,
-                                    height: 20,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.surface,
-                                      shape: BoxShape.circle,
+                                const SizedBox(height: 16),
+                                // Description
+                                MarkdownBody(
+                                  onTapLink: (text, href, title) => href != null
+                                      ? launchUrlString(
+                                          href,
+                                          mode: LaunchMode.externalApplication,
+                                        )
+                                      : null,
+                                  data: info.description,
+                                  styleSheet: MarkdownStyleSheet(
+                                    p: AppTypography.bodyMedium.copyWith(
+                                      color: AppColors.neutral600,
+                                      height: 1.6,
+                                    ),
+                                    a: AppTypography.bodyMedium.copyWith(
+                                      color: AppColors.primary700,
+                                      fontVariations: const [
+                                        FontVariation('wght', 900),
+                                      ],
+                                      height: 1.6,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          // Offline access section
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: AppColors.neutral50,
+                              border: Border(
+                                left: BorderSide(color: AppColors.neutral100),
+                                right: BorderSide(color: AppColors.neutral100),
+                              ),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(24),
+                                bottomRight: Radius.circular(24),
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.white,
+                                    boxShadow: AppShadows.sm,
+                                  ),
+                                  child: const Icon(
+                                    Symbols.cloud_download,
+                                    fill: 1,
+                                    color: AppColors.neutral400,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Offline Access',
+                                        style: AppTypography.bodyMedium
+                                            .copyWith(
+                                              color: AppColors.neutral900,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                      Text(
+                                        'Download pack to play without internet.',
+                                        style: AppTypography.bodySmall.copyWith(
+                                          color: AppColors.neutral400,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Switch(
+                                  value: info.isSaved,
+                                  activeThumbColor: AppColors.primary600,
+                                  activeTrackColor: AppColors.primary100,
+                                  inactiveThumbColor: AppColors.neutral300,
+                                  inactiveTrackColor: AppColors.neutral200,
+                                  trackOutlineColor:
+                                      const WidgetStateProperty.fromMap({
+                                        WidgetState.selected:
+                                            AppColors.primary100,
+                                        WidgetState.any: AppColors.neutral300,
+                                      }),
+                                  onChanged: (value) => value
+                                      ? ref
+                                            .read(collectionsProvider.notifier)
+                                            .storeCollection(info.id)
+                                      : ref
+                                            .read(collectionsProvider.notifier)
+                                            .unStoreCollection(info.id),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -288,25 +243,10 @@ class CollectionPage extends ConsumerWidget {
                       Text(
                         'Select Game Mode',
                         style: AppTypography.h4.copyWith(
-                          color: AppColors.text,
+                          color: AppColors.neutral900,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.blue50,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '3 MODES',
-                          style: AppTypography.labelSmall.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
+                      InfoChip.neutral(label: '2 MODES'),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -316,8 +256,8 @@ class CollectionPage extends ConsumerWidget {
                     'Simple Mode',
                     '5 rounds solo game • Quick play',
                     Symbols.person,
-                    AppColors.primary,
-                    AppColors.blue100,
+                    AppColors.primary600,
+                    AppColors.primary100,
                   ),
                   const SizedBox(height: 12),
                   _buildGameModeCard(
@@ -327,21 +267,10 @@ class CollectionPage extends ConsumerWidget {
                       (gameId) => startGameCallback(GameMode.challenge, gameId),
                     ),
                     'Challenge Friends',
-                    'Get a PIN code • Play together',
+                    'Get a PIN code • Play the same rounds',
                     Symbols.groups,
-                    AppColors.secondary,
-                    AppColors.orange100,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildGameModeCard(
-                    context,
-                    null, // Not implemented yet
-                    'Online Match',
-                    'Ranked PvP • Random opponent',
-                    Symbols.public,
-                    AppColors.purple600,
-                    AppColors.purple100,
-                    enabled: false,
+                    AppColors.accent600,
+                    AppColors.accent100,
                   ),
                 ],
               ),
@@ -351,22 +280,14 @@ class CollectionPage extends ConsumerWidget {
       },
       error: (error, stack) {
         return Scaffold(
-          backgroundColor: AppColors.bg,
-          appBar: AppBar(
-            title: const Text('Select Game Mode'),
-            backgroundColor: AppColors.bg,
-          ),
+          backgroundColor: AppColors.neutral50,
           body: Center(child: Text('Error loading collection: $error')),
         );
       },
       loading: () {
-        return Scaffold(
-          backgroundColor: AppColors.bg,
-          appBar: AppBar(
-            title: const Text('Select Game Mode'),
-            backgroundColor: AppColors.bg,
-          ),
-          body: const Center(child: CircularProgressIndicator()),
+        return const Scaffold(
+          backgroundColor: AppColors.neutral50,
+          body: Center(child: CircularProgressIndicator()),
         );
       },
     );
@@ -399,16 +320,16 @@ class CollectionPage extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: enabled ? AppColors.surface : AppColors.slate50,
+          color: enabled ? AppColors.white : AppColors.neutral50,
           borderRadius: BorderRadius.circular(16),
           border: Border(
             bottom: BorderSide(
-              color: enabled ? AppColors.slate200 : AppColors.slate100,
-              width: 4,
+              color: AppColors.neutral200,
+              width: enabled ? 4 : 1,
             ),
-            top: const BorderSide(color: AppColors.slate200),
-            left: const BorderSide(color: AppColors.slate200),
-            right: const BorderSide(color: AppColors.slate200),
+            top: const BorderSide(color: AppColors.neutral200),
+            left: const BorderSide(color: AppColors.neutral200),
+            right: const BorderSide(color: AppColors.neutral200),
           ),
         ),
         child: Row(
@@ -421,11 +342,7 @@ class CollectionPage extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: AppShadows.sm,
               ),
-              child: Icon(
-                icon,
-                size: 28,
-                color: accentColor,
-              ),
+              child: Icon(icon, size: 28, color: accentColor, fill: 1),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -436,14 +353,18 @@ class CollectionPage extends ConsumerWidget {
                     title,
                     style: AppTypography.h4.copyWith(
                       fontSize: 18,
-                      color: enabled ? AppColors.text : AppColors.slate400,
+                      color: enabled
+                          ? AppColors.neutral900
+                          : AppColors.neutral400,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     description,
                     style: AppTypography.bodySmall.copyWith(
-                      color: enabled ? AppColors.slate500 : AppColors.slate400,
+                      color: enabled
+                          ? AppColors.neutral500
+                          : AppColors.neutral400,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -455,16 +376,16 @@ class CollectionPage extends ConsumerWidget {
               height: 32,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.surface,
+                color: AppColors.neutral50,
                 border: Border.all(
-                  color: enabled ? AppColors.slate100 : AppColors.slate200,
+                  color: enabled ? AppColors.neutral200 : AppColors.neutral100,
                   width: 2,
                 ),
               ),
               child: Icon(
                 enabled ? Symbols.play_arrow : Symbols.lock,
                 size: 18,
-                color: enabled ? AppColors.slate300 : AppColors.slate400,
+                color: enabled ? AppColors.neutral400 : AppColors.neutral300,
               ),
             ),
           ],
@@ -490,10 +411,10 @@ class _StatBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: isHighlight ? AppColors.orange50 : AppColors.slate50,
+        color: isHighlight ? AppColors.accent50 : AppColors.neutral50,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isHighlight ? AppColors.orange100 : AppColors.slate100,
+          color: isHighlight ? AppColors.accent100 : AppColors.neutral100,
         ),
       ),
       child: Column(
@@ -501,7 +422,7 @@ class _StatBox extends StatelessWidget {
           Text(
             label.toUpperCase(),
             style: AppTypography.labelSmall.copyWith(
-              color: isHighlight ? AppColors.orange400 : AppColors.slate400,
+              color: isHighlight ? AppColors.accent500 : AppColors.neutral500,
               fontSize: 9,
             ),
           ),
@@ -510,7 +431,7 @@ class _StatBox extends StatelessWidget {
             value,
             style: AppTypography.h4.copyWith(
               fontSize: 18,
-              color: isHighlight ? AppColors.secondary : AppColors.text,
+              color: isHighlight ? AppColors.accent600 : AppColors.neutral900,
             ),
             textAlign: TextAlign.center,
           ),
