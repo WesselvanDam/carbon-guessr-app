@@ -15,6 +15,7 @@ import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../game/providers/items.dart';
 import '../../game/repository/game_repository.dart';
 import '../../home/providers/collections.dart';
+import '../../stats/providers/stats.dart';
 import '../providers/current_collection.dart';
 import 'challenge_dialog.dart';
 
@@ -105,24 +106,69 @@ class CollectionPage extends ConsumerWidget {
                                 Row(
                                   children: [
                                     Expanded(
-                                      child: _StatBox(
+                                      child: _StatBox.neutral(
                                         label: 'Unit',
                                         value: info.unit,
                                       ),
                                     ),
                                     const SizedBox(width: 8),
                                     Expanded(
-                                      child: _StatBox(
+                                      child: _StatBox.neutral(
                                         label: 'Items',
                                         value: '${info.size}',
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    const Expanded(
-                                      child: _StatBox(
-                                        label: 'Avg Score',
-                                        value: '--',
-                                        isHighlight: true,
+                                    Expanded(
+                                      child: Consumer(
+                                        builder: (context, ref, _) {
+                                          final stats = ref.watch(
+                                            statsProvider.select(
+                                              (value) => value.value?[cid],
+                                            ),
+                                          );
+                                          final hasScore =
+                                              stats != null &&
+                                              stats.averageScore != null;
+
+                                          if (!hasScore) {
+                                            return _StatBox.neutral(
+                                              label: 'Avg Score',
+                                              value: '—',
+                                            );
+                                          }
+
+                                          final (
+                                            Color textColor,
+                                            Color bgColor,
+                                            Color borderColor,
+                                          ) = switch (stats.averageScore! /
+                                              500) {
+                                            >= 0.8 => (
+                                              AppColors.success600,
+                                              AppColors.success100,
+                                              AppColors.success200,
+                                            ),
+                                            >= 0.5 => (
+                                              AppColors.warning600,
+                                              AppColors.warning100,
+                                              AppColors.warning200,
+                                            ),
+                                            _ => (
+                                              AppColors.error600,
+                                              AppColors.error100,
+                                              AppColors.error200,
+                                            ),
+                                          };
+
+                                          return _StatBox.custom(
+                                            label: 'Avg Score',
+                                            value: '${stats.averageScore}',
+                                            textColor: textColor,
+                                            backgroundColor: bgColor,
+                                            borderColor: borderColor,
+                                          );
+                                        },
                                       ),
                                     ),
                                   ],
@@ -200,7 +246,7 @@ class CollectionPage extends ConsumerWidget {
                                             ),
                                       ),
                                       Text(
-                                        'Download pack to play without internet.',
+                                        'Download pack to play without internet',
                                         style: AppTypography.bodySmall.copyWith(
                                           color: AppColors.neutral400,
                                         ),
@@ -211,13 +257,13 @@ class CollectionPage extends ConsumerWidget {
                                 Switch(
                                   value: info.isSaved,
                                   activeThumbColor: AppColors.primary600,
-                                  activeTrackColor: AppColors.primary100,
+                                  activeTrackColor: AppColors.primary200,
                                   inactiveThumbColor: AppColors.neutral300,
                                   inactiveTrackColor: AppColors.neutral200,
                                   trackOutlineColor:
                                       const WidgetStateProperty.fromMap({
                                         WidgetState.selected:
-                                            AppColors.primary100,
+                                            AppColors.primary200,
                                         WidgetState.any: AppColors.neutral300,
                                       }),
                                   onChanged: (value) => value
@@ -396,43 +442,68 @@ class CollectionPage extends ConsumerWidget {
 }
 
 class _StatBox extends StatelessWidget {
-  const _StatBox({
+  const _StatBox._internal({
     required this.label,
     required this.value,
-    this.isHighlight = false,
+    required this.textColor,
+    required this.backgroundColor,
+    required this.borderColor,
   });
+
+  factory _StatBox.neutral({required String label, required String value}) {
+    return _StatBox._internal(
+      label: label,
+      value: value,
+      textColor: AppColors.neutral500,
+      backgroundColor: AppColors.neutral50,
+      borderColor: AppColors.neutral100,
+    );
+  }
+
+  factory _StatBox.custom({
+    required String label,
+    required String value,
+    required Color textColor,
+    required Color backgroundColor,
+    required Color borderColor,
+  }) {
+    return _StatBox._internal(
+      label: label,
+      value: value,
+      textColor: textColor,
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+    );
+  }
 
   final String label;
   final String value;
-  final bool isHighlight;
+  final Color textColor;
+  final Color backgroundColor;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: isHighlight ? AppColors.accent50 : AppColors.neutral50,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isHighlight ? AppColors.accent100 : AppColors.neutral100,
-        ),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         children: [
           Text(
             label.toUpperCase(),
             style: AppTypography.labelSmall.copyWith(
-              color: isHighlight ? AppColors.accent500 : AppColors.neutral500,
+              color: textColor,
               fontSize: 9,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             value,
-            style: AppTypography.h4.copyWith(
-              fontSize: 18,
-              color: isHighlight ? AppColors.accent600 : AppColors.neutral900,
-            ),
+            style: AppTypography.h4.copyWith(fontSize: 18, color: textColor),
             textAlign: TextAlign.center,
           ),
         ],

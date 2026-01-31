@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../collection/providers/current_collection.dart';
+import '../../stats/providers/stats.dart';
 import '../models/game.model.dart';
 import '../providers/game_providers.dart';
 import '../providers/items.dart';
@@ -54,7 +55,7 @@ class GameController extends _$GameController {
     );
   }
 
-  void onNextRound() {
+  void onNextRound() async {
     final gameRepository = ref.watch(gameRepositoryProvider);
     if (!state.hasValue || state.value == null) {
       return;
@@ -62,6 +63,19 @@ class GameController extends _$GameController {
 
     ref.read(ratioControllerProvider.notifier).reset();
 
-    update((state) => gameRepository.nextRound(state));
+    final updatedGame = gameRepository.nextRound(state.value!);
+
+    // Check if the game is now completed after marking the current round as complete
+    if (updatedGame.isCompleted) {
+      final collection = await ref.read(currentCollectionProvider.future);
+      final totalScore = updatedGame.totalScore;
+
+      // Update statistics
+      await ref
+          .read(statsProvider.notifier)
+          .updateStats(collection.id, totalScore);
+    }
+
+    update((state) => updatedGame);
   }
 }

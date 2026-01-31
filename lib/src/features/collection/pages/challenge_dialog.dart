@@ -193,10 +193,10 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                   ),
                 if (_generatedGameId == null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 14),
+                    padding: const EdgeInsets.only(top: 16),
                     child: Text(
                       "You'll get a code to share",
-                      style: AppTypography.labelSmall.copyWith(
+                      style: AppTypography.labelMedium.copyWith(
                         color: AppColors.neutral400,
                       ),
                       textAlign: TextAlign.center,
@@ -244,66 +244,73 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: TextFormField(
-                          controller: _pinController,
-                          decoration: InputDecoration(
-                            hintText: 'PIN CODE',
-                            hintStyle: AppTypography.labelLarge.copyWith(
-                              color: AppColors.neutral300,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 6.0),
+                          child: TextFormField(
+                            keyboardType: .number,
+                            controller: _pinController,
+                            cursorColor: AppColors.accent600,
+                            decoration: InputDecoration(
+                              hintText: 'PIN CODE',
+                              hintStyle: AppTypography.labelLarge.copyWith(
+                                color: AppColors.neutral300,
+                                letterSpacing: 2,
+                                fontSize: 20,
+                              ),
+                              errorStyle: AppTypography.bodySmall.copyWith(
+                                color: AppColors.accent600,
+                              ),
+                              filled: true,
+                              fillColor: AppColors.neutral50,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: AppColors.neutral200,
+                                  width: 2,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: AppColors.neutral200,
+                                  width: 2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: AppColors.accent600,
+                                  width: 2,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                            ),
+                            style: AppTypography.labelLarge.copyWith(
+                              fontSize: 20,
+                              color: AppColors.neutral900,
+                              fontWeight: FontWeight.w900,
                               letterSpacing: 2,
                             ),
-                            errorStyle: AppTypography.bodySmall.copyWith(
-                              color: AppColors.accent600,
-                            ),
-                            filled: true,
-                            fillColor: AppColors.neutral50,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: AppColors.neutral200,
-                                width: 2,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: AppColors.neutral200,
-                                width: 2,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: AppColors.accent600,
-                                width: 2,
-                              ),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
+                            textAlign: TextAlign.center,
+                            textCapitalization: TextCapitalization.characters,
+                            maxLength: 8,
+                            buildCounter:
+                                (
+                                  context, {
+                                  required currentLength,
+                                  required isFocused,
+                                  maxLength,
+                                }) => null,
+                            validator: (value) {
+                              if (value == null || value.trim().length != 8) {
+                                return 'Enter a valid 8-digit PIN';
+                              }
+                              return null;
+                            },
                           ),
-                          style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.neutral900,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 2,
-                          ),
-                          textAlign: TextAlign.center,
-                          textCapitalization: TextCapitalization.characters,
-                          maxLength: 8,
-                          buildCounter:
-                              (
-                                context, {
-                                required currentLength,
-                                required isFocused,
-                                maxLength,
-                              }) => null,
-                          validator: (value) {
-                            if (value == null || value.trim().length != 8) {
-                              return 'Enter a valid 8-digit PIN';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -314,10 +321,10 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Text(
                   'Enter the code from your friend',
-                  style: AppTypography.labelSmall.copyWith(
+                  style: AppTypography.labelMedium.copyWith(
                     color: AppColors.neutral400,
                   ),
                   textAlign: TextAlign.center,

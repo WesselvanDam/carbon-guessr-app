@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'dart:math' as math;
 import '../../../../../data/models/collection.model.dart';
 import '../../../../../router/routes.dart';
 import '../../../../design_system/components/chips/info_chip.dart';
@@ -8,6 +9,7 @@ import '../../../../design_system/styles/app_colors.dart';
 import '../../../../design_system/styles/app_shadows.dart';
 import '../../../../design_system/styles/app_typography.dart';
 import '../../../../shared/utils/extensions.dart';
+import '../../../stats/providers/stats.dart';
 
 class CollectionCard extends ConsumerWidget {
   const CollectionCard({required this.collection, super.key});
@@ -97,53 +99,13 @@ class CollectionCard extends ConsumerWidget {
                     padding: const EdgeInsets.only(top: 16),
                     decoration: const BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: AppColors.neutral200),
+                        top: BorderSide(color: AppColors.neutral100),
                       ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Score display (placeholder - not implemented yet)
-                        Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: AppColors.neutral200,
-                                  width: 2,
-                                ),
-                              ),
-                              child: const Icon(
-                                Symbols.remove,
-                                color: AppColors.neutral300,
-                                size: 16,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'AVG SCORE',
-                                  style: AppTypography.caption.copyWith(
-                                    color: AppColors.neutral400,
-                                  ),
-                                ),
-                                Text(
-                                  'Not played yet',
-                                  style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.neutral400,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        // Play button
+                        _StatBox(cid: collection.id),
                         Container(
                           width: 40,
                           height: 40,
@@ -167,6 +129,110 @@ class CollectionCard extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StatBox extends ConsumerWidget {
+  const _StatBox({required this.cid});
+
+  final String cid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stats = ref.watch(statsProvider.select((value) => value.value?[cid]));
+    final hasScore = stats != null && stats.averageScore != null;
+
+    // Calculate progress and color
+    final progress = hasScore
+        ? (stats.averageScore! / 500).clamp(0.0, 1.0)
+        : 0.0;
+    final percentage = progress * 100;
+
+    final (Color progressColor, Color trackColor) = switch (percentage) {
+      < 50 => (AppColors.error500, AppColors.error100),
+      < 80 => (AppColors.warning500, AppColors.warning100),
+      _ => (AppColors.success500, AppColors.success100),
+    };
+
+    return Row(
+      children: [
+        SizedBox(
+          width: 40,
+          height: 40,
+          child: Stack(
+            children: [
+              // Progress arc
+              if (hasScore)
+                CircularProgressIndicator(
+                  constraints: const BoxConstraints(
+                    minWidth: 40,
+                    minHeight: 40,
+                  ),
+                  strokeAlign: -1,
+                  value: progress,
+                  strokeWidth: 4,
+                  color: progressColor,
+                  backgroundColor: trackColor,
+                  trackGap: 4,
+                  strokeCap: StrokeCap.round,
+                ),
+              if (!hasScore)
+                // Base circle
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: hasScore
+                          ? AppColors.neutral200
+                          : AppColors.neutral200,
+                      width: 2,
+                    ),
+                  ),
+                ),
+              // Score display
+              Center(
+                child: hasScore
+                    ? Text(
+                        stats.averageScore.toString(),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.neutral900,
+                          fontVariations: const [FontVariation('wght', 800)],
+                        ),
+                      )
+                    : const Icon(
+                        Symbols.remove,
+                        color: AppColors.neutral300,
+                        size: 16,
+                      ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'AVG SCORE',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.neutral400,
+              ),
+            ),
+            Text(
+              hasScore
+                  ? '${stats.gamesFinished} game${stats.gamesFinished == 1 ? '' : 's'} finished'
+                  : 'Not played yet',
+              style: AppTypography.bodySmall.copyWith(
+                color: hasScore ? AppColors.neutral900 : AppColors.neutral400,
+                fontVariations: const [FontVariation('wght', 700)],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

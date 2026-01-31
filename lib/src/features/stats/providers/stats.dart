@@ -28,7 +28,7 @@ class Stats extends _$Stats {
     return state.value ?? {};
   }
 
-  Future<void> updateStats(String cid, double gameScore) async {
+  Future<void> updateStats(String cid, int gameScore) async {
     final current = state.value ?? {};
     final stats = current[cid] ?? const StatsModel();
 

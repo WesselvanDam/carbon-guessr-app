@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide AppBar;
+import 'package:flutter/material.dart' hide AppBar, Dialog;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -6,6 +6,7 @@ import '../../../../../constants/game_mode.dart';
 import '../../../../design_system/components/appbar.dart';
 import '../../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../../design_system/components/chips/info_chip.dart';
+import '../../../../design_system/components/dialogs/dialog.dart';
 import '../../../../design_system/styles/app_colors.dart';
 import '../../../../design_system/styles/app_typography.dart';
 import '../../controllers/game_controller.dart';
@@ -19,17 +20,73 @@ class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 32);
 
+  void _onBackPressed(BuildContext context, GameModel? game) {
+    // If the game is in progress, confirm before exiting
+    if (game != null && !game.isCompleted) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => Dialog(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+            child: Column(
+              spacing: 16,
+              crossAxisAlignment: .start,
+              children: [
+                Text(
+                  'Exit Game',
+                  style: AppTypography.h4.copyWith(color: AppColors.neutral900),
+                ),
+                Text(
+                  'Are you sure you want to exit the game? Your progress will be lost.',
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.neutral900,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  spacing: 8,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.neutral500,
+                        textStyle: AppTypography.labelLarge,
+                      ),
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                      child: const Text('CANCEL'),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.error500,
+                        textStyle: AppTypography.labelLarge,
+                      ),
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop(); // Close dialog
+                        Navigator.of(context).pop(); // Exit game page
+                      },
+                      child: const Text('EXIT'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      return;
+    }
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(gameControllerProvider).value;
     final mode = ref.watch(gameModeProvider);
-    final isCompleted = game?.isCompleted ?? false;
 
     return AppBar(
       children: [
         SquareIconButton(
           icon: Symbols.arrow_back,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => _onBackPressed(context, game),
           backgroundColor: AppColors.white,
           iconColor: AppColors.neutral400,
           borderColor: AppColors.neutral200,
@@ -39,12 +96,8 @@ class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
             spacing: 4,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (!isCompleted) ...[
-                RoundInfo(game: game, mode: mode),
-                GameProgressBar(game: game),
-              ] else ...[
-                const Text('GAME SUMMARY', style: AppTypography.captionLarge),
-              ],
+              RoundInfo(game: game, mode: mode),
+              GameProgressBar(game: game),
             ],
           ),
         ),
@@ -67,7 +120,9 @@ class RoundInfo extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'ROUND ${(game?.currentRoundIndex ?? 0) + 1} OF ${game?.rounds.length ?? 5}',
+          game?.isCompleted ?? false
+              ? 'GAME SUMMARY'
+              : 'ROUND ${(game?.currentRoundIndex ?? 0) + 1} OF ${game?.rounds.length ?? 5}',
           textHeightBehavior: const TextHeightBehavior(
             applyHeightToFirstAscent: false,
           ),
@@ -114,9 +169,13 @@ class GameProgressBar extends StatelessWidget {
             // Progress indicator
             LayoutBuilder(
               builder: (context, constraints) {
-                final progress =
-                    ((game?.currentRoundIndex ?? 0) + 1) /
-                    (game?.rounds.length ?? 5);
+                debugPrint(
+                  'Is completed: ${game?.isCompleted}. current ${game?.currentRoundIndex}',
+                );
+                final progress = (game?.isCompleted ?? false)
+                    ? 1
+                    : (game?.currentRoundIndex ?? 0) /
+                          (game?.rounds.length ?? 5);
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,

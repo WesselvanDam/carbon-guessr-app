@@ -7,17 +7,17 @@ part 'stats.model.g.dart';
 abstract class StatsModel with _$StatsModel {
   const factory StatsModel({
     @Default(0) int gamesFinished,
-    @Default([]) List<double> recentGameScores,
+    @Default([]) List<int> recentGameScores,
   }) = _StatsModel;
   const StatsModel._();
 
   factory StatsModel.fromJson(Map<String, dynamic> json) =>
       _$StatsModelFromJson(json);
 
-  double? get averageScore {
+  int? get averageScore {
     if (recentGameScores.isEmpty) return null;
-    
+
     final total = recentGameScores.reduce((a, b) => a + b);
-    return total / recentGameScores.length;
+    return (total / recentGameScores.length).round();
   }
 }
