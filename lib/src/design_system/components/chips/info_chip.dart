@@ -17,8 +17,8 @@ class InfoChip extends StatelessWidget {
     return InfoChip._internal(
       icon: icon,
       label: label,
-      borderColor: AppColors.neutral200,
-      backgroundColor: AppColors.neutral100,
+      borderColor: AppColors.neutral100,
+      backgroundColor: AppColors.neutral50,
       textColor: AppColors.neutral500,
       key: key,
     );
