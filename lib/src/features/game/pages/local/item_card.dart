@@ -18,8 +18,7 @@ class ItemCard extends ConsumerWidget {
   void _showItemDetailsDialog(BuildContext context, ItemModel item) {
     showDialog(
       context: context,
-      builder: (context) =>
-          ItemDetailsDialog(item: item, showValue: false, showSources: false),
+      builder: (context) => ItemDetailsDialog(item: item, showExtra: false),
     );
   }
 
@@ -57,7 +56,7 @@ class ItemCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item == null ? ' ' : '${item.category} · ${item.quantity}',
+                item == null ? ' ' : item.subtitle,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: onMainContainer.withAlpha(180),
                   fontWeight: FontWeight.w600,

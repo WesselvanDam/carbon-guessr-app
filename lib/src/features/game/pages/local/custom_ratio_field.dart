@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../data/models/item.model.dart';
+import '../../../../design_system/styles/app_colors.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/ratio_controller.dart';
 import '../../controllers/timer_controller.dart';
@@ -53,8 +55,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   void _showItemDetailsDialog(BuildContext context, ItemModel item) {
     showDialog(
       context: context,
-      builder: (context) =>
-          ItemDetailsDialog(item: item, showValue: false, showSources: false),
+      builder: (context) => ItemDetailsDialog(item: item, showExtra: false),
     );
   }
 
@@ -197,16 +198,18 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 _isUpdatingFirstSquare = null;
                 _previousScale = null;
               }),
-              child: SizedBox(
+              child: Container(
                 width: containerSize,
                 height: containerSize,
-                child: Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: currentRatio >= 1
-                        ? [squareA, squareB]
-                        : [squareB, squareA],
-                  ),
+                decoration: BoxDecoration(
+                  color: AppColors.neutral100,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: currentRatio >= 1
+                      ? [squareA, squareB]
+                      : [squareB, squareA],
                 ),
               ),
             ),
@@ -239,51 +242,41 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     required ItemModel item,
     required double otherSize,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
     final Color mainContainer = isFirst
-        ? colorScheme.primary
-        : colorScheme.tertiaryContainer;
-    final Color onMainContainer = isFirst
-        ? colorScheme.onPrimary
-        : colorScheme.onTertiaryFixedVariant;
-
-    final labelStyle = textTheme.titleMedium!.copyWith(
-      color: onMainContainer,
-      fontWeight: FontWeight.bold,
-    );
-    final categoryStyle = textTheme.labelLarge!.copyWith(
-      color: onMainContainer.withAlpha(220),
-      fontWeight: FontWeight.w600,
-    );
-
-    final borderColor = isActive
-        ? isFirst
-              ? Color.lerp(mainContainer, colorScheme.secondary, 0.5)!
-              : Color.lerp(mainContainer, colorScheme.tertiary, 0.5)!
-        : colorScheme.outlineVariant;
+        ? AppColors.primary600
+        : AppColors.accent600;
+    final Color borderColor = isFirst
+        ? AppColors.primary800
+        : AppColors.accent800;
+    const Color onMainContainer = Colors.white;
 
     final padding = 16.0 * (size / containerSize);
     // Calculate max width and height for the ListView content
     final maxWidth = size - 2 * padding;
     final maxHeight = size - 2 * padding - 8 - 16;
 
-    final labelSize = _computeTextSize(item.title, labelStyle, maxWidth);
+    final titleText = item.title;
+    final subtitleText = item.subtitle;
+
+    final titleStyle = AppTypography.h4.copyWith(color: onMainContainer);
+    final subtitleStyle = AppTypography.labelLarge.copyWith(
+      color: onMainContainer.withOpacity(0.9),
+      fontWeight: FontWeight.w700,
+    );
+
+    final titleSize = _computeTextSize(titleText, titleStyle, maxWidth);
     // If the label is too wide, the category should not be shown
-    final categorySize = labelSize.width <= maxWidth
-        ? _computeTextSize(
-            '${item.category} · ${item.quantity}',
-            categoryStyle,
-            maxWidth,
-          )
+    final subtitleSize = titleSize.width <= maxWidth
+        ? _computeTextSize(subtitleText, subtitleStyle, maxWidth)
         : Size.infinite;
 
-    final labelFits =
-        labelSize.height <= maxHeight && labelSize.width <= maxWidth;
-    final categoryFits =
-        (labelSize.height + categorySize.height + 8) <= maxHeight &&
-        categorySize.width <= maxWidth;
+    final titleFits =
+        titleSize.height <= maxHeight && titleSize.width <= maxWidth;
+    final subtitleFits =
+        (titleSize.height + subtitleSize.height + 8) <= maxHeight &&
+        subtitleSize.width <= maxWidth;
+
+    final scaledBorderRadius = 24.0 * (size / containerSize);
 
     return AnimatedContainer(
       duration: _correctRatio != null
@@ -294,52 +287,171 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       height: size,
       decoration: BoxDecoration(
         color: mainContainer,
-        border: Border.all(width: 2.0, color: borderColor),
-        borderRadius: BorderRadius.circular(16.0 * (size / containerSize)),
+        border: Border.all(width: 4.0, color: borderColor),
+        borderRadius: BorderRadius.circular(scaledBorderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            offset: const Offset(0, 8),
+            blurRadius: 24,
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
+          // Diagonal pattern overlay
+          Positioned.fill(
+            child: CustomPaint(
+              painter: DiagonalPatternPainter(
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+          ),
+          // Content
           AnimatedPadding(
             duration: 100.milliseconds,
-            padding: .all(padding),
+            padding: EdgeInsets.all(padding),
             child: ListView(
               padding: .zero,
               physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
               children: [
                 Text(
-                  item.title,
-                  style: labelStyle,
+                  titleText,
+                  style: titleStyle,
                   softWrap: true,
                   maxLines: 2,
                   overflow: .visible,
-                ).animate(target: labelFits ? 1 : 0).fadeIn(),
-                const SizedBox(height: 8.0),
+                ).animate(target: titleFits ? 1 : 0).fadeIn(),
+                const SizedBox(height: 4),
                 Text(
-                  '${item.category}${item.category.isNotEmpty ? ' · ' : ''}${item.quantity}',
-                  style: categoryStyle,
+                  subtitleText,
+                  style: subtitleStyle,
                   softWrap: true,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: .visible,
-                ).animate(target: categoryFits ? 1 : 0).fadeIn(),
+                ).animate(target: subtitleFits ? 1 : 0).fadeIn(),
               ],
             ),
           ),
           Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
-              icon: Icon(Icons.info_outline, size: 18, color: onMainContainer),
+              icon: const Icon(Symbols.info, size: 24, color: onMainContainer),
               style: TextButton.styleFrom(
                 padding: const .all(8),
                 tapTargetSize: .shrinkWrap,
               ),
               onPressed: () => _showItemDetailsDialog(context, item),
-            ).animate(target: size > 48 ? 1 : 0).fadeIn(),
+            ).animate(target: size > 56 ? 1 : 0).fadeIn(),
           ),
+          // Corner decorations
+          if (size > 80) ...[
+            Positioned(
+              top: 12 * (size / containerSize),
+              right: 12 * (size / containerSize),
+              child: Container(
+                width: 16 * (size / containerSize),
+                height: 16 * (size / containerSize),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 2 * (size / containerSize),
+                    ),
+                    right: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 2 * (size / containerSize),
+                    ),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(4 * (size / containerSize)),
+                  ),
+                ),
+              ).animate(target: size > 120 ? 1 : 0).fadeIn(),
+            ),
+            Positioned(
+              bottom: 12 * (size / containerSize),
+              left: 12 * (size / containerSize),
+              child: Container(
+                width: 16 * (size / containerSize),
+                height: 16 * (size / containerSize),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 2 * (size / containerSize),
+                    ),
+                    left: BorderSide(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 2 * (size / containerSize),
+                    ),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(4 * (size / containerSize)),
+                  ),
+                ),
+              ).animate(target: size > 120 ? 1 : 0).fadeIn(),
+            ),
+          ],
         ],
       ),
     );
   }
+}
+
+/// Custom painter for grid pattern background
+class GridPatternPainter extends CustomPainter {
+  const GridPatternPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.5;
+
+    const spacing = 24.0;
+
+    // Draw vertical lines
+    for (double x = spacing; x < size.width; x += spacing) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+
+    // Draw horizontal lines
+    for (double y = spacing; y < size.height; y += spacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Custom painter for diagonal pattern overlay
+class DiagonalPatternPainter extends CustomPainter {
+  const DiagonalPatternPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 20
+      ..style = PaintingStyle.fill;
+
+    const spacing = 20.0;
+    const lineWidth = 10.0;
+
+    // Draw diagonal stripes
+    for (double i = -size.height; i < size.width + size.height; i += spacing) {
+      canvas.drawRect(Rect.fromLTWH(i, 0, lineWidth, size.height * 2), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

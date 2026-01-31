@@ -11,6 +11,8 @@ import '../../../../data/api/supabase_api.dart';
 import '../../../../data/json.dart';
 import '../../../../data/models/collection.model.dart';
 import '../../../../local_storage/local_storage_repository.dart';
+import '../../game/providers/items.dart';
+import '../../game/providers/sources.dart';
 
 part 'collections.g.dart';
 
@@ -38,8 +40,7 @@ class Collections extends _$Collections {
     }
 
     final updates = await _fetchRemoteCollections();
-    talker.debug('Fetched ${updates.length} updated collections.');
-    return updates.isEmpty ? state.value ?? {} : {...?state.value, ...updates};
+    return updates.isEmpty ? state.value ?? {} : {...updates};
   }
 
   Future<void> refresh() async {
@@ -68,7 +69,28 @@ class Collections extends _$Collections {
       lastCollectionFetchTime,
     );
 
-    clearOutdatedCache(updatedCollections.values.toList());
+    talker.debug(
+      'Fetched ${updatedCollections.length} collections updated since ${DateTime.fromMillisecondsSinceEpoch(lastCollectionFetchTime ?? 0, isUtc: true).toIso8601String()}',
+    );
+
+    final currentCollections = state.value ?? {};
+    for (final updated in updatedCollections.values) {
+      final current = currentCollections[updated.id];
+      if (current != null && current.isSaved) {
+        // Collections saved locally are not updated automatically
+        talker.debug(
+          'Collection ${updated.id} is saved locally, updating lastUpdated only.',
+        );
+        currentCollections[updated.id] = current.copyWith(
+          lastUpdated: updated.lastUpdated,
+        );
+      } else {
+        // Collections not saved locally are updated fully
+        talker.debug('Updating collection ${updated.id} from remote.');
+        currentCollections[updated.id] = updated;
+        clearOutdatedCache(updated);
+      }
+    }
 
     ref
         .read(localStorageRepositoryProvider)
@@ -76,23 +98,60 @@ class Collections extends _$Collections {
           .lastCollectionFetchTime,
           DateTime.now().toUtc().millisecondsSinceEpoch,
         );
-    return updatedCollections;
+    return currentCollections;
   }
 
-  Future<void> clearOutdatedCache(
-    List<CollectionModel> outdatedCollections,
-  ) async {
-    if (outdatedCollections.isEmpty) return;
-    talker.debug(
-      'Clearing cache for outdated collections: ${outdatedCollections.map((e) => e.id).join(', ')}',
-    );
+  Future<void> clearOutdatedCache(CollectionModel outdatedCollections) async {
+    talker.debug('Clearing cache for collection: ${outdatedCollections.id}');
     ref.read(
       localDbClientProvider.selectAsync((db) {
-        for (final collection in outdatedCollections) {
-          db.delete('${collection.id}-items');
-          db.delete('${collection.id}-sources');
-        }
+        db.delete('${outdatedCollections.id}-items');
+        db.delete('${outdatedCollections.id}-sources');
       }),
     );
+  }
+
+  Future<AsyncValue<String>> storeCollection(String collectionId) async {
+    await future;
+    final currentCollections = state.value ?? {};
+    final collection = currentCollections[collectionId];
+    if (collection == null) {
+      final errorMsg = 'Collection $collectionId not found in state.';
+      talker.error(errorMsg);
+      return AsyncError<String>(errorMsg, StackTrace.current);
+    }
+
+    // Store collection items
+    ref.read(itemsProvider(collectionId).notifier).storeRemainingItems();
+
+    // Store collection sources
+    ref.read(sourcesProvider(collectionId).notifier).storeRemainingSources();
+
+    final updatedCollection = collection.copyWith(isSaved: true);
+    state = AsyncValue.data({
+      ...currentCollections,
+      collectionId: updatedCollection,
+    });
+
+    return AsyncValue.data('Collection $collectionId stored locally.');
+  }
+
+  Future<AsyncValue<String>> unStoreCollection(String collectionId) async {
+    await future;
+    final currentCollections = state.value ?? {};
+    final collection = currentCollections[collectionId];
+    if (collection == null) {
+      final errorMsg = 'Collection $collectionId not found in state.';
+      talker.error(errorMsg);
+      return AsyncError<String>(errorMsg, StackTrace.current);
+    }
+
+    final updatedCollection = collection.copyWith(isSaved: false);
+    state = AsyncValue.data({
+      ...currentCollections,
+      collectionId: updatedCollection,
+    });
+
+    return AsyncValue.data('Collection $collectionId removed from local storage.');
   }
 }

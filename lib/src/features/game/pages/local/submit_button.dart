@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:material_symbols_icons/symbols.dart';
+import '../../../../design_system/components/buttons/action_button.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/timer_controller.dart';
 
@@ -17,11 +18,16 @@ class SubmitButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isRoundOver =
-        ref.watch(timerControllerProvider.select((state) => state == 0));
-    final isLastRound = ref.watch(gameControllerProvider.select((state) =>
-        state.value?.currentRoundIndex ==
-        (state.value?.rounds.length ?? 0) - 1));
+    final isRoundOver = ref.watch(
+      timerControllerProvider.select((state) => state == 0),
+    );
+    final isLastRound = ref.watch(
+      gameControllerProvider.select(
+        (state) =>
+            state.value?.currentRoundIndex ==
+            (state.value?.rounds.length ?? 0) - 1,
+      ),
+    );
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 600),
@@ -38,42 +44,35 @@ class SubmitButton extends ConsumerWidget {
         ).animate(animation);
 
         // Whether this child is entering or exiting
-        final isEntering = animation.status == AnimationStatus.forward ||
+        final isEntering =
+            animation.status == AnimationStatus.forward ||
             animation.status == AnimationStatus.completed;
 
         // Fade out the disappearing button to the right
         // Fade in the appearing button from the left
         return SlideTransition(
           position: isEntering ? fromRight : fromLeft,
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
       layoutBuilder: (currentChild, previousChildren) => Stack(
-        alignment: Alignment.centerRight,
-        children: [
-          ...previousChildren,
-          currentChild!,
-        ],
+        alignment: Alignment.center,
+        children: [...previousChildren, currentChild!],
       ),
       child: isRoundOver
-          ? FilledButton.icon(
+          ? ActionButton.secondary(
               key: const ValueKey('next'),
               onPressed: () => _nextRound(ref),
-              icon: const Icon(Icons.arrow_forward),
-              label: Text(isLastRound ? 'Finish Game' : 'Next Round'),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                foregroundColor: Theme.of(context).colorScheme.onSecondary,
-              ),
+              label: isLastRound ? 'Finish Game' : 'Next Round',
+              showArrow: true,
+              fullWidth: true,
             )
-          : FilledButton.icon(
+          : ActionButton.primary(
               key: const ValueKey('submit'),
               onPressed: () => _submitEstimate(ref),
-              icon: const Icon(Icons.check),
-              label: const Text('Submit Estimate'),
+              label: 'Submit Answer',
+              showArrow: true,
+              fullWidth: true,
             ),
     );
   }

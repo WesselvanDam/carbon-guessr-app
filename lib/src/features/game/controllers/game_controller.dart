@@ -27,7 +27,7 @@ class GameController extends _$GameController {
 
     final items = await ref
         .read(itemsProvider(collection.id).notifier)
-        .getItemsByIds(itemIds);
+        .getItems(itemIds);
 
     final session = gameRepository.createGameSession(items: items);
 

@@ -1,228 +1,141 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/utils/extensions.dart';
-import '../../../../shared/widgets/score_pill.dart';
+import '../../../../design_system/styles/app_colors.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../controllers/game_controller.dart';
 import '../../controllers/ratio_controller.dart';
 import '../../controllers/timer_controller.dart';
 
-class EvaluationRow extends ConsumerStatefulWidget {
-  const EvaluationRow({super.key});
-
-  @override
-  ConsumerState<EvaluationRow> createState() => _EvaluationRowState();
+int _decimals(double ratio) {
+  if (ratio > 100) return 0;
+  if (ratio > 10) return 1;
+  return 2;
 }
 
-class _EvaluationRowState extends ConsumerState<EvaluationRow> {
-  late final TextEditingController _firstTextController;
-  late final TextEditingController _secondTextController;
-
-  @override
-  void initState() {
-    super.initState();
-    final ratio = ref.read(ratioControllerProvider);
-    _firstTextController = TextEditingController(
-      text: ratio > 1 ? ratio.toStringAsFixed(decimals(ratio)) : '1',
-    );
-    _secondTextController = TextEditingController(
-      text: ratio > 1 ? '1' : (1 / ratio).toStringAsFixed(decimals(1 / ratio)),
-    );
-  }
-
-  @override
-  void dispose() {
-    _firstTextController.dispose();
-    _secondTextController.dispose();
-    super.dispose();
-  }
-
-  int decimals(double ratio) {
-    if (ratio > 100) return 0;
-    if (ratio > 10) return 1;
-    return 2;
-  }
-
-  void updateControllers(double ratio) {
-    // Update the text controllers based on the new ratio
-
-    if (ratio > 1) {
-      _firstTextController.text = ratio.toStringAsFixed(decimals(ratio));
-      _secondTextController.text = '1';
-    } else {
-      _firstTextController.text = '1';
-      _secondTextController.text =
-          (1 / ratio).toStringAsFixed(decimals(1 / ratio));
-    }
-  }
+class RatioDisplayCard extends StatelessWidget {
+  const RatioDisplayCard({
+    required this.ratio,
+    required this.label,
+    super.key,
+    this.isTrueRatio = false,
+    this.animationDelay = 0,
+  });
+  final double ratio;
+  final String label;
+  final bool isTrueRatio;
+  final int animationDelay;
 
   @override
   Widget build(BuildContext context) {
-    // Update the text controllers when the ratio changes
-    ref.listen(ratioControllerProvider, (_, next) => updateControllers(next));
+    final primaryColor = isTrueRatio
+        ? const Color(0xFF15803D)
+        : AppColors.primary600;
+    final borderColor = isTrueRatio
+        ? const Color(0xFFBBF7D0)
+        : AppColors.neutral200;
+    final topBarColor = isTrueRatio ? AppColors.green500 : AppColors.primary600;
+    const largeTextStyle = AppTypography.h2;
+    const smallTextStyle = AppTypography.h4;
 
-    final currentRound = ref.watch(gameControllerProvider.select(
-      (game) => game.value?.currentRound,
-    ));
-
-    final isRoundOver =
-        ref.watch(timerControllerProvider.select((time) => time == 0));
-
-    final style = Theme.of(context).textTheme.titleMedium!.copyWith(
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).colorScheme.onSurface,
-        );
-
-    return SizedBox(
-      height: 48,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (isRoundOver && currentRound != null)
-            // Show the true ratio if the estimate is submitted
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3),
-                    child: RichText(
-                      text: currentRound.correctRatio.ratioToReadableTextSpan(
-                        style: style,
-                        leftDigitStyle: style.copyWith(
-                            color: Theme.of(context).colorScheme.secondary),
-                        rightDigitStyle: style.copyWith(
-                            color: Theme.of(context).colorScheme.tertiary),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'True ratio'.toUpperCase(),
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                  ),
-                ],
-              ),
-            ).animate().fadeIn(),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (!isRoundOver ||
-                    (isRoundOver && currentRound?.userEstimate != null))
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: RichText(
-                      text: TextSpan(
-                        style: style,
-                        children: [
-                          ratioTextField(
-                            _firstTextController,
-                            style,
-                            isSecondField: false,
-                            isRoundOver: isRoundOver,
-                          ),
-                          const TextSpan(text: ' : '),
-                          ratioTextField(
-                            _secondTextController,
-                            style,
-                            isSecondField: true,
-                            isRoundOver: isRoundOver,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
-                      'N/A',
-                      style: style.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                Text(
-                  'Your guess'.toUpperCase(),
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                  maxLines: 1,
-                  overflow: TextOverflow.fade,
-                ),
-              ],
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 4,
+              decoration: BoxDecoration(color: topBarColor),
             ),
-          ),
-          if (isRoundOver && currentRound != null)
-            // Show the score if the estimate is submitted
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const SizedBox(height: 12),
+            Text(
+              label,
+              style: AppTypography.labelSmall.copyWith(color: primaryColor),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  ScorePill(
-                    score: currentRound.score,
-                    style: style,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                  Text(
+                    ratio >= 1 ? ratio.toStringAsFixed(_decimals(ratio)) : '1',
+                    style: (ratio >= 1 ? largeTextStyle : smallTextStyle)
+                        .copyWith(color: AppColors.primary600),
                   ),
                   Text(
-                    'Score'.toUpperCase(),
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
+                    ' : ',
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.neutral300,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    ratio >= 1
+                        ? '1'
+                        : (1 / ratio).toStringAsFixed(_decimals(1 / ratio)),
+                    style: (ratio >= 1 ? smallTextStyle : largeTextStyle)
+                        .copyWith(color: AppColors.accent600),
                   ),
                 ],
               ),
-            ).animate().fadeIn(),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
+}
 
-  WidgetSpan ratioTextField(
-    TextEditingController controller,
-    TextStyle? style, {
-    required bool isSecondField,
-    required bool isRoundOver,
-  }) {
-    return WidgetSpan(
-      alignment: PlaceholderAlignment.baseline,
-      baseline: TextBaseline.alphabetic,
-      child: TextField(
-        controller: controller,
-        enabled: !isRoundOver,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        style: style?.copyWith(
-          color: isSecondField
-              ? Theme.of(context).colorScheme.tertiary
-              : Theme.of(context).colorScheme.secondary,
-          fontWeight: FontWeight.bold,
+class EvaluationRow extends ConsumerWidget {
+  const EvaluationRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentRound = ref.watch(
+      gameControllerProvider.select((game) => game.value?.currentRound),
+    );
+
+    final isRoundOver = ref.watch(
+      timerControllerProvider.select((time) => time == 0),
+    );
+
+    final ratio = ref.watch(ratioControllerProvider);
+
+    // Show different UI when round is over
+    final userEstimate = currentRound?.userEstimate ?? ratio;
+    final correctRatio = currentRound?.correctRatio ?? 1;
+
+    return Column(
+      children: [
+        Row(
+          spacing: 12,
+          children: [
+            Expanded(
+              child: RatioDisplayCard(
+                ratio: userEstimate,
+                label: 'YOUR ESTIMATE',
+                animationDelay: 700,
+              ),
+            ),
+            if (isRoundOver)
+              Expanded(
+                child: RatioDisplayCard(
+                  ratio: correctRatio,
+                  label: 'TRUE RATIO',
+                  isTrueRatio: true,
+                  animationDelay: 900,
+                ),
+              ),
+          ],
         ),
-        textAlign: isSecondField ? TextAlign.start : TextAlign.end,
-        textAlignVertical: TextAlignVertical.bottom,
-        decoration: const InputDecoration(
-          isDense: true,
-          contentPadding: EdgeInsets.only(bottom: 2, top: 2),
-          border: UnderlineInputBorder(),
-          constraints: BoxConstraints(maxWidth: 40),
-        ),
-        onChanged: (value) {
-          final ratio = double.tryParse(value);
-          if (ratio == null || ratio < 1) return;
-          ref
-              .read(ratioControllerProvider.notifier)
-              .set(isSecondField ? 1 / ratio : ratio);
-        },
-        onTapOutside: (event) => FocusScope.of(context).unfocus(),
-      ),
+      ],
     );
   }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../../data/models/collection.model.dart';
 import '../../../../../data/models/item.model.dart';
 import '../../../../../data/models/source.dart';
+import '../../../../design_system/styles/app_colors.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../../collection/providers/current_collection.dart';
 import '../../providers/sources.dart';
 
@@ -32,10 +35,8 @@ class SourceList extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8,
       children: [
-        const Divider(height: 32),
-
         // Sources
-        Text('Sources', style: Theme.of(context).textTheme.titleMedium),
+        const Text('Sources', style: AppTypography.labelLarge),
 
         Skeletonizer(
           enabled: sources.isLoading,
@@ -51,11 +52,20 @@ class SourceList extends ConsumerWidget {
             itemCount: item.sources.length,
             itemBuilder: (context, index) {
               final child = switch (sources) {
-                AsyncLoading() => const Text('Placeholder source (2025)'),
-                AsyncError() => const Text('Failed to load sources.'),
+                AsyncLoading() => const Text(
+                  'Placeholder source (2025)',
+                  style: AppTypography.bodyLarge,
+                ),
+                AsyncError() => const Text(
+                  'Failed to load sources.',
+                  style: AppTypography.bodyLarge,
+                ),
                 AsyncData(:final value) =>
                   index >= value.length
-                      ? const Text('Source not found')
+                      ? const Text(
+                          'Source not available',
+                          style: AppTypography.bodyLarge,
+                        )
                       : GestureDetector(
                           onTap: () => launchUrlString(
                             value[index].url,
@@ -63,9 +73,10 @@ class SourceList extends ConsumerWidget {
                           ),
                           child: Text(
                             value[index].title,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                            style: AppTypography.bodyLarge.copyWith(
+                              color: AppColors.neutral900,
                               decoration: TextDecoration.underline,
+                              decorationColor: AppColors.neutral900,
                             ),
                           ),
                         ),
@@ -73,9 +84,13 @@ class SourceList extends ConsumerWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
+                  spacing: 8,
                   children: [
-                    const Icon(Icons.link, size: 14),
-                    const SizedBox(width: 8),
+                    const Icon(
+                      Symbols.link,
+                      size: 20,
+                      color: AppColors.accent600,
+                    ),
                     Expanded(
                       child: SizedBox(width: double.infinity, child: child),
                     ),

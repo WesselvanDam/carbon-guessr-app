@@ -19,6 +19,10 @@ abstract class ItemModel with _$ItemModel {
     required List<int> sources,
     @Default(true) bool isItemA,
   }) = _ItemModel;
+  const ItemModel._();
+
+  String get subtitle =>
+      '${category}${category.isNotEmpty ? ' · ' : ''}${quantity}';
 
   factory ItemModel.fromJson(Map<String, dynamic> json) =>
       _$ItemModelFromJson(json);
