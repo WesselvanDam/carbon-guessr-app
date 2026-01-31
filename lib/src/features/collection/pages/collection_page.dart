@@ -300,7 +300,7 @@ class CollectionPage extends ConsumerWidget {
                     context,
                     () => startGameCallback(GameMode.simple),
                     'Simple Mode',
-                    '5 rounds solo game • Quick play',
+                    'Five rounds • Improve your avg score',
                     Symbols.person,
                     AppColors.primary600,
                     AppColors.primary100,

@@ -58,13 +58,19 @@ class GameTime extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Symbols.timer, color: AppColors.primary600, size: 18),
+              Icon(
+                Symbols.timer,
+                color: (isUrgent && seconds > 0)
+                    ? AppColors.error600
+                    : AppColors.primary600,
+                size: 18,
+                weight: 700,
+              ),
               const SizedBox(height: 2),
               Text(
                 timerText,
-                style: AppTypography.labelSmall.copyWith(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 10,
+                style: AppTypography.labelMedium.copyWith(
+                  fontVariations: const [FontVariation('wght', 900)],
                 ),
               ),
             ],

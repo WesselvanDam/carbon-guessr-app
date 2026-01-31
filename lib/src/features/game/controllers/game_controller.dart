@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../constants/game_mode.dart';
 import '../../collection/providers/current_collection.dart';
 import '../../stats/providers/stats.dart';
 import '../models/game.model.dart';
@@ -55,7 +56,7 @@ class GameController extends _$GameController {
     );
   }
 
-  void onNextRound() async {
+  Future<void> onNextRound() async {
     final gameRepository = ref.watch(gameRepositoryProvider);
     if (!state.hasValue || state.value == null) {
       return;
@@ -65,15 +66,15 @@ class GameController extends _$GameController {
 
     final updatedGame = gameRepository.nextRound(state.value!);
 
-    // Check if the game is now completed after marking the current round as complete
+    // Check if the game is now completed. Update stats if so and mode is simple.
     if (updatedGame.isCompleted) {
-      final collection = await ref.read(currentCollectionProvider.future);
-      final totalScore = updatedGame.totalScore;
+      final mode = ref.read(gameModeProvider);
+      if (mode == GameMode.simple) {
+        final cid = ref.read(currentCollectionProvider).requireValue.id;
+        final totalScore = updatedGame.totalScore;
 
-      // Update statistics
-      await ref
-          .read(statsProvider.notifier)
-          .updateStats(collection.id, totalScore);
+        await ref.read(statsProvider.notifier).updateStats(cid, totalScore);
+      }
     }
 
     update((state) => updatedGame);
