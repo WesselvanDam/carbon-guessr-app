@@ -109,13 +109,24 @@ class AppTypography {
     height: 1.2,
   );
 
-  static const TextStyle caption = TextStyle(
+  static const TextStyle captionSmall = TextStyle(
     fontFamily: fontFamily,
     fontSize: 10,
     fontVariations: [
       FontVariation('wght', 700), // Bold
     ],
     color: AppColors.neutral900,
+    letterSpacing: 0.8,
+    height: 1.2,
+  );
+
+  static const TextStyle captionMedium = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontVariations: [
+      FontVariation('wght', 800), // Extra Bold
+    ],
+    color: AppColors.neutral500,
     letterSpacing: 0.8,
     height: 1.2,
   );

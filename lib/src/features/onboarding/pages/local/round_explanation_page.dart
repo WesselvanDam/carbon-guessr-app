@@ -7,8 +7,7 @@ import '../../../game/controllers/game_controller.dart';
 import '../../../game/controllers/timer_controller.dart';
 import '../../../game/models/game.model.dart';
 import '../../../game/models/round.model.dart';
-import '../../../game/pages/local/custom_ratio_field.dart';
-import '../../../game/pages/local/evaluation_row.dart';
+import '../../../game/widgets/custom_ratio_field.dart';
 
 class RoundExplanationPage extends StatelessWidget {
   const RoundExplanationPage({super.key});
@@ -72,7 +71,7 @@ class RoundExplanationPage extends StatelessWidget {
               'Try it out below by adjusting the squares to represent the size ratio between India and the USA.',
               style: baseStyle,
             ),
-            const EvaluationRow(),
+            // const EvaluationRow(),
             const CustomRatioField(),
             Align(
               alignment: .topCenter,

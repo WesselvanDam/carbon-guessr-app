@@ -7,7 +7,7 @@ import '../../../game/controllers/game_controller.dart';
 import '../../../game/controllers/ratio_controller.dart';
 import '../../../game/models/game.model.dart';
 import '../../../game/models/round.model.dart';
-import '../../../game/pages/local/custom_ratio_field.dart';
+import '../../../game/widgets/custom_ratio_field.dart';
 
 class WelcomePage extends ConsumerWidget {
   const WelcomePage({super.key});

@@ -10,13 +10,15 @@ import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../design_system/components/buttons/action_button.dart';
+import '../../../shared/widgets/ratio_text.dart';
 import '../../collection/providers/current_collection.dart';
 import '../controllers/game_controller.dart';
 import '../models/game.model.dart';
 import '../models/round.model.dart';
 import '../providers/game_providers.dart';
 import '../repository/game_repository.dart';
-import 'local/item_details_dialog.dart';
+import '../widgets/item_details_dialog.dart';
+import '../widgets/item_tile.dart';
 
 class GameResultsPage extends ConsumerWidget {
   const GameResultsPage({super.key});
@@ -62,7 +64,7 @@ class GameResultsPage extends ConsumerWidget {
                         children: [
                           Text(
                             'FINAL SCORE',
-                            style: AppTypography.caption.copyWith(
+                            style: AppTypography.captionSmall.copyWith(
                               color: AppColors.primary600,
                               letterSpacing: 2,
                               fontSize: 12,
@@ -132,10 +134,11 @@ class GameResultsPage extends ConsumerWidget {
                                     const SizedBox(height: 4),
                                     Text(
                                       'POINTS',
-                                      style: AppTypography.caption.copyWith(
-                                        color: AppColors.neutral400,
-                                        fontSize: 16,
-                                      ),
+                                      style: AppTypography.captionSmall
+                                          .copyWith(
+                                            color: AppColors.neutral400,
+                                            fontSize: 16,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -199,7 +202,7 @@ class GameResultsPage extends ConsumerWidget {
   }
 
   Widget _buildRoundCard(BuildContext context, RoundModel round, int index) {
-    final score = round.score ?? 0;
+    final score = round.score;
     final userEstimate = round.userEstimate ?? 1.0;
     final correctRatio = round.correctRatio;
 
@@ -208,7 +211,7 @@ class GameResultsPage extends ConsumerWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: AppShadows.card,
-        border: Border.all(color: AppColors.neutral200),
+        border: Border.all(color: AppColors.neutral100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,10 +224,7 @@ class GameResultsPage extends ConsumerWidget {
               children: [
                 Text(
                   'ROUND ${index + 1}',
-                  style: AppTypography.caption.copyWith(
-                    color: AppColors.neutral400,
-                    letterSpacing: 2,
-                  ),
+                  style: AppTypography.captionMedium.copyWith(letterSpacing: 2),
                 ),
                 switch (score) {
                   >= 80 => InfoChip.success(label: '$score pts'),
@@ -234,29 +234,14 @@ class GameResultsPage extends ConsumerWidget {
               ],
             ),
           ),
-          // Items
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  Expanded(child: _buildItemBox(round.itemA, true, context)),
-                  const SizedBox(width: 12),
-                  Expanded(child: _buildItemBox(round.itemB, false, context)),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const Divider(height: 1, color: AppColors.neutral100),
+          // Items as list tiles
+          ItemTile(isFirst: true, context: context, round: round),
+          ItemTile(isFirst: false, context: context, round: round),
+          const Divider(height: 1, color: AppColors.neutral100),
           // Ratios
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.neutral50,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.neutral100),
-            ),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 Expanded(
@@ -266,16 +251,14 @@ class GameResultsPage extends ConsumerWidget {
                         'YOUR GUESS',
                         style: AppTypography.labelSmall.copyWith(
                           color: AppColors.neutral400,
-                          fontSize: 9,
+                          fontSize: 10,
+                          letterSpacing: 1,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        userEstimate >= 1
-                            ? '${userEstimate.toStringAsFixed(_decimals(userEstimate))} : 1'
-                            : '1 : ${(1 / userEstimate).toStringAsFixed(_decimals(1 / userEstimate))}',
+                      RatioText(
+                        ratio: userEstimate,
                         style: AppTypography.labelLarge.copyWith(
-                          color: AppColors.neutral900,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
@@ -290,16 +273,14 @@ class GameResultsPage extends ConsumerWidget {
                         'TRUE RATIO',
                         style: AppTypography.labelSmall.copyWith(
                           color: AppColors.neutral400,
-                          fontSize: 9,
+                          fontSize: 10,
+                          letterSpacing: 1,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        correctRatio >= 1
-                            ? '${correctRatio.toStringAsFixed(_decimals(correctRatio))} : 1'
-                            : '1 : ${(1 / correctRatio).toStringAsFixed(_decimals(1 / correctRatio))}',
+                      RatioText(
+                        ratio: correctRatio,
                         style: AppTypography.labelLarge.copyWith(
-                          color: AppColors.primary600,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
@@ -309,56 +290,7 @@ class GameResultsPage extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
         ],
-      ),
-    );
-  }
-
-  Widget _buildItemBox(ItemModel item, bool isFirst, BuildContext context) {
-    final bgColor = isFirst ? AppColors.primary100 : AppColors.accent100;
-    final borderColor = isFirst ? AppColors.primary200 : AppColors.accent200;
-    final iconColor = isFirst ? AppColors.primary600 : AppColors.accent600;
-    final titleColor = isFirst ? AppColors.primary900 : AppColors.accent900;
-    final subTitleColor = isFirst ? AppColors.primary700 : AppColors.accent700;
-
-    return InkWell(
-      onTap: () => showDialog(
-        context: context,
-        builder: (context) => ItemDetailsDialog(item: item),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: borderColor),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.title,
-              style: AppTypography.labelLarge.copyWith(color: titleColor),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              item.subtitle,
-              style: AppTypography.bodySmall.copyWith(color: subTitleColor),
-            ),
-            const SizedBox(height: 4),
-            const Spacer(),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Transform.translate(
-                offset: const Offset(4, 4),
-                child: Icon(Symbols.info, size: 20, color: iconColor),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -6,14 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../../../data/models/item.model.dart';
-import '../../../../design_system/components/buttons/icon_buttons.dart';
-import '../../../../design_system/components/chips/info_chip.dart';
-import '../../../../design_system/components/dialogs/dialog.dart';
-import '../../../../design_system/styles/app_colors.dart';
-import '../../../../design_system/styles/app_typography.dart';
-import '../../../../shared/utils/extensions.dart';
-import '../../../collection/providers/current_collection.dart';
+import '../../../../data/models/item.model.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
+import '../../../design_system/components/chips/info_chip.dart';
+import '../../../design_system/components/dialogs/dialog.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_typography.dart';
+import '../../../shared/utils/extensions.dart';
+import '../../collection/providers/current_collection.dart';
 import 'source_list.dart';
 
 class ItemDetailsDialog extends ConsumerWidget {

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart' hide AppBar, Dialog;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../../../constants/game_mode.dart';
-import '../../../../design_system/components/appbar.dart';
-import '../../../../design_system/components/buttons/icon_buttons.dart';
-import '../../../../design_system/components/chips/info_chip.dart';
-import '../../../../design_system/components/dialogs/dialog.dart';
-import '../../../../design_system/styles/app_colors.dart';
-import '../../../../design_system/styles/app_typography.dart';
-import '../../controllers/game_controller.dart';
-import '../../models/game.model.dart';
-import '../../providers/game_providers.dart';
+import '../../../../constants/game_mode.dart';
+import '../../../design_system/components/appbar.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
+import '../../../design_system/components/chips/info_chip.dart';
+import '../../../design_system/components/dialogs/dialog.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_typography.dart';
+import '../controllers/game_controller.dart';
+import '../models/game.model.dart';
+import '../providers/game_providers.dart';
 import 'game_time.dart';
 
 class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -126,7 +126,7 @@ class RoundInfo extends StatelessWidget {
           textHeightBehavior: const TextHeightBehavior(
             applyHeightToFirstAscent: false,
           ),
-          style: AppTypography.caption.copyWith(
+          style: AppTypography.captionSmall.copyWith(
             color: AppColors.neutral500,
             fontSize: 14,
             fontVariations: const [FontVariation('wght', 900)],

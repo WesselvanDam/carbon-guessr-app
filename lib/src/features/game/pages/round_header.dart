@@ -1,156 +1,150 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
+import '../../../shared/widgets/ratio_text.dart';
 import '../../collection/providers/current_collection.dart';
-
 import '../controllers/game_controller.dart';
+import '../controllers/ratio_controller.dart';
 import '../controllers/timer_controller.dart';
-import 'local/evaluation_row.dart';
+import '../widgets/item_tile.dart';
 
 class RoundHeader extends ConsumerWidget {
   const RoundHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentRound = ref.watch(
+      gameControllerProvider.select((game) => game.value?.currentRound),
+    );
+
     final isRoundOver = ref.watch(
       timerControllerProvider.select((time) => time == 0),
     );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 24,
-      children: [
-        Flexible(
-          child: Center(
-            child: isRoundOver
-                ? _afterRoundUi(context, ref)
-                : _duringRoundUi(context, ref),
+
+    final ratio = ref.watch(ratioControllerProvider);
+
+    // Show different UI when round is over
+    final userEstimate = currentRound?.userEstimate ?? ratio;
+    final correctRatio = currentRound?.correctRatio ?? 1;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppShadows.card,
+        border: Border.all(color: AppColors.neutral100),
+      ),
+      child: Column(
+        children: [
+          _duringRoundUi(context, ref),
+
+          const Divider(height: 1, color: AppColors.neutral100),
+          ItemTile(isFirst: true, context: context, round: currentRound),
+          ItemTile(isFirst: false, context: context, round: currentRound),
+          const Divider(height: 1, color: AppColors.neutral100),
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'YOUR GUESS',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.neutral400,
+                          fontSize: 10,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      RatioText(
+                        ratio: userEstimate,
+                        style: AppTypography.labelLarge.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(width: 1, height: 32, color: AppColors.neutral200),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'TRUE RATIO',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: AppColors.neutral400,
+                          fontSize: 10,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      ImageFiltered(
+                        enabled: !isRoundOver,
+                        imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                        child: RatioText(
+                          ratio: isRoundOver ? correctRatio : 1,
+                          style: AppTypography.labelLarge.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const EvaluationRow(),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _duringRoundUi(BuildContext context, WidgetRef ref) {
     final collection = ref.watch(currentCollectionProvider).value;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          'Compare the Footprint',
-          style: AppTypography.h3.copyWith(color: AppColors.neutral900),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Drag the blue square to estimate how many times more ${collection?.quantity ?? 'CO2eq'} one item produces compared to the other.',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.neutral500,
-            fontWeight: FontWeight.w600,
-          ),
-          textAlign: TextAlign.center,
-        ),
+    final baseStyle = AppTypography.bodyLarge.copyWith(
+      color: AppColors.neutral500,
+      fontVariations: [
+        const FontVariation('wght', 600), // Medium weight
       ],
     );
-  }
 
-  Widget _afterRoundUi(BuildContext context, WidgetRef ref) {
-    final score = ref.watch(
-      gameControllerProvider.select(
-        (game) => game.value?.currentRound.score ?? 0,
-      ),
-    );
-
-    return Column(
-      children: [
-        // Score badge
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: score >= 80
-                ? const Color(0xFFFEF3C7) // yellow-100
-                : score >= 60
-                ? const Color(0xFFDCFCE7) // green-100
-                : const Color(0xFFFEE2E2), // red-100
-            border: Border.all(
-              color: score >= 80
-                  ? const Color(0xFFFDE047) // yellow-200
-                  : score >= 60
-                  ? const Color(0xFF86EFAC) // green-200
-                  : const Color(0xFFFECACA), // red-200
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Symbols.emoji_events,
-                size: 14,
-                color: score >= 80
-                    ? const Color(0xFFCA8A04) // yellow-700
-                    : score >= 60
-                    ? const Color(0xFF15803D) // green-700
-                    : const Color(0xFFB91C1C), // red-700
-              ),
-              const SizedBox(width: 4),
-              Text(
-                score >= 80
-                    ? 'Great Estimation!'
-                    : score >= 60
-                    ? 'Good Try!'
-                    : 'Keep Practicing!',
-                style: AppTypography.labelSmall.copyWith(
-                  color: score >= 80
-                      ? const Color(0xFFCA8A04)
-                      : score >= 60
-                      ? const Color(0xFF15803D)
-                      : const Color(0xFFB91C1C),
-                ),
-              ),
-            ],
-          ),
-        ).animate().fadeIn(delay: 500.ms),
-        const SizedBox(height: 16),
-        // Score display
-        Column(
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text.rich(
+        TextSpan(
+          text: 'Compare the ratio in ',
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '$score',
-                  style: const TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 60,
-                    fontVariations: [
-                      FontVariation('wght', 900), // Black weight
-                    ],
-                    color: AppColors.neutral900,
-                    height: 1,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: Text(
-                    '/100',
-                    style: AppTypography.h4.copyWith(
-                      color: AppColors.neutral400,
-                    ),
-                  ),
-                ),
-              ],
+            TextSpan(
+              text: collection?.quantity ?? '',
+              style: baseStyle.copyWith(
+                color: AppColors.neutral900,
+                fontVariations: [
+                  const FontVariation('wght', 700), // Bold weight
+                ],
+              ),
             ),
+            const TextSpan(text: ' (expressed in '),
+            TextSpan(
+              text: collection?.unit ?? '',
+              style: baseStyle.copyWith(
+                color: AppColors.neutral900,
+                fontVariations: [
+                  const FontVariation('wght', 700), // Bold weight
+                ],
+              ),
+            ),
+            const TextSpan(text: ') between the two items.'),
           ],
-        ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2, end: 0),
-      ],
+        ),
+        style: baseStyle,
+      ),
     );
   }
 }

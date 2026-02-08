@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'local/custom_ratio_field.dart';
-import 'local/submit_button.dart';
+import '../widgets/custom_ratio_field.dart';
+import '../widgets/submit_button.dart';
 import 'round_header.dart';
 
 class GameRoundPage extends ConsumerWidget {
@@ -13,12 +13,12 @@ class GameRoundPage extends ConsumerWidget {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       child: Column(
-        spacing: 24,
+        mainAxisSize: .min,
         children: [
           RoundHeader(),
           Spacer(),
           CustomRatioField(),
-          // Spacer(),
+          SizedBox(height: 24),
           SubmitButton(),
         ],
       ),

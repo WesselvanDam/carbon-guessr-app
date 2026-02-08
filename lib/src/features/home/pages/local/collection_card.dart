@@ -217,7 +217,7 @@ class _StatBox extends ConsumerWidget {
           children: [
             Text(
               'AVG SCORE',
-              style: AppTypography.caption.copyWith(
+              style: AppTypography.captionSmall.copyWith(
                 color: AppColors.neutral400,
               ),
             ),

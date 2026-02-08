@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import '../../../../design_system/styles/app_colors.dart';
-import '../../../../design_system/styles/app_typography.dart';
-import '../../../../shared/utils/extensions.dart';
-import '../../controllers/game_controller.dart';
-import '../../controllers/timer_controller.dart';
-import '../../providers/game_providers.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_typography.dart';
+import '../../../shared/utils/extensions.dart';
+import '../controllers/game_controller.dart';
+import '../controllers/timer_controller.dart';
+import '../providers/game_providers.dart';
 
 class GameTime extends ConsumerWidget {
   const GameTime({super.key});

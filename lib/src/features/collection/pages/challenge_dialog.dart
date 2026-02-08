@@ -142,7 +142,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                   children: [
                     Text(
                       'HOST NEW GAME',
-                      style: AppTypography.caption.copyWith(
+                      style: AppTypography.captionSmall.copyWith(
                         color: AppColors.primary600,
                         fontWeight: FontWeight.w900,
                       ),
@@ -170,7 +170,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                       children: [
                         Text(
                           'YOUR PIN CODE',
-                          style: AppTypography.caption.copyWith(
+                          style: AppTypography.captionSmall.copyWith(
                             color: AppColors.primary600,
                           ),
                         ),
@@ -213,7 +213,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         'OR',
-                        style: AppTypography.caption.copyWith(
+                        style: AppTypography.captionSmall.copyWith(
                           color: AppColors.neutral300,
                         ),
                       ),
@@ -230,7 +230,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                   children: [
                     Text(
                       'JOIN GAME',
-                      style: AppTypography.caption.copyWith(
+                      style: AppTypography.captionSmall.copyWith(
                         color: AppColors.accent600,
                         fontWeight: FontWeight.w900,
                       ),

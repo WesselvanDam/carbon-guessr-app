@@ -4,13 +4,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../../../data/models/collection.model.dart';
-import '../../../../../data/models/item.model.dart';
-import '../../../../../data/models/source.dart';
-import '../../../../design_system/styles/app_colors.dart';
-import '../../../../design_system/styles/app_typography.dart';
-import '../../../collection/providers/current_collection.dart';
-import '../../providers/sources.dart';
+import '../../../../data/models/collection.model.dart';
+import '../../../../data/models/item.model.dart';
+import '../../../../data/models/source.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_typography.dart';
+import '../../collection/providers/current_collection.dart';
+import '../providers/sources.dart';
 
 final itemSourcesProvider = FutureProvider.family
     .autoDispose<List<Source>, ItemModel>((ref, item) async {

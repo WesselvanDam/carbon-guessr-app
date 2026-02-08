@@ -4,7 +4,7 @@ import '../../../design_system/styles/app_colors.dart';
 import '../controllers/game_controller.dart';
 import 'results_page.dart';
 import 'round_form.dart';
-import 'local/game_app_bar.dart';
+import '../widgets/game_app_bar.dart';
 
 class GamePage extends ConsumerWidget {
   const GamePage({super.key});

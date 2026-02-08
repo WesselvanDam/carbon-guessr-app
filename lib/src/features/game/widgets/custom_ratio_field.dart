@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import '../../../../../data/models/item.model.dart';
-import '../../../../design_system/styles/app_colors.dart';
-import '../../../../design_system/styles/app_typography.dart';
-import '../../controllers/game_controller.dart';
-import '../../controllers/ratio_controller.dart';
-import '../../controllers/timer_controller.dart';
+import '../../../../data/models/item.model.dart';
+import '../../../design_system/styles/app_colors.dart';
+import '../../../design_system/styles/app_typography.dart';
+import '../controllers/game_controller.dart';
+import '../controllers/ratio_controller.dart';
+import '../controllers/timer_controller.dart';
 import 'item_details_dialog.dart';
 
 class CustomRatioField extends ConsumerStatefulWidget {
