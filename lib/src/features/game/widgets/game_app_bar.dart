@@ -6,7 +6,6 @@ import '../../../../constants/game_mode.dart';
 import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/components/chips/info_chip.dart';
-import '../../../design_system/components/dialogs/dialog.dart';
 import '../../../design_system/components/progress_bar.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
@@ -16,67 +15,12 @@ import '../providers/game_providers.dart';
 import 'game_time.dart';
 
 class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const GameAppBar({super.key});
+  const GameAppBar({this.onBackPressed, super.key});
+
+  final Future<bool> Function()? onBackPressed;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 32);
-
-  void _onBackPressed(BuildContext context, GameModel? game) {
-    // If the game is in progress, confirm before exiting
-    if (game != null && !game.isCompleted) {
-      showDialog(
-        context: context,
-        builder: (dialogContext) => Dialog(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-            child: Column(
-              spacing: 16,
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  'Exit Game',
-                  style: AppTypography.h4.copyWith(color: AppColors.neutral900),
-                ),
-                Text(
-                  'Are you sure you want to exit the game? Your progress will be lost.',
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: AppColors.neutral900,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  spacing: 8,
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.neutral500,
-                        textStyle: AppTypography.labelLarge,
-                      ),
-                      onPressed: () => Navigator.of(dialogContext).pop(),
-                      child: const Text('CANCEL'),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.error500,
-                        textStyle: AppTypography.labelLarge,
-                      ),
-                      onPressed: () {
-                        Navigator.of(dialogContext).pop(); // Close dialog
-                        Navigator.of(context).pop(); // Exit game page
-                      },
-                      child: const Text('EXIT'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-      return;
-    }
-    Navigator.of(context).pop();
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,7 +31,12 @@ class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
       children: [
         SquareIconButton(
           icon: Symbols.arrow_back,
-          onPressed: () => _onBackPressed(context, game),
+          onPressed: () async {
+            final shouldExit = await onBackPressed?.call() ?? true;
+            if (shouldExit && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
           backgroundColor: AppColors.white,
           iconColor: AppColors.neutral400,
           borderColor: AppColors.neutral200,
