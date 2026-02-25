@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../design_system/components/cards/card.dart';
 import '../widgets/custom_ratio_field.dart';
 import '../widgets/submit_button.dart';
 import 'round_header.dart';
@@ -17,6 +18,8 @@ class GameRoundPage extends ConsumerWidget {
         children: [
           RoundHeader(),
           Spacer(),
+          Card(child: EvaluationRow()),
+          SizedBox(height: 24),
           CustomRatioField(),
           SizedBox(height: 24),
           SubmitButton(),

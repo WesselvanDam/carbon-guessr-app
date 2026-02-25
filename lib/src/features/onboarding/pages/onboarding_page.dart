@@ -1,7 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../../../router/routes.dart';
+import '../../../design_system/components/appbar.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
+import '../../../design_system/components/progress_bar.dart';
 import 'local/goal_page.dart';
 import 'local/lets_start_page.dart';
 import 'local/next_button.dart';
@@ -17,6 +23,7 @@ class OnboardingPage extends ConsumerStatefulWidget {
 
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final PageController _pageController = PageController();
+  double _progress = 1 / 4;
 
   final List<Widget> _pages = [
     const WelcomePage(),
@@ -24,6 +31,16 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     const RoundExplanationPage(),
     const LetsStartPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      setState(() {
+        _progress = ((_pageController.page ?? 0) + 1) / (_pages.length);
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -34,55 +51,41 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        children: [
+          RoundedIconButton(
+            icon: Symbols.arrow_back,
+            onPressed: _progress > 1 / 4
+                ? () => _pageController.previousPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  )
+                : null,
+          ),
+          Expanded(child: ProgressBar(progress: _progress)),
+          RoundedIconButton(
+            icon: Symbols.close,
+            onPressed: () => context.go(const HomeRoute().location),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             child: PageView.builder(
               controller: _pageController,
               itemCount: _pages.length,
-              physics: const NeverScrollableScrollPhysics(), 
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
                 child: _pages[index],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Expanded(child: SizedBox.shrink()),
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: SmoothPageIndicator(
-                        controller: _pageController,
-                        count: _pages.length,
-                        effect: CustomizableEffect(
-                          activeDotDecoration: DotDecoration(
-                            width: 16,
-                            height: 16,
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          dotDecoration: DotDecoration(
-                            width: 12,
-                            height: 12,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(child: NextButton(pageController: _pageController)),
-              ],
-            ),
+          Container(
+            color: Colors.transparent,
+            padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+            child: NextButton(pageController: _pageController),
           ),
         ],
       ),

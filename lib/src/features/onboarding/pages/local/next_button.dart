@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../local_storage/local_storage_keys.dart';
 import '../../../../../local_storage/local_storage_repository.dart';
 import '../../../../../router/routes.dart';
+import '../../../../design_system/components/buttons/action_button.dart';
 import '../../../game/controllers/ratio_controller.dart';
 import '../../../game/controllers/timer_controller.dart';
 
@@ -50,7 +51,7 @@ class _NextButtonState extends ConsumerState<NextButton> {
   void Function()? _callBackForCurrentPage() {
     if (_currentPage == 0) {
       final ratio = ref.watch(ratioControllerProvider);
-      final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.005;
+      final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.01;
       return isRatioCorrect ? _toNextPageCallback : null;
     }
 
@@ -76,9 +77,11 @@ class _NextButtonState extends ConsumerState<NextButton> {
   Widget build(BuildContext context) {
     final callBackForCurrentPage = _callBackForCurrentPage();
 
-    return TextButton(
+    return ActionButton.primary(
       onPressed: callBackForCurrentPage,
-      child: Text(_currentPage == 3 ? "Let's go!" : 'Next'),
+      label: _currentPage == 3 ? "LET'S GO!" : 'NEXT',
+      fullWidth: true,
+      showArrow: true,
     ).animate().fadeIn(duration: 300.ms);
   }
 }

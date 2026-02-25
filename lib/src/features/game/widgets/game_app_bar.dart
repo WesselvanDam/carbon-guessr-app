@@ -7,6 +7,7 @@ import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/components/chips/info_chip.dart';
 import '../../../design_system/components/dialogs/dialog.dart';
+import '../../../design_system/components/progress_bar.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../controllers/game_controller.dart';
@@ -145,54 +146,11 @@ class GameProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 16,
-      decoration: BoxDecoration(
-        color: AppColors.neutral50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.neutral200),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(7),
-        child: Stack(
-          children: [
-            // Inner shadow effect
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0x10000000), Colors.transparent],
-                ),
-              ),
-            ),
-            // Progress indicator
-            LayoutBuilder(
-              builder: (context, constraints) {
-                debugPrint(
-                  'Is completed: ${game?.isCompleted}. current ${game?.currentRoundIndex}',
-                );
-                final progress = (game?.isCompleted ?? false)
-                    ? 1
-                    : (game?.currentRoundIndex ?? 0) /
-                          (game?.rounds.length ?? 5);
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  width: constraints.maxWidth * progress,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary600,
-                    borderRadius: BorderRadius.circular(7),
-                    boxShadow: const [
-                      BoxShadow(color: Color(0x1A000000), offset: Offset(0, 2)),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+    // Calculate progress from game state
+    final progress = (game?.isCompleted ?? false)
+        ? 1.0
+        : (game?.currentRoundIndex ?? 0) / (game?.rounds.length ?? 5);
+
+    return ProgressBar(progress: progress);
   }
 }

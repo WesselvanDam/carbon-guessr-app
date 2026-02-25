@@ -19,6 +19,7 @@ import '../providers/game_providers.dart';
 import '../repository/game_repository.dart';
 import '../widgets/item_details_dialog.dart';
 import '../widgets/item_tile.dart';
+import 'round_header.dart';
 
 class GameResultsPage extends ConsumerWidget {
   const GameResultsPage({super.key});
@@ -235,60 +236,12 @@ class GameResultsPage extends ConsumerWidget {
             ),
           ),
           const Divider(height: 1, color: AppColors.neutral100),
-          // Items as list tiles
           ItemTile(isFirst: true, context: context, round: round),
           ItemTile(isFirst: false, context: context, round: round),
           const Divider(height: 1, color: AppColors.neutral100),
-          // Ratios
           Container(
             padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'YOUR GUESS',
-                        style: AppTypography.labelSmall.copyWith(
-                          color: AppColors.neutral400,
-                          fontSize: 10,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      RatioText(
-                        ratio: userEstimate,
-                        style: AppTypography.labelLarge.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(width: 1, height: 32, color: AppColors.neutral200),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'TRUE RATIO',
-                        style: AppTypography.labelSmall.copyWith(
-                          color: AppColors.neutral400,
-                          fontSize: 10,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      RatioText(
-                        ratio: correctRatio,
-                        style: AppTypography.labelLarge.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: EvaluationRow(round: round),
           ),
         ],
       ),

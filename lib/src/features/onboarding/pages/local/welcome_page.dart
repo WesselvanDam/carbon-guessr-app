@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../data/models/item.model.dart';
+import '../../../../design_system/components/cards/card.dart';
+import '../../../../design_system/styles/app_colors.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../../../shared/utils/extensions.dart';
+import '../../../../shared/widgets/ratio_text.dart';
 import '../../../game/controllers/game_controller.dart';
 import '../../../game/controllers/ratio_controller.dart';
 import '../../../game/models/game.model.dart';
@@ -43,64 +47,46 @@ class WelcomePage extends ConsumerWidget {
           return game;
         }),
       ],
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 24,
-          children: [
-            Text(
-              'Welcome To Quoscient!',
-              style: baseStyle.copyWith(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'To continue, pinch the squares until square B is twice the size of square A.',
-              style: baseStyle.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const CustomRatioField(),
-            Consumer(
+      child: Column(
+        mainAxisSize: .min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 24,
+        children: [
+          const Text('Welcome To Quoscient!', style: AppTypography.h2),
+          const Text(
+            'To continue, pinch the squares until square B is twice the size of square A.',
+            style: AppTypography.h4,
+          ),
+          const Spacer(),
+          Card(
+            child: Consumer(
               builder: (context, ref, child) {
                 final ratio = ref.watch(ratioControllerProvider);
-                final style = Theme.of(context).textTheme.headlineMedium!
-                    .copyWith(fontWeight: FontWeight.bold);
                 return Column(
-                  spacing: 8,
                   children: [
                     Text(
-                      'Ratio between the sizes of both squares:',
-                      style: baseStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                    RichText(
-                      text: ratio.ratioToReadableTextSpan(
-                        style: style,
-                        leftDigitStyle: style.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        rightDigitStyle: style.copyWith(
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
+                      'Ratio between the sizes of both squares'.toUpperCase(),
+                      style: AppTypography.labelSmall.copyWith(
+                        color: AppColors.neutral400,
+                        fontSize: 10,
+                        letterSpacing: 1,
                       ),
                     ),
-                    Text(
-                      '"Square B is ${(1 / ratio).toStringAsFixed(2)} times the size of Square A"',
-                      style: baseStyle.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    const SizedBox(height: 4),
+                    RatioText(
+                      ratio: ratio,
+                      style: AppTypography.labelLarge.copyWith(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 );
               },
             ),
-          ],
-        ),
+          ),
+          const CustomRatioField(),
+        ],
       ),
     );
   }
