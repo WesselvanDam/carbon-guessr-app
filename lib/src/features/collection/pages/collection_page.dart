@@ -3,16 +3,16 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
 import '../../../../constants/game_mode.dart';
 import '../../../../router/routes.dart';
 import '../../../design_system/components/appbar.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/components/chips/info_chip.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/utils/extensions.dart';
-import '../../../design_system/components/buttons/icon_buttons.dart';
-import '../../game/providers/items.dart';
 import '../../game/repository/game_repository.dart';
 import '../../home/providers/collections.dart';
 import '../../stats/providers/stats.dart';

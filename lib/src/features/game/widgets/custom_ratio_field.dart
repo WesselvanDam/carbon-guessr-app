@@ -289,13 +289,13 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         color: mainContainer,
         border: Border.all(width: 4.0, color: borderColor),
         borderRadius: BorderRadius.circular(scaledBorderRadius),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            offset: const Offset(0, 8),
-            blurRadius: 24,
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.3),
+        //     offset: const Offset(0, 8),
+        //     blurRadius: 24,
+        //   ),
+        // ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(

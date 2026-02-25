@@ -5,7 +5,6 @@ import '../../../../../data/models/item.model.dart';
 import '../../../../design_system/components/cards/card.dart';
 import '../../../../design_system/styles/app_colors.dart';
 import '../../../../design_system/styles/app_typography.dart';
-import '../../../../shared/utils/extensions.dart';
 import '../../../../shared/widgets/ratio_text.dart';
 import '../../../game/controllers/game_controller.dart';
 import '../../../game/controllers/ratio_controller.dart';
@@ -38,8 +37,6 @@ class WelcomePage extends ConsumerWidget {
 
     final game = GameModel(rounds: [round]);
 
-    final baseStyle = Theme.of(context).textTheme.bodyLarge!;
-
     return ProviderScope(
       overrides: [
         gameControllerProvider.overrideWithBuild((ref, notifier) {
@@ -50,7 +47,7 @@ class WelcomePage extends ConsumerWidget {
       child: Column(
         mainAxisSize: .min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 24,
+        spacing: 16,
         children: [
           const Text('Welcome To Quoscient!', style: AppTypography.h2),
           const Text(

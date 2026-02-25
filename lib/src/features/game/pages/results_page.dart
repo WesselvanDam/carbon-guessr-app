@@ -1,34 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import '../../../../data/models/item.model.dart';
+
 import '../../../../router/routes.dart';
+import '../../../design_system/components/buttons/action_button.dart';
 import '../../../design_system/components/chips/info_chip.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
-import '../../../design_system/components/buttons/action_button.dart';
-import '../../../shared/widgets/ratio_text.dart';
 import '../../collection/providers/current_collection.dart';
 import '../controllers/game_controller.dart';
-import '../models/game.model.dart';
 import '../models/round.model.dart';
 import '../providers/game_providers.dart';
 import '../repository/game_repository.dart';
-import '../widgets/item_details_dialog.dart';
 import '../widgets/item_tile.dart';
 import 'round_header.dart';
 
 class GameResultsPage extends ConsumerWidget {
   const GameResultsPage({super.key});
-
-  int _decimals(double ratio) {
-    if (ratio > 100) return 0;
-    if (ratio > 10) return 1;
-    return 2;
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -204,8 +194,6 @@ class GameResultsPage extends ConsumerWidget {
 
   Widget _buildRoundCard(BuildContext context, RoundModel round, int index) {
     final score = round.score;
-    final userEstimate = round.userEstimate ?? 1.0;
-    final correctRatio = round.correctRatio;
 
     return Container(
       decoration: BoxDecoration(

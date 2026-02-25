@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../data/models/collection.model.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../../home/pages/local/collection_card.dart';
 
 class GoalPage extends ConsumerWidget {
@@ -9,32 +10,21 @@ class GoalPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final baseStyle = Theme.of(context).textTheme.bodyLarge!;
-
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 16,
         children: [
+          Text('Trust Your Instincts', style: AppTypography.h2),
           Text(
-            'The Goal',
-            style: baseStyle.copyWith(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            'Size up real-world facts to see how well you know the big picture.',
+            style: AppTypography.h4,
           ),
           Text(
-            'In Quoscient, your goal is to train your intuition when it comes to comparing different items based on specific quantities.',
-            style: baseStyle.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            'Choose a topic to explore — like the surface area of countries below — and compare items to guess the true scale between them.',
+            style: AppTypography.bodyLarge,
           ),
-          Text(
-            'Items are grouped by collections, each focusing on a specific quantity. For example, you might explore a collection about the surface area of countries:',
-            style: baseStyle,
-          ),
-          const IgnorePointer(
+          IgnorePointer(
             child: CollectionCard(
               collection: CollectionModel(
                 id: 'onboarding_collection',

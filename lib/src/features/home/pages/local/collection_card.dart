@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'dart:math' as math;
+
 import '../../../../../data/models/collection.model.dart';
 import '../../../../../router/routes.dart';
 import '../../../../design_system/components/chips/info_chip.dart';

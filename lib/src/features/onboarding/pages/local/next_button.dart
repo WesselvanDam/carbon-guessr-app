@@ -8,6 +8,7 @@ import '../../../../../router/routes.dart';
 import '../../../../design_system/components/buttons/action_button.dart';
 import '../../../game/controllers/ratio_controller.dart';
 import '../../../game/controllers/timer_controller.dart';
+import '../../../game/widgets/submit_button.dart';
 
 class NextButton extends ConsumerStatefulWidget {
   const NextButton({required this.pageController, super.key});
@@ -51,7 +52,7 @@ class _NextButtonState extends ConsumerState<NextButton> {
   void Function()? _callBackForCurrentPage() {
     if (_currentPage == 0) {
       final ratio = ref.watch(ratioControllerProvider);
-      final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.01;
+      final isRatioCorrect = ((1 / ratio) - 2).abs() < 0.02;
       return isRatioCorrect ? _toNextPageCallback : null;
     }
 
@@ -76,6 +77,10 @@ class _NextButtonState extends ConsumerState<NextButton> {
   @override
   Widget build(BuildContext context) {
     final callBackForCurrentPage = _callBackForCurrentPage();
+
+    if (_currentPage == 2) {
+      return const SubmitButton();
+    }
 
     return ActionButton.primary(
       onPressed: callBackForCurrentPage,

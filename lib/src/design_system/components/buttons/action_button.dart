@@ -73,9 +73,7 @@ class _ActionButtonState extends State<ActionButton> {
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = widget.buttonColor == AppColors.primary600;
     final isDisabled = widget.onPressed == null;
-    final disabledColor = isPrimary ? AppColors.primary200 : AppColors.accent300;
 
     final shadow = [
       BoxShadow(color: widget.shadowColor, offset: const Offset(0, 6)),
@@ -93,7 +91,7 @@ class _ActionButtonState extends State<ActionButton> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
           color: isDisabled
-              ? disabledColor
+              ? AppColors.neutral200
               : (_isPressed ? widget.shadowColor : widget.buttonColor),
           borderRadius: BorderRadius.circular(16),
           boxShadow: (_isPressed || isDisabled) ? pressedShadow : shadow,

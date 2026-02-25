@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../data/models/item.model.dart';
+import '../../../../design_system/components/cards/card.dart';
+import '../../../../design_system/styles/app_typography.dart';
 import '../../../game/controllers/game_controller.dart';
 import '../../../game/controllers/timer_controller.dart';
 import '../../../game/models/game.model.dart';
 import '../../../game/models/round.model.dart';
+import '../../../game/pages/round_header.dart';
 import '../../../game/widgets/custom_ratio_field.dart';
 
 class RoundExplanationPage extends StatelessWidget {
@@ -17,7 +20,7 @@ class RoundExplanationPage extends StatelessWidget {
     const itemA = ItemModel(
       id: 1,
       title: 'Size of India',
-      description: '',
+      description: 'The total surface area of India',
       value: 3.29e6,
       quantity: 'km²',
       category: 'Surface Area',
@@ -27,6 +30,7 @@ class RoundExplanationPage extends StatelessWidget {
     final itemB = itemA.copyWith(
       id: 2,
       title: 'Size of United States',
+      description: 'The total surface area of the United States',
       value: 9.83e6,
     );
 
@@ -38,8 +42,6 @@ class RoundExplanationPage extends StatelessWidget {
     );
 
     final game = GameModel(rounds: [round]);
-
-    final baseStyle = Theme.of(context).textTheme.bodyLarge!;
 
     return ProviderScope(
       overrides: [
@@ -53,25 +55,16 @@ class RoundExplanationPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 16,
           children: [
-            Text(
-              'Playing A Game',
-              style: baseStyle.copyWith(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+            const Text('Make Your Guess', style: AppTypography.h2),
+            const Text(
+              'Compare two items per round. Lock in your guess to reveal the true scale and get your score.',
+              style: AppTypography.h4,
             ),
-            Text(
-              'When you start a game in a collection, you will encounter five rounds asking you to compare two items.',
-              style: baseStyle.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            const Text(
+              'Try it out. Adjust the squares to compare India and the USA, then hit submit!',
+              style: AppTypography.bodyLarge,
             ),
-            Text(
-              'Try it out below by adjusting the squares to represent the size ratio between India and the USA.',
-              style: baseStyle,
-            ),
-            // const EvaluationRow(),
+            const Card(child: EvaluationRow()),
             const CustomRatioField(),
             Align(
               alignment: .topCenter,
@@ -86,7 +79,7 @@ class RoundExplanationPage extends StatelessWidget {
                         ? Text(
                             key: const ValueKey('explanation_text'),
                             'The closer your estimate is to the true ratio, the higher your score for that round!',
-                            style: baseStyle.copyWith(
+                            style: AppTypography.bodyLarge.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
