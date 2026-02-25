@@ -11,5 +11,6 @@
          colour flash when the Flutter engine draws its first frame. -->
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@color/launch_background_color</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>
