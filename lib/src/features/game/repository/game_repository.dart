@@ -166,6 +166,9 @@ class GameRepository {
   GameModel nextRound(GameModel session) {
     if (session.isCompleted ||
         session.currentRoundIndex > session.rounds.length - 1) {
+      
+      
+      
       throw Exception('Cannot move to the next round');
     }
 

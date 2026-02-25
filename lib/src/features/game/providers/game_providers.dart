@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../client/talker.dart';
 import '../../../../constants/game_mode.dart';
 import '../../../../router/router.dart';
 import '../../collection/providers/current_collection.dart';
@@ -33,6 +34,7 @@ GameMode gameMode(Ref ref) {
 double minRatio(Ref ref) {
   final ratioBoundary =
       ref.watch(currentCollectionProvider).value?.ratioBoundary ?? 0.01;
-
+  talker.debug('Calculating min ratio with boundary: $ratioBoundary');
+  
   return pow(10, (log(ratioBoundary) / log(10)).floor()).toDouble();
 }

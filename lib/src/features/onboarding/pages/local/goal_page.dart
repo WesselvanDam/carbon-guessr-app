@@ -27,7 +27,7 @@ class GoalPage extends ConsumerWidget {
           IgnorePointer(
             child: CollectionCard(
               collection: CollectionModel(
-                id: 'onboarding_collection',
+                id: 'dummy_id',
                 lastUpdated: '',
                 title: 'Surface Area of Countries',
                 tagline:

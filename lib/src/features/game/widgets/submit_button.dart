@@ -8,7 +8,9 @@ import '../controllers/game_controller.dart';
 import '../controllers/timer_controller.dart';
 
 class SubmitButton extends ConsumerWidget {
-  const SubmitButton({super.key});
+  const SubmitButton({this.lastRoundText = 'Finish', super.key});
+
+  final String lastRoundText;
 
   void _submitEstimate(WidgetRef ref) {
     ref.read(gameControllerProvider.notifier).onSubmit();
@@ -96,7 +98,7 @@ class SubmitButton extends ConsumerWidget {
                     ? ActionButton.secondary(
                         key: const ValueKey('button'),
                         onPressed: () => _nextRound(ref),
-                        label: isLastRound ? 'Finish' : 'Next',
+                        label: isLastRound ? lastRoundText : 'Next',
                         showArrow: true,
                         fullWidth: true,
                       )

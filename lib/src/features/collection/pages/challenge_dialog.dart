@@ -2,13 +2,14 @@ import 'package:flutter/material.dart' hide Dialog;
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
+
+import '../../../design_system/components/buttons/action_button.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/components/chips/info_chip.dart';
 import '../../../design_system/components/dialogs/dialog.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
-import '../../../design_system/components/buttons/action_button.dart';
 import '../../game/repository/game_repository.dart';
 
 class ChallengeDialog extends StatefulWidget {

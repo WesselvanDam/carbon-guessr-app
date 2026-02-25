@@ -2,12 +2,13 @@ import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
 import '../../../../client/talker.dart';
 import '../../../../router/routes.dart';
 import '../../../design_system/components/appbar.dart';
+import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
-import '../../../design_system/components/buttons/icon_buttons.dart';
 import 'local/select_collection.dart';
 
 class HomePage extends ConsumerWidget {

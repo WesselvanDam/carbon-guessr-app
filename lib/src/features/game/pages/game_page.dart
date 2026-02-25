@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../design_system/styles/app_colors.dart';
 import '../controllers/game_controller.dart';
+import '../widgets/game_app_bar.dart';
 import 'results_page.dart';
 import 'round_form.dart';
-import '../widgets/game_app_bar.dart';
 
 class GamePage extends ConsumerWidget {
   const GamePage({super.key});
