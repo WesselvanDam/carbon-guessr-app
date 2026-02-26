@@ -75,8 +75,9 @@ class CollectionCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   // Stats row
-                  Row(
+                  Wrap(
                     spacing: 8,
+                    runSpacing: 8,
                     children: [
                       InfoChip.neutral(
                         icon: Symbols.dataset,

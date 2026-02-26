@@ -38,7 +38,7 @@ class GameTime extends ConsumerWidget {
     final progress = seconds / mode.roundDurationInSeconds;
 
     // Use different colors based on remaining time
-    final bool isUrgent = progress < 0.25;
+    final bool isUrgent = progress < 0.25 && progress > 0;
 
     return Container(
           width: 64,
@@ -46,7 +46,10 @@ class GameTime extends ConsumerWidget {
           decoration: BoxDecoration(
             color: AppColors.neutral50,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.neutral200, width: 4),
+            border: Border.all(
+              color: isUrgent ? AppColors.error200 : AppColors.neutral200,
+              width: 4,
+            ),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x0D000000),
@@ -60,9 +63,7 @@ class GameTime extends ConsumerWidget {
             children: [
               Icon(
                 Symbols.timer,
-                color: (isUrgent && seconds > 0)
-                    ? AppColors.error600
-                    : AppColors.primary600,
+                color: isUrgent ? AppColors.error600 : AppColors.primary600,
                 size: 18,
                 weight: 700,
               ),

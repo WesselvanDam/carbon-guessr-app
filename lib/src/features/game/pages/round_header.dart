@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../client/talker.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/widgets/ratio_text.dart';
@@ -13,6 +14,8 @@ import '../controllers/timer_controller.dart';
 import '../models/round.model.dart';
 import '../widgets/item_tile.dart';
 
+enum _LayoutMode { noTiles, oneLine, twoLines }
+
 class RoundHeader extends ConsumerWidget {
   const RoundHeader({super.key});
 
@@ -22,15 +25,57 @@ class RoundHeader extends ConsumerWidget {
       gameControllerProvider.select((game) => game.value?.currentRound),
     );
 
-    return Column(
-      children: [
-        _duringRoundUi(context, ref),
-        const SizedBox(height: 8),
-        ItemTile(isFirst: true, context: context, round: currentRound),
-        ItemTile(isFirst: false, context: context, round: currentRound),
-        const SizedBox(height: 8),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final layoutMode = _determineLayoutMode(constraints.maxHeight);
+
+        return Column(
+          children: [
+            _duringRoundUi(context, ref),
+            const SizedBox(height: 8),
+            if (layoutMode != _LayoutMode.noTiles) ...[
+              _buildItemTiles(layoutMode, currentRound),
+            ],
+          ],
+        );
+      },
     );
+  }
+
+  _LayoutMode _determineLayoutMode(double maxHeight) {
+    if (maxHeight < 140) return _LayoutMode.noTiles;
+    if (maxHeight < 170) return _LayoutMode.oneLine;
+    return _LayoutMode.twoLines;
+  }
+
+  Widget _buildItemTiles(_LayoutMode layoutMode, RoundModel? currentRound) {
+    return switch (layoutMode) {
+      _LayoutMode.noTiles => const SizedBox.shrink(),
+      _LayoutMode.oneLine => Column(
+        children: [
+          ItemTile(item: currentRound?.itemA, variant: .oneLine, isFirst: true),
+          ItemTile(
+            item: currentRound?.itemB,
+            variant: .oneLine,
+            isFirst: false,
+          ),
+        ],
+      ),
+      _LayoutMode.twoLines => Column(
+        children: [
+          ItemTile(
+            item: currentRound?.itemA,
+            variant: .twoLines,
+            isFirst: true,
+          ),
+          ItemTile(
+            item: currentRound?.itemB,
+            variant: .twoLines,
+            isFirst: false,
+          ),
+        ],
+      ),
+    };
   }
 
   Widget _duringRoundUi(BuildContext context, WidgetRef ref) {
@@ -44,7 +89,7 @@ class RoundHeader extends ConsumerWidget {
 
     return Text.rich(
       TextSpan(
-        text: 'Compare the ratio in ',
+        text: 'Compare the ',
         children: [
           TextSpan(
             text: collection?.quantity ?? '',

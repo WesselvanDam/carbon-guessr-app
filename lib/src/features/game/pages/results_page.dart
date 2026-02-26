@@ -224,8 +224,8 @@ class GameResultsPage extends ConsumerWidget {
             ),
           ),
           const Divider(height: 1, color: AppColors.neutral100),
-          ItemTile(isFirst: true, context: context, round: round),
-          ItemTile(isFirst: false, context: context, round: round),
+          ItemTile(item: round.itemA, variant: .threeLines, isFirst: true),
+          ItemTile(item: round.itemB, variant: .threeLines, isFirst: false),
           const Divider(height: 1, color: AppColors.neutral100),
           Container(
             padding: const EdgeInsets.all(16),

@@ -16,8 +16,7 @@ class GameRoundPage extends ConsumerWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          RoundHeader(),
-          Spacer(),
+          Flexible(child: RoundHeader()),
           Card(child: EvaluationRow()),
           SizedBox(height: 24),
           CustomRatioField(),

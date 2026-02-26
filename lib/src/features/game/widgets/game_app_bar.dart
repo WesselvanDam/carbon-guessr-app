@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide AppBar, Dialog;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../client/talker.dart';
 import '../../../../constants/game_mode.dart';
 import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
@@ -66,24 +67,31 @@ class RoundInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          game?.isCompleted ?? false
-              ? 'GAME SUMMARY'
-              : 'ROUND ${(game?.currentRoundIndex ?? 0) + 1} OF ${game?.rounds.length ?? 5}',
-          textHeightBehavior: const TextHeightBehavior(
-            applyHeightToFirstAscent: false,
-          ),
-          style: AppTypography.captionSmall.copyWith(
-            color: AppColors.neutral500,
-            fontSize: 14,
-            fontVariations: const [FontVariation('wght', 900)],
-          ),
-        ),
-        InfoChip.neutral(label: '${mode.name.toUpperCase()} MODE'),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 200;
+        final roundText = game?.isCompleted ?? false
+            ? (isNarrow ? 'SUMMARY' : 'GAME SUMMARY')
+            : '${isNarrow ? '' : 'ROUND '}${(game?.currentRoundIndex ?? 0) + 1} OF ${game?.rounds.length ?? 5}';
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              roundText,
+              textHeightBehavior: const TextHeightBehavior(
+                applyHeightToFirstAscent: false,
+              ),
+              style: AppTypography.captionSmall.copyWith(
+                color: AppColors.neutral500,
+                fontSize: 14,
+                fontVariations: const [FontVariation('wght', 900)],
+              ),
+            ),
+            InfoChip.neutral(label: '${mode.name.toUpperCase()} MODE'),
+          ],
+        );
+      },
     );
   }
 }

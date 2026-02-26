@@ -2,39 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../data/models/item.model.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../collection/providers/current_collection.dart';
-import '../models/round.model.dart';
 import 'item_details_dialog.dart';
+
+enum ItemTileVariant { oneLine, twoLines, threeLines }
 
 class ItemTile extends ConsumerWidget {
   const ItemTile({
+    required this.item,
+    required this.variant,
     required this.isFirst,
-    required this.context,
-    required this.round,
     super.key,
   });
 
+  final ItemModel? item;
+  final ItemTileVariant variant;
   final bool isFirst;
-  final BuildContext context;
-  final RoundModel? round;
+
+  bool get _showExtra => variant == ItemTileVariant.threeLines;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final iconColor = isFirst ? AppColors.primary600 : AppColors.accent600;
     final indicatorColor = isFirst ? AppColors.primary500 : AppColors.accent500;
-    final item = isFirst ? round?.itemA : round?.itemB;
     final unit = ref.watch(currentCollectionProvider).requireValue.unit;
 
     return InkWell(
       onTap: item != null
           ? () => showDialog(
               context: context,
-              builder: (context) => ItemDetailsDialog(
-                item: item,
-                showExtra: round?.isCompleted ?? false,
-              ),
+              builder: (context) =>
+                  ItemDetailsDialog(item: item!, showExtra: _showExtra),
             )
           : null,
       child: ColoredBox(
@@ -49,7 +50,6 @@ class ItemTile extends ConsumerWidget {
                 height: 16,
                 decoration: BoxDecoration(
                   color: indicatorColor,
-                  // rounded corners
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -59,6 +59,7 @@ class ItemTile extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Title (always shown)
                     Text(
                       item?.title ?? '',
                       style: AppTypography.labelLarge.copyWith(
@@ -68,16 +69,21 @@ class ItemTile extends ConsumerWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      item?.subtitle ?? '',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.neutral600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (round != null && round!.isCompleted) ...[
+                    // Subtitle (shown in two or three line variants)
+                    if (variant != ItemTileVariant.oneLine) ...[
+                      const SizedBox(height: 2),
+                      if ((item?.subtitle ?? '').isNotEmpty)
+                        Text(
+                          item!.subtitle,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.neutral600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                    // Value (shown only in three line variant)
+                    if (variant == ItemTileVariant.threeLines) ...[
                       const SizedBox(height: 4),
                       Text(
                         '${item?.value.toStringAsFixed(2) ?? ''} $unit',
