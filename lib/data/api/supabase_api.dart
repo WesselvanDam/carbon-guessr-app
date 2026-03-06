@@ -72,7 +72,7 @@ class SupabaseApi {
     var query = _client
         .from('items')
         .select()
-        .eq('collection_id', _collectionId!);
+        .eq('collection', _collectionId!);
     // if ids is empty, we fetch all items, so no need to add an ID filter
     if (ids.isNotEmpty) {
       query = exclude
@@ -96,7 +96,10 @@ class SupabaseApi {
     List<int> ids, {
     bool exclude = false,
   }) async {
-    var query = _client.from('sources').select();
+    var query = _client
+        .from('sources')
+        .select()
+        .eq('collection', _collectionId!);
     if (ids.isNotEmpty) {
       query = exclude
           ? query.not('id', 'in', '(${ids.join(',')})')

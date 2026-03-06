@@ -15,7 +15,6 @@ abstract class ItemModel with _$ItemModel {
     required String description,
     required double value,
     required String category,
-    @JsonKey(fromJson: _sourcesFromJson, toJson: _sourcesToJson)
     required List<int> sources,
     @Default(true) bool isItemA,
   }) = _ItemModel;
@@ -27,19 +26,3 @@ abstract class ItemModel with _$ItemModel {
   String get subtitle =>
       '$category${category.isNotEmpty ? ' · ' : ''}$quantity';
 }
-
-List<int> _sourcesFromJson(dynamic sources) {
-  if (sources is List) {
-    return sources.map((e) => (e as num).toInt()).toList();
-  }
-  if (sources is String) {
-    return sources
-        .split(',')
-        .map((e) => int.tryParse(e.trim()) ?? 0)
-        .where((e) => e != 0)
-        .toList();
-  }
-  return [];
-}
-
-List<int> _sourcesToJson(List<int> sources) => sources;
