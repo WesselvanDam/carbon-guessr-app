@@ -69,8 +69,11 @@ class SupabaseApi {
     List<int> ids, {
     bool exclude = false,
   }) async {
-    var query = _client.from(_collectionId!).select();
-    // if ids is empty, we fetch all items, so no need to add a filter
+    var query = _client
+        .from('items')
+        .select()
+        .eq('collection_id', _collectionId!);
+    // if ids is empty, we fetch all items, so no need to add an ID filter
     if (ids.isNotEmpty) {
       query = exclude
           ? query.not('id', 'in', '(${ids.join(',')})')
@@ -84,12 +87,16 @@ class SupabaseApi {
     return response.map<ItemModel>((json) => ItemModel.fromJson(json)).toList();
   }
 
-  /// Fetches all sources for the given IDs
+  /// Fetches all sources for the given IDs.
+  ///
+  /// Sources are globally shared across all collections. The caller is
+  /// responsible for passing only the IDs that are relevant to the current
+  /// collection (e.g. the IDs referenced by the collection's items).
   Future<List<Source>> fetchSources(
     List<int> ids, {
     bool exclude = false,
   }) async {
-    var query = _client.from('${_collectionId}_sources').select();
+    var query = _client.from('sources').select();
     if (ids.isNotEmpty) {
       query = exclude
           ? query.not('id', 'in', '(${ids.join(',')})')

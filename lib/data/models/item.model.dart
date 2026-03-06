@@ -28,10 +28,18 @@ abstract class ItemModel with _$ItemModel {
       '$category${category.isNotEmpty ? ' · ' : ''}$quantity';
 }
 
-List<int> _sourcesFromJson(String sources) => sources
-    .split(',')
-    .map((e) => int.tryParse(e.trim()) ?? 0)
-    .where((e) => e != 0)
-    .toList();
+List<int> _sourcesFromJson(dynamic sources) {
+  if (sources is List) {
+    return sources.map((e) => (e as num).toInt()).toList();
+  }
+  if (sources is String) {
+    return sources
+        .split(',')
+        .map((e) => int.tryParse(e.trim()) ?? 0)
+        .where((e) => e != 0)
+        .toList();
+  }
+  return [];
+}
 
-String _sourcesToJson(List<int> sources) => sources.join(',');
+List<int> _sourcesToJson(List<int> sources) => sources;
