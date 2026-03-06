@@ -250,7 +250,10 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         : AppColors.accent800;
     const Color onMainContainer = Colors.white;
 
-    final padding = 16.0 * (size / containerSize);
+    final sizeFraction = size / containerSize;
+
+    final padding = 16.0 * sizeFraction;
+
     // Calculate max width and height for the ListView content
     final maxWidth = size - 2 * padding;
     final maxHeight = size - 2 * padding - 8 - 16;
@@ -260,7 +263,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
 
     final titleStyle = AppTypography.h4.copyWith(color: onMainContainer);
     final subtitleStyle = AppTypography.labelLarge.copyWith(
-      color: onMainContainer.withOpacity(0.9),
+      color: onMainContainer.withValues(alpha: 0.9),
       fontWeight: FontWeight.w700,
     );
 
@@ -276,8 +279,6 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         (titleSize.height + subtitleSize.height + 8) <= maxHeight &&
         subtitleSize.width <= maxWidth;
 
-    final scaledBorderRadius = 24.0 * (size / containerSize);
-
     return AnimatedContainer(
       duration: _correctRatio != null
           ? Duration.zero
@@ -288,14 +289,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       decoration: BoxDecoration(
         color: mainContainer,
         border: Border.all(width: 4.0, color: borderColor),
-        borderRadius: BorderRadius.circular(scaledBorderRadius),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.3),
-        //     offset: const Offset(0, 8),
-        //     blurRadius: 24,
-        //   ),
-        // ],
+        borderRadius: BorderRadius.circular(24 * sizeFraction),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -303,9 +297,12 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
         children: [
           // Diagonal pattern overlay
           Positioned.fill(
-            child: CustomPaint(
-              painter: DiagonalPatternPainter(
-                color: Colors.white.withOpacity(0.1),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22 * sizeFraction),
+              child: CustomPaint(
+                painter: GridPatternPainter(
+                  color: Colors.white.withValues(alpha: 0.1),
+                ),
               ),
             ),
           ),
@@ -338,7 +335,12 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
           Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
-              icon: const Icon(Symbols.info, size: 24, color: onMainContainer),
+              icon: const Icon(
+                Symbols.info,
+                size: 24,
+                color: onMainContainer,
+                weight: 800,
+              ),
               style: TextButton.styleFrom(
                 padding: const .all(8),
                 tapTargetSize: .shrinkWrap,
@@ -349,47 +351,47 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
           // Corner decorations
           if (size > 80) ...[
             Positioned(
-              top: 12 * (size / containerSize),
-              right: 12 * (size / containerSize),
+              top: 12 * sizeFraction,
+              right: 12 * sizeFraction,
               child: Container(
-                width: 16 * (size / containerSize),
-                height: 16 * (size / containerSize),
+                width: 16 * sizeFraction,
+                height: 16 * sizeFraction,
                 decoration: BoxDecoration(
                   border: Border(
                     top: BorderSide(
-                      color: Colors.white.withOpacity(0.3),
-                      width: 2 * (size / containerSize),
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 2 * sizeFraction,
                     ),
                     right: BorderSide(
-                      color: Colors.white.withOpacity(0.3),
-                      width: 2 * (size / containerSize),
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 2 * sizeFraction,
                     ),
                   ),
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(4 * (size / containerSize)),
+                    topRight: Radius.circular(4 * sizeFraction),
                   ),
                 ),
               ).animate(target: size > 120 ? 1 : 0).fadeIn(),
             ),
             Positioned(
-              bottom: 12 * (size / containerSize),
-              left: 12 * (size / containerSize),
+              bottom: 12 * sizeFraction,
+              left: 12 * sizeFraction,
               child: Container(
-                width: 16 * (size / containerSize),
-                height: 16 * (size / containerSize),
+                width: 16 * sizeFraction,
+                height: 16 * sizeFraction,
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: Colors.white.withOpacity(0.3),
-                      width: 2 * (size / containerSize),
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 2 * sizeFraction,
                     ),
                     left: BorderSide(
-                      color: Colors.white.withOpacity(0.3),
-                      width: 2 * (size / containerSize),
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 2 * sizeFraction,
                     ),
                   ),
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(4 * (size / containerSize)),
+                    bottomLeft: Radius.circular(4 * sizeFraction),
                   ),
                 ),
               ).animate(target: size > 120 ? 1 : 0).fadeIn(),

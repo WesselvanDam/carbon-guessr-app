@@ -8,6 +8,7 @@ part 'collection.model.g.dart';
 abstract class CollectionModel with _$CollectionModel {
   const factory CollectionModel({
     required String id,
+    // ignore: invalid_annotation_target
     @JsonKey(name: 'updated_at') required String lastUpdated,
     required String title,
     required String tagline,

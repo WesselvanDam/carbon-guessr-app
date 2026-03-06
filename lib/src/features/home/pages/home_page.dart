@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -9,6 +10,7 @@ import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
+import '../../../shared/widgets/logo.dart';
 import 'local/select_collection.dart';
 
 class HomePage extends ConsumerWidget {
@@ -20,33 +22,17 @@ class HomePage extends ConsumerWidget {
       backgroundColor: AppColors.neutral50,
       appBar: AppBar(
         children: [
-          // User avatar placeholder
-          GestureDetector(
-            onTap: () {
-              // TODO: User profile action
-            },
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.neutral200,
-                    border: Border.all(color: AppColors.neutral50, width: 2),
-                  ),
-                  child: const Icon(
-                    Symbols.person,
-                    color: AppColors.neutral400,
-                    size: 20,
-                  ),
-                ),
-              ],
+          const SizedBox.square(dimension: 32, child: Logo()),
+          Text(
+            'Quoscient',
+            style: AppTypography.h2.copyWith(
+              fontVariations: [const FontVariation('wght', 900)],
             ),
           ),
           const Spacer(),
           // Action buttons
           Row(
+            spacing: 8,
             children: [
               RoundedIconButton(
                 icon: Symbols.help,
@@ -54,16 +40,16 @@ class HomePage extends ConsumerWidget {
                 size: 40,
                 iconColor: AppColors.primary600,
               ),
-              const SizedBox(width: 8),
-              RoundedIconButton(
-                icon: Symbols.bug_report,
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => TalkerScreen(talker: talker),
+              if (kDebugMode)
+                RoundedIconButton(
+                  icon: Symbols.bug_report,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => TalkerScreen(talker: talker),
+                    ),
                   ),
+                  size: 40,
                 ),
-                size: 40,
-              ),
             ],
           ),
         ],
@@ -76,45 +62,6 @@ class HomePage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Column(
                 children: [
-                  // App title section
-                  Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      // Background decorative icons
-                      const Positioned(
-                        top: -4,
-                        left: -24,
-                        child: Icon(
-                          Symbols.eco,
-                          size: 48,
-                          color: AppColors.primary300,
-                        ),
-                      ),
-                      const Positioned(
-                        bottom: -8,
-                        right: -24,
-                        child: Icon(
-                          Symbols.bolt,
-                          size: 40,
-                          color: AppColors.accent300,
-                        ),
-                      ),
-                      // Title
-                      Column(
-                        children: [
-                          const Text('Quoscient', style: AppTypography.h1),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Train your intuition',
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.neutral500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 32),
                   // Collections section header
                   Row(

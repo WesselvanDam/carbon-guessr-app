@@ -70,9 +70,12 @@ class SupabaseApi {
     bool exclude = false,
   }) async {
     var query = _client.from(_collectionId!).select();
-    query = exclude
-        ? query.not('id', 'in', '(${ids.join(',')})')
-        : query.inFilter('id', ids);
+    // if ids is empty, we fetch all items, so no need to add a filter
+    if (ids.isNotEmpty) {
+      query = exclude
+          ? query.not('id', 'in', '(${ids.join(',')})')
+          : query.inFilter('id', ids);
+    }
     final response = await query.catchError((error) {
       talker.error('Error fetching items: $error');
       return [];
@@ -87,9 +90,11 @@ class SupabaseApi {
     bool exclude = false,
   }) async {
     var query = _client.from('${_collectionId}_sources').select();
-    query = exclude
-        ? query.not('id', 'in', '(${ids.join(',')})')
-        : query.inFilter('id', ids);
+    if (ids.isNotEmpty) {
+      query = exclude
+          ? query.not('id', 'in', '(${ids.join(',')})')
+          : query.inFilter('id', ids);
+    }
     final response = await query.catchError((error) {
       talker.error('Error fetching sources: $error');
       return [];

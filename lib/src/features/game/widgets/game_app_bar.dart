@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide AppBar, Dialog;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../../client/talker.dart';
 import '../../../../constants/game_mode.dart';
 import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
@@ -88,7 +87,7 @@ class RoundInfo extends StatelessWidget {
                 fontVariations: const [FontVariation('wght', 900)],
               ),
             ),
-            InfoChip.neutral(label: '${mode.name.toUpperCase()} MODE'),
+            InfoChip.neutral(label: '${mode.name.toUpperCase()}${isNarrow ? '' : ' MODE'}'),
           ],
         );
       },

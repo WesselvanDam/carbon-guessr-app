@@ -65,6 +65,7 @@ class Collections extends _$Collections {
         .read(localStorageRepositoryProvider)
         .getInt(.lastCollectionFetchTime);
     final supabase = ref.read(supabaseApiProvider(null));
+    final now = DateTime.now().toUtc();
     final updatedCollections = await supabase.fetchUpdatedCollections(
       lastCollectionFetchTime,
     );
@@ -76,28 +77,24 @@ class Collections extends _$Collections {
     final currentCollections = state.value ?? {};
     for (final updated in updatedCollections.values) {
       final current = currentCollections[updated.id];
+
+      // Update the collection with the latest, but preserve the isSaved status and lastFetched time if it was previously saved
+      currentCollections[updated.id] = updated.copyWith(
+        isSaved: current?.isSaved ?? false,
+        lastFetched: now.toUtc().toIso8601String(),
+      );
+
+      // Clear cache for collections that have updates, to ensure we fetch the latest items and sources when accessed
+      clearOutdatedCache(updated);
       if (current != null && current.isSaved) {
-        // Collections saved locally are not updated automatically
-        talker.debug(
-          'Collection ${updated.id} is saved locally, updating lastUpdated only.',
-        );
-        currentCollections[updated.id] = current.copyWith(
-          lastUpdated: updated.lastUpdated,
-        );
-      } else {
-        // Collections not saved locally are updated fully
-        talker.debug('Updating collection ${updated.id} from remote.');
-        currentCollections[updated.id] = updated;
-        clearOutdatedCache(updated);
+        // If the collection was previously saved, we need to re-store it to update the local cache with the new data
+        storeCollection(updated.id);
       }
     }
 
     ref
         .read(localStorageRepositoryProvider)
-        .setInt(
-          .lastCollectionFetchTime,
-          DateTime.now().toUtc().millisecondsSinceEpoch,
-        );
+        .setInt(.lastCollectionFetchTime, now.millisecondsSinceEpoch);
     return currentCollections;
   }
 
@@ -152,6 +149,8 @@ class Collections extends _$Collections {
       collectionId: updatedCollection,
     });
 
-    return AsyncValue.data('Collection $collectionId removed from local storage.');
+    return AsyncValue.data(
+      'Collection $collectionId removed from local storage.',
+    );
   }
 }

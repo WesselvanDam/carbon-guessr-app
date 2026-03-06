@@ -250,8 +250,8 @@ class PlayAgainSection extends ConsumerWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.neutral100.withOpacity(0),
-            AppColors.neutral100.withOpacity(0.95),
+            AppColors.neutral100.withValues(alpha: 0),
+            AppColors.neutral100.withValues(alpha: 0.95),
             AppColors.neutral100,
           ],
         ),

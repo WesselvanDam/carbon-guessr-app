@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../client/talker.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/widgets/ratio_text.dart';

@@ -283,18 +283,13 @@ class CollectionPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 24),
                   // Game modes section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Select Game Mode',
-                        style: AppTypography.h4.copyWith(
-                          color: AppColors.neutral900,
-                        ),
-                      ),
-                      InfoChip.neutral(label: '2 MODES'),
-                    ],
+                  Text(
+                    'Select Game Mode',
+                    style: AppTypography.h4.copyWith(
+                      color: AppColors.neutral900,
+                    ),
                   ),
+
                   const SizedBox(height: 16),
                   _buildGameModeCard(
                     context,

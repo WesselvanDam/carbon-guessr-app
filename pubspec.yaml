@@ -1,5 +1,5 @@
 name: quoscient
-description: "A new Flutter project."
+description: "The ratio guessing game."
 publish_to: 'none' 
 
 version: 0.0.1+1

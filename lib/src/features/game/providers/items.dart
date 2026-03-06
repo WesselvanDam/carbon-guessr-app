@@ -60,7 +60,7 @@ class Items extends _$Items {
     await future;
     final currentItemIds =
         state.value?.keys.map((id) => int.parse(id)).toList() ?? [];
-
+    talker.debug('Storing remaining items, current item IDs: $currentItemIds');
     return _fetchItems(currentItemIds, exclude: true)
         .then<AsyncValue<String>>(
           (value) => const AsyncData('Stored the remaining items'),

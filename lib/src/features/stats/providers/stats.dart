@@ -36,7 +36,11 @@ class Stats extends _$Stats {
       ...current,
       cid: stats.copyWith(
         gamesFinished: stats.gamesFinished + 1,
-        recentGameScores: [...stats.recentGameScores, gameScore],
+        // Only store the final 30 scores to prevent unbounded growth
+        recentGameScores: [
+          gameScore,
+          ...stats.recentGameScores,
+        ].take(30).toList(),
       ),
     });
   }
