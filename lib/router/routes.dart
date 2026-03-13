@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../constants/game_mode.dart';
+import '../src/design_system/styles/app_colors.dart';
 import '../src/features/collection/pages/collection_page.dart';
 import '../src/features/game/pages/game_page.dart';
 import '../src/features/home/pages/home_page.dart';
 import '../src/features/onboarding/pages/onboarding_page.dart';
 
-
 part 'routes.g.dart';
 
 @TypedShellRoute<ShellRoute>(
   routes: [
-    TypedGoRoute<OnboardingRoute>(
-      path: '/onboarding',
-    ),
+    TypedGoRoute<OnboardingRoute>(path: '/onboarding'),
     TypedGoRoute<HomeRoute>(
       path: '/',
       routes: [
         TypedGoRoute<CollectionRoute>(
           path: 'collection/:cid',
-          routes: [
-            TypedGoRoute<GameRoute>(
-              path: 'game/:gid',
-            ),
-          ],
+          routes: [TypedGoRoute<GameRoute>(path: 'game/:gid')],
         ),
       ],
     ),
@@ -35,7 +30,13 @@ class ShellRoute extends ShellRouteData {
 
   @override
   Widget builder(BuildContext context, GoRouterState state, Widget child) {
-    return child;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(
+        systemNavigationBarColor: AppColors.neutral50,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: SafeArea(top: false, child: child),
+    );
   }
 }
 

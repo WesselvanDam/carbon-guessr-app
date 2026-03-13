@@ -25,13 +25,17 @@ extension StringExtension on String {
   }
 }
 
+extension NullableStringExtension on String? {
+  bool get isNullOrEmpty => this == null || this!.isEmpty;
+}
+
 /// Duration per game mode
 extension GameModeDuration on GameMode {
   /// Returns the duration in seconds for the game mode
   int get roundDurationInSeconds {
     return switch (this) {
-      GameMode.simple => 30,
-      GameMode.challenge => 30,
+      GameMode.simple => 60,
+      GameMode.challenge => 60,
     };
   }
 }

@@ -27,9 +27,11 @@ class RoundExplanationPage extends ConsumerWidget {
     });
 
     return const Column(
+      mainAxisSize: .min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 16,
       children: [
+        SizedBox(height: 24),
         Text('Make Your Guess', style: AppTypography.h2),
         Text(
           'Compare two items per round. Lock in your guess to reveal the true scale and get your score.',
@@ -39,6 +41,7 @@ class RoundExplanationPage extends ConsumerWidget {
           'Try it out. Adjust the squares to compare India and the USA, then hit submit and check your score!',
           style: AppTypography.bodyLarge,
         ),
+        Spacer(),
         Card(child: EvaluationRow()),
         CustomRatioField(),
       ],

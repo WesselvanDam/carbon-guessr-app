@@ -1,4 +1,3 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart' hide Dialog;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,14 +63,14 @@ class ItemDetailsDialog extends ConsumerWidget {
             ],
           ),
 
-          if (item.quantity.isNotEmpty || item.category.isNotEmpty)
+          if (item.quantity?.isNotEmpty == true || item.category?.isNotEmpty == true)
             Row(
               spacing: 8,
               children: [
-                if (item.category.isNotEmpty)
-                  InfoChip.primary(label: item.category),
-                if (item.quantity.isNotEmpty)
-                  InfoChip.accent(label: item.quantity),
+                if (item.category?.isNotEmpty == true)
+                  InfoChip.primary(label: item.category!),
+                if (item.quantity?.isNotEmpty == true)
+                  InfoChip.accent(label: item.quantity!),
               ],
             ),
 
@@ -113,7 +112,7 @@ class ItemDetailsDialog extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${collection.value?.quantity.capitalize} value',
+            '${collection.value?.quantity.toSentenceCase()} value',
             style: AppTypography.labelLarge,
           ),
           const SizedBox(height: 8),

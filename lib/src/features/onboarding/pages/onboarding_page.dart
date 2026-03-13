@@ -127,28 +127,28 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
         currentCollectionProvider.overrideWith((ref) => collection),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          children: [
-            RoundedIconButton(
-                  icon: Symbols.arrow_back,
-                  backgroundColor: Colors.transparent,
-                  onPressed: _progress > 1 / 3
-                      ? () => _pageController.previousPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        )
-                      : null,
-                )
-                .animate(target: _progress > 1 / 3 ? 1.0 : 0.0)
-                .fade(duration: const Duration(milliseconds: 300)),
-            Expanded(child: ProgressBar(progress: _progress)),
-            RoundedIconButton(
-              icon: Symbols.close,
-              backgroundColor: Colors.transparent,
-              onPressed: () => context.go(const HomeRoute().location),
-            ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   children: [
+        //     RoundedIconButton(
+        //           icon: Symbols.arrow_back,
+        //           backgroundColor: Colors.transparent,
+        //           onPressed: _progress > 1 / 3
+        //               ? () => _pageController.previousPage(
+        //                   duration: const Duration(milliseconds: 300),
+        //                   curve: Curves.easeInOut,
+        //                 )
+        //               : null,
+        //         )
+        //         .animate(target: _progress > 1 / 3 ? 1.0 : 0.0)
+        //         .fade(duration: const Duration(milliseconds: 300)),
+        //     Expanded(child: ProgressBar(progress: _progress)),
+        //     RoundedIconButton(
+        //       icon: Symbols.close,
+        //       backgroundColor: Colors.transparent,
+        //       onPressed: () => context.go(const HomeRoute().location),
+        //     ),
+        //   ],
+        // ),
         body: Column(
           children: [
             Expanded(
