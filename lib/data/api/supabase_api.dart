@@ -23,22 +23,6 @@ class SupabaseApi {
   final SupabaseClient _client;
   late final String? _collectionId;
 
-  /// Fetches all available collections from the API
-  Future<Map<String, CollectionModel>> fetchCollections({
-    List<String>? ids,
-  }) async {
-    var query = _client.from('collections').select();
-    if (ids != null && ids.isNotEmpty) {
-      query = query.inFilter('id', ids);
-    }
-    final response = await query.catchError((error) {
-      talker.error('Error fetching collections: $error');
-      return [];
-    });
-    final models = response.map((json) => CollectionModel.fromJson(json));
-    return {for (final model in models) model.id: model};
-  }
-
   /// Fetches collections updated since the given timestamp
   Future<Map<String, CollectionModel>> fetchUpdatedCollections(
     int? lastFetchTime,
@@ -53,6 +37,7 @@ class SupabaseApi {
             isUtc: true,
           ).toIso8601String(),
         )
+        .eq('published', true)
         .catchError((error) {
           talker.error('Error fetching updated collections: $error');
           return [];
@@ -69,10 +54,7 @@ class SupabaseApi {
     List<int> ids, {
     bool exclude = false,
   }) async {
-    var query = _client
-        .from('items')
-        .select()
-        .eq('collection', _collectionId!);
+    var query = _client.from('items').select().eq('collection', _collectionId!);
     // if ids is empty, we fetch all items, so no need to add an ID filter
     if (ids.isNotEmpty) {
       query = exclude

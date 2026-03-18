@@ -105,7 +105,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           ref.keepAlive();
           return game;
         }),
-        currentCollectionProvider.overrideWith((ref) => collection),
       ],
       child: Scaffold(
         body: Column(

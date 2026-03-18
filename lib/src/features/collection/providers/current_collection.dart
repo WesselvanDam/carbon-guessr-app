@@ -4,9 +4,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../data/models/collection.model.dart';
 import '../../../../router/router.dart';
 import '../../home/providers/collections.dart';
+import '../../onboarding/pages/onboarding_page.dart';
 
 part 'current_collection.g.dart';
-
 
 @riverpod
 Future<CollectionModel> currentCollection(Ref ref) async {
@@ -17,15 +17,20 @@ Future<CollectionModel> currentCollection(Ref ref) async {
 
   // If no collection ID is provided, return null
   if (collectionId == null || collectionId.isEmpty) {
+    if (ref.read(routerProvider).state.uri.path == '/onboarding') {
+      // One-off case for onboarding flow, where there is no collection ID in
+      // but we don't want to throw an error because it's expected.
+      return collection;
+    }
     throw Exception('No collection ID provided in the route');
   }
 
-  return ref.watch(collectionsProvider.selectAsync(
-    (collections) {
+  return ref.watch(
+    collectionsProvider.selectAsync((collections) {
       if (!collections.containsKey(collectionId)) {
         throw Exception('Collection with ID $collectionId not found');
       }
       return collections[collectionId]!;
-    },
-  ));
+    }),
+  );
 }
