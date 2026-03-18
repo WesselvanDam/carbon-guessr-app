@@ -9,6 +9,7 @@ import '../../../../design_system/styles/app_colors.dart';
 import '../../../../design_system/styles/app_shadows.dart';
 import '../../../../design_system/styles/app_typography.dart';
 import '../../../../shared/utils/extensions.dart';
+import '../../../../shared/widgets/stat_box.dart';
 import '../../../stats/providers/stats.dart';
 
 class CollectionCard extends ConsumerWidget {
@@ -81,7 +82,7 @@ class CollectionCard extends ConsumerWidget {
                     children: [
                       InfoChip.neutral(
                         icon: Symbols.dataset,
-                        label: '${collection.size} Items',
+                        label: '${collection.size} ITEMS',
                       ),
                       InfoChip.neutral(
                         icon: Symbols.scale,
@@ -90,7 +91,7 @@ class CollectionCard extends ConsumerWidget {
                       if (collection.isSaved)
                         InfoChip.neutral(
                           icon: Symbols.cloud_download,
-                          label: 'Saved',
+                          label: 'SAVED',
                         ),
                     ],
                   ),
@@ -103,25 +104,61 @@ class CollectionCard extends ConsumerWidget {
                         top: BorderSide(color: AppColors.neutral100),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _StatBox(cid: collection.id),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.primary600,
-                            boxShadow: AppShadows.md,
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final stats = ref.watch(
+                          statsProvider.select(
+                            (value) => value.value?[collection.id],
                           ),
-                          child: const Icon(
-                            Symbols.play_arrow,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ],
+                        );
+                        return Row(
+                          crossAxisAlignment:
+                              (stats != null && stats.gamesFinished > 0)
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.center,
+                          mainAxisAlignment: .spaceBetween,
+                          children: [
+                            if (stats != null && stats.gamesFinished > 0) ...[
+                              StatBox(
+                                score: stats.averageScore,
+                                maxScore: 500,
+                                label: 'Avg\nScore',
+                              ),
+                              StatBox(
+                                score: stats.highScore,
+                                maxScore: 500,
+                                label: 'High\nScore',
+                              ),
+                              StatBox(
+                                score: stats.gamesFinished,
+                                label:
+                                    'Game${stats.gamesFinished > 1 ? 's' : ''}\nPlayed',
+                              ),
+                            ] else
+                              Text(
+                                'No games played yet',
+                                style: AppTypography.captionMedium.copyWith(
+                                  color: AppColors.neutral500,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primary600,
+                                boxShadow: AppShadows.md,
+                              ),
+                              child: const Icon(
+                                Symbols.play_arrow,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -130,110 +167,6 @@ class CollectionCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _StatBox extends ConsumerWidget {
-  const _StatBox({required this.cid});
-
-  final String cid;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final stats = ref.watch(statsProvider.select((value) => value.value?[cid]));
-    final hasScore = stats != null && stats.averageScore != null;
-
-    // Calculate progress and color
-    final progress = hasScore
-        ? (stats.averageScore! / 500).clamp(0.0, 1.0)
-        : 0.0;
-    final percentage = progress * 100;
-
-    final (Color progressColor, Color trackColor) = switch (percentage) {
-      < 50 => (AppColors.error500, AppColors.error100),
-      < 80 => (AppColors.warning500, AppColors.warning100),
-      _ => (AppColors.success500, AppColors.success100),
-    };
-
-    return Row(
-      children: [
-        SizedBox(
-          width: 40,
-          height: 40,
-          child: Stack(
-            children: [
-              // Progress arc
-              if (hasScore)
-                CircularProgressIndicator(
-                  constraints: const BoxConstraints(
-                    minWidth: 40,
-                    minHeight: 40,
-                  ),
-                  strokeAlign: -1,
-                  value: progress,
-                  strokeWidth: 4,
-                  color: progressColor,
-                  backgroundColor: trackColor,
-                  trackGap: 4,
-                  strokeCap: StrokeCap.round,
-                ),
-              if (!hasScore)
-                // Base circle
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: hasScore
-                          ? AppColors.neutral200
-                          : AppColors.neutral200,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              // Score display
-              Center(
-                child: hasScore
-                    ? Text(
-                        stats.averageScore.toString(),
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.neutral900,
-                          fontVariations: const [FontVariation('wght', 800)],
-                        ),
-                      )
-                    : const Icon(
-                        Symbols.remove,
-                        color: AppColors.neutral300,
-                        size: 16,
-                      ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'AVG SCORE',
-              style: AppTypography.captionSmall.copyWith(
-                color: AppColors.neutral400,
-              ),
-            ),
-            Text(
-              hasScore
-                  ? '${stats.gamesFinished} game${stats.gamesFinished == 1 ? '' : 's'} finished'
-                  : 'Not played yet',
-              style: AppTypography.bodySmall.copyWith(
-                color: hasScore ? AppColors.neutral900 : AppColors.neutral400,
-                fontVariations: const [FontVariation('wght', 700)],
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

@@ -108,7 +108,7 @@ class InfoChip extends StatelessWidget {
             textHeightBehavior: const TextHeightBehavior(
               applyHeightToFirstAscent: false,
             ),
-            label.toUpperCase(),
+            label,
             style: AppTypography.labelSmall.copyWith(color: textColor),
           ),
         ],

@@ -8,6 +8,7 @@ abstract class StatsModel with _$StatsModel {
   const factory StatsModel({
     @Default(0) int gamesFinished,
     @Default([]) List<int> recentGameScores,
+    int? highScore,
   }) = _StatsModel;
   const StatsModel._();
 

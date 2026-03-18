@@ -21,7 +21,7 @@ class SupabaseApi {
   SupabaseApi(this._client, this._collectionId);
 
   final SupabaseClient _client;
-  final String? _collectionId;
+  late final String? _collectionId;
 
   /// Fetches all available collections from the API
   Future<Map<String, CollectionModel>> fetchCollections({

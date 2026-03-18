@@ -41,6 +41,9 @@ class Stats extends _$Stats {
           gameScore,
           ...stats.recentGameScores,
         ].take(30).toList(),
+        highScore: stats.highScore == null
+            ? gameScore
+            : (gameScore > stats.highScore! ? gameScore : stats.highScore!),
       ),
     });
   }

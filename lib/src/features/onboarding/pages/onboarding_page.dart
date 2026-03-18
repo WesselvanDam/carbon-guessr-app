@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart' hide AppBar;
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../data/models/collection.model.dart' show CollectionModel;
 import '../../../../data/models/item.model.dart';
-import '../../../../router/routes.dart';
-import '../../../design_system/components/appbar.dart';
-import '../../../design_system/components/buttons/icon_buttons.dart';
-import '../../../design_system/components/progress_bar.dart';
 import '../../collection/providers/current_collection.dart';
 import '../../game/controllers/game_controller.dart';
 import '../../game/models/game.model.dart';
@@ -91,24 +84,12 @@ class OnboardingPage extends ConsumerStatefulWidget {
 
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final PageController _pageController = PageController();
-  double _progress = 0;
 
   final List<Widget> _pages = [
     const WelcomePage(),
     const GoalPage(),
     const RoundExplanationPage(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _progress = 1 / _pages.length;
-    _pageController.addListener(() {
-      setState(() {
-        _progress = ((_pageController.page ?? 0) + 1) / (_pages.length);
-      });
-    });
-  }
 
   @override
   void dispose() {
@@ -127,28 +108,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
         currentCollectionProvider.overrideWith((ref) => collection),
       ],
       child: Scaffold(
-        // appBar: AppBar(
-        //   children: [
-        //     RoundedIconButton(
-        //           icon: Symbols.arrow_back,
-        //           backgroundColor: Colors.transparent,
-        //           onPressed: _progress > 1 / 3
-        //               ? () => _pageController.previousPage(
-        //                   duration: const Duration(milliseconds: 300),
-        //                   curve: Curves.easeInOut,
-        //                 )
-        //               : null,
-        //         )
-        //         .animate(target: _progress > 1 / 3 ? 1.0 : 0.0)
-        //         .fade(duration: const Duration(milliseconds: 300)),
-        //     Expanded(child: ProgressBar(progress: _progress)),
-        //     RoundedIconButton(
-        //       icon: Symbols.close,
-        //       backgroundColor: Colors.transparent,
-        //       onPressed: () => context.go(const HomeRoute().location),
-        //     ),
-        //   ],
-        // ),
         body: Column(
           children: [
             Expanded(

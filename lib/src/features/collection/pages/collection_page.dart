@@ -13,6 +13,7 @@ import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/utils/extensions.dart';
+import '../../../shared/widgets/stat_box.dart';
 import '../../game/repository/game_repository.dart';
 import '../../home/providers/collections.dart';
 import '../../stats/providers/stats.dart';
@@ -97,79 +98,22 @@ class CollectionPage extends ConsumerWidget {
                                     color: AppColors.neutral900,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                InfoChip.primary(
-                                  label: info.quantity.toUpperCase(),
-                                ),
-                                const SizedBox(height: 16),
-                                // Stats row
-                                Row(
+                                const SizedBox(height: 8),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
                                   children: [
-                                    Expanded(
-                                      child: _StatBox.neutral(
-                                        label: 'Unit',
-                                        value: info.unit,
-                                      ),
+                                    InfoChip.primary(
+                                      label: info.quantity.toUpperCase(),
+                                      icon: Symbols.category,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: _StatBox.neutral(
-                                        label: 'Items',
-                                        value: '${info.size}',
-                                      ),
+                                    InfoChip.accent(
+                                      label: '${info.size} Items'.toUpperCase(),
+                                      icon: Symbols.dataset,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Consumer(
-                                        builder: (context, ref, _) {
-                                          final stats = ref.watch(
-                                            statsProvider.select(
-                                              (value) => value.value?[cid],
-                                            ),
-                                          );
-                                          final hasScore =
-                                              stats != null &&
-                                              stats.averageScore != null;
-
-                                          if (!hasScore) {
-                                            return _StatBox.neutral(
-                                              label: 'Avg Score',
-                                              value: '—',
-                                            );
-                                          }
-
-                                          final (
-                                            Color textColor,
-                                            Color bgColor,
-                                            Color borderColor,
-                                          ) = switch (stats.averageScore! /
-                                              500) {
-                                            >= 0.8 => (
-                                              AppColors.success600,
-                                              AppColors.success100,
-                                              AppColors.success200,
-                                            ),
-                                            >= 0.5 => (
-                                              AppColors.warning600,
-                                              AppColors.warning100,
-                                              AppColors.warning200,
-                                            ),
-                                            _ => (
-                                              AppColors.error600,
-                                              AppColors.error100,
-                                              AppColors.error200,
-                                            ),
-                                          };
-
-                                          return _StatBox.custom(
-                                            label: 'Avg Score',
-                                            value: '${stats.averageScore}',
-                                            textColor: textColor,
-                                            backgroundColor: bgColor,
-                                            borderColor: borderColor,
-                                          );
-                                        },
-                                      ),
+                                    InfoChip.neutral(
+                                      label: info.unit,
+                                      icon: Symbols.scale,
                                     ),
                                   ],
                                 ),
@@ -184,11 +128,11 @@ class CollectionPage extends ConsumerWidget {
                                       : null,
                                   data: info.description,
                                   styleSheet: MarkdownStyleSheet(
-                                    p: AppTypography.bodyMedium.copyWith(
+                                    p: AppTypography.bodyLarge.copyWith(
                                       color: AppColors.neutral600,
                                       height: 1.6,
                                     ),
-                                    a: AppTypography.bodyMedium.copyWith(
+                                    a: AppTypography.bodyLarge.copyWith(
                                       color: AppColors.primary700,
                                       fontVariations: const [
                                         FontVariation('wght', 900),
@@ -313,6 +257,102 @@ class CollectionPage extends ConsumerWidget {
                     AppColors.accent600,
                     AppColors.accent100,
                   ),
+
+                  const SizedBox(height: 24),
+                  // Stats section
+                  Text(
+                    'Your Stats',
+                    style: AppTypography.h4.copyWith(
+                      color: AppColors.neutral900,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: AppColors.neutral100),
+                      boxShadow: AppShadows.gameCard,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final stats = ref.watch(
+                            statsProvider.select((value) => value.value?[cid]),
+                          );
+
+                          return Column(
+                            children: [
+                              if (stats != null && stats.gamesFinished > 0) ...[
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    StatBox(
+                                      score: stats.averageScore,
+                                      maxScore: 500,
+                                      label: 'AVG\nSCORE',
+                                    ),
+                                    StatBox(
+                                      score: stats.highScore,
+                                      maxScore: 500,
+                                      label: 'HIGH\nSCORE',
+                                    ),
+                                    StatBox(
+                                      score: stats.gamesFinished,
+                                      label:
+                                          'GAME${stats.gamesFinished > 1 ? 'S' : ''}\nPLAYED',
+                                    ),
+                                  ],
+                                ),
+                              ] else
+                                Text(
+                                  'No games played yet. Start playing to see your stats here!',
+                                  style: AppTypography.bodyMedium.copyWith(
+                                    color: AppColors.neutral500,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              const SizedBox(height: 16),
+                              Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: AppColors.neutral50,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: AppColors.neutral100,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Symbols.info,
+                                      size: 20,
+                                      color: AppColors.neutral500,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Only games played in Simple Mode count towards your stats',
+                                        style: AppTypography.bodySmall.copyWith(
+                                          color: AppColors.neutral500,
+                                        ),
+                                        softWrap: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -431,77 +471,6 @@ class CollectionPage extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _StatBox extends StatelessWidget {
-  const _StatBox._internal({
-    required this.label,
-    required this.value,
-    required this.textColor,
-    required this.backgroundColor,
-    required this.borderColor,
-  });
-
-  factory _StatBox.neutral({required String label, required String value}) {
-    return _StatBox._internal(
-      label: label,
-      value: value,
-      textColor: AppColors.neutral500,
-      backgroundColor: AppColors.neutral50,
-      borderColor: AppColors.neutral100,
-    );
-  }
-
-  factory _StatBox.custom({
-    required String label,
-    required String value,
-    required Color textColor,
-    required Color backgroundColor,
-    required Color borderColor,
-  }) {
-    return _StatBox._internal(
-      label: label,
-      value: value,
-      textColor: textColor,
-      backgroundColor: backgroundColor,
-      borderColor: borderColor,
-    );
-  }
-
-  final String label;
-  final String value;
-  final Color textColor;
-  final Color backgroundColor;
-  final Color borderColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor),
-      ),
-      child: Column(
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: AppTypography.labelSmall.copyWith(
-              color: textColor,
-              fontSize: 9,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: AppTypography.h4.copyWith(fontSize: 18, color: textColor),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }
