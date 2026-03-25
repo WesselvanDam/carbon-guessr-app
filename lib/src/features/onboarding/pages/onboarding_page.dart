@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/models/collection.model.dart' show CollectionModel;
 import '../../../../data/models/item.model.dart';
-import '../../collection/providers/current_collection.dart';
 import '../../game/controllers/game_controller.dart';
 import '../../game/models/game.model.dart';
 import '../../game/models/round.model.dart';

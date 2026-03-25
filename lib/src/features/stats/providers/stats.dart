@@ -8,7 +8,7 @@ import '../models/stats.model.dart';
 
 part 'stats.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Stats extends _$Stats {
   @override
   FutureOr<Map<String, StatsModel>> build() async {

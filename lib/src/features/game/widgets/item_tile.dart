@@ -5,6 +5,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../data/models/item.model.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
+import '../../../shared/utils/extensions.dart';
 import '../../collection/providers/current_collection.dart';
 import 'item_details_dialog.dart';
 
@@ -86,7 +87,7 @@ class ItemTile extends ConsumerWidget {
                     if (variant == ItemTileVariant.threeLines) ...[
                       const SizedBox(height: 4),
                       Text(
-                        '${item?.value.toStringAsFixed(2) ?? ''} $unit',
+                        '${item?.value.toSignificantFigures(3).toString() ?? ''} $unit',
                         style: AppTypography.labelSmall.copyWith(
                           color: AppColors.neutral500,
                           fontSize: 11,

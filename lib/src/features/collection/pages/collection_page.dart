@@ -138,7 +138,22 @@ class CollectionPage extends ConsumerWidget {
                                         FontVariation('wght', 900),
                                       ],
                                       height: 1.6,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: AppColors.primary700,
+                                      decorationThickness: 4,
                                     ),
+                                    strong: AppTypography.bodyLarge.copyWith(
+                                      color: AppColors.neutral600,
+                                      fontVariations: const [
+                                        FontVariation('wght', 900),
+                                      ],
+                                      height: 1.6,
+                                    ),
+                                    em: AppTypography.bodyLarge.copyWith(
+                                        color: AppColors.neutral600,
+                                        fontStyle: FontStyle.italic,
+                                        height: 1.6,
+                                      ),
                                   ),
                                 ),
                               ],
