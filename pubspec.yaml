@@ -2,7 +2,7 @@ name: quoscient
 description: "The ratio guessing game."
 publish_to: 'none' 
 
-version: 0.0.3+3
+version: 0.0.4+4
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
