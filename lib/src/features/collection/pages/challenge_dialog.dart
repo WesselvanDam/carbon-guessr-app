@@ -28,7 +28,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
 
   void _generatePin() {
     setState(() {
-      _generatedGameId = GameRepository.newGameId;
+      _generatedGameId = GameRepository.newGameId();
     });
     // Copy to clipboard automatically
     Clipboard.setData(ClipboardData(text: _generatedGameId!));

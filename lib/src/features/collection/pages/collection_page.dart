@@ -34,7 +34,7 @@ class CollectionPage extends ConsumerWidget {
       data: (info) {
         void startGameCallback(GameMode mode, [String? gameId]) => GameRoute(
           cid: info.id,
-          gid: gameId ?? GameRepository.newGameId,
+          gid: gameId ?? GameRepository.newGameId(),
           mode: mode,
         ).go(context);
 

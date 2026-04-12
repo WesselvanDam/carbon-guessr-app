@@ -17,13 +17,19 @@ GameRepository gameRepository(Ref ref) {
 
 /// Repository responsible for pure game logic and calculations
 class GameRepository {
-  static String get newGameId => DateTime.now()
+  static String newGameId({int? seed}) {
+    if (seed != null) {
+      final random = Random(seed);
+      return List.generate(8, (_) => random.nextInt(10)).join();
+    }
+    return DateTime.now()
       .millisecondsSinceEpoch
       .toString()
       .split('')
       .reversed
       .join()
       .substring(0, 8);
+  }
 
   /// Creates a new game session with the given items
   GameModel createGameSession({required List<ItemModel> items}) {

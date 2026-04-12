@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../constants/game_mode.dart';
 import '../../../../router/routes.dart';
 import '../../../design_system/components/buttons/action_button.dart';
 import '../../../design_system/components/chips/info_chip.dart';
@@ -259,11 +260,16 @@ class PlayAgainSection extends ConsumerWidget {
       child: ActionButton.primary(
         onPressed: () {
           final cid = ref.read(currentCollectionProvider).value?.id;
+          final gid = ref.read(gameIdProvider);
           final mode = ref.read(gameModeProvider);
           if (cid != null) {
             GameRoute(
               cid: cid,
-              gid: GameRepository.newGameId,
+              // For challenge mode, generate a new game ID based on the current
+              // one to ensure all players get the same new game.
+              gid: GameRepository.newGameId(
+                seed: mode == GameMode.challenge ? int.tryParse(gid) : null,
+              ),
               mode: mode,
             ).go(context);
             ref.invalidate(gameControllerProvider);
