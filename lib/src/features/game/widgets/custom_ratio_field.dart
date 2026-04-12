@@ -23,33 +23,51 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
   // Internal state to hold the correct ratio when it's time to animate
   double? _correctRatio;
 
-  // Track pointer locations
-  final Map<int, Offset> _pointers = {};
+  // Track which square is focused during the current drag session.
+  bool? _focusedFirstSquare;
 
-  // Track which square is being updated during a gesture
-  bool? _isUpdatingFirstSquare;
+  // Snapshot drag start state to keep focus locked and updates stable.
+  double? _dragStartY;
+  double? _dragStartRatio;
 
-  // Track the previous scale for relative scaling
-  double? _previousScale;
+  static const double _pixelsForDoubling = 160;
 
-  void _handleScaleUpdate(bool isFirstSquare, ScaleUpdateDetails details) {
-    // Disable interaction while animating to the correct ratio
+  void _onVerticalDragStart(DragStartDetails details) {
+    // Disable interaction while animating to the correct ratio.
     if (_correctRatio != null) return;
 
-    // If this is the first update in a gesture, initialize _previousScale
-    _previousScale ??= details.scale;
-
-    // Calculate the relative scale since the last update
-    final double relativeScale = details.scale / _previousScale!;
-
     final ratio = ref.read(ratioControllerProvider);
-    final newRatio = isFirstSquare
-        ? ratio * relativeScale
-        : ratio / relativeScale;
-    ref.read(ratioControllerProvider.notifier).set(newRatio);
+    setState(() {
+      _dragStartY = details.globalPosition.dy;
+      _dragStartRatio = ratio;
+      // The front square is always the smaller one.
+      _focusedFirstSquare = ratio < 1;
+    });
+  }
 
-    // Update _previousScale for the next update
-    _previousScale = details.scale;
+  void _onVerticalDragUpdate(DragUpdateDetails details) {
+    if (_correctRatio != null ||
+        _dragStartY == null ||
+        _dragStartRatio == null ||
+        _focusedFirstSquare == null) {
+      return;
+    }
+
+    final deltaY = details.globalPosition.dy - _dragStartY!;
+    // Upward movement (negative deltaY) should increase the focused square.
+    final scaleFactor = exp(-deltaY * ln2 / _pixelsForDoubling);
+    final newRatio = _focusedFirstSquare!
+        ? _dragStartRatio! * scaleFactor
+        : _dragStartRatio! / scaleFactor;
+    ref.read(ratioControllerProvider.notifier).set(newRatio);
+  }
+
+  void _resetDragState() {
+    setState(() {
+      _focusedFirstSquare = null;
+      _dragStartY = null;
+      _dragStartRatio = null;
+    });
   }
 
   void _showItemDetailsDialog(BuildContext context, ItemModel item) {
@@ -75,7 +93,11 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                     .currentRound
                     .correctRatio
               : null;
-          _isUpdatingFirstSquare = isRoundOver ? null : _isUpdatingFirstSquare;
+          if (isRoundOver) {
+            _focusedFirstSquare = null;
+            _dragStartY = null;
+            _dragStartRatio = null;
+          }
         });
       }
     });
@@ -113,12 +135,6 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
             return SizedBox.square(dimension: containerSize);
           }
 
-          final userRatio = ref.watch(ratioControllerProvider);
-          final bool isFirstLargerByUser = userRatio >= 1;
-          final double smallerSizeByUser =
-              containerSize *
-              (isFirstLargerByUser ? 1 / sqrt(userRatio) : sqrt(userRatio));
-
           final sizeA = currentRatio >= 1
               ? containerSize
               : containerSize * sqrt(currentRatio);
@@ -129,88 +145,36 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
           final squareA = _buildSquare(
             size: sizeA,
             containerSize: containerSize,
-            isActive: _isUpdatingFirstSquare == true,
+            isActive: _focusedFirstSquare == true,
             isFirst: true,
             item: round.itemA,
-            otherSize: sizeB,
           );
 
           final squareB = _buildSquare(
             size: sizeB,
             containerSize: containerSize,
-            isActive: _isUpdatingFirstSquare == false,
+            isActive: _focusedFirstSquare == false,
             isFirst: false,
             item: round.itemB,
-            otherSize: sizeA,
           );
 
-          return Listener(
-            onPointerDown: (event) => _pointers[event.pointer] = event.position,
-            onPointerMove: (event) => _pointers[event.pointer] = event.position,
-            onPointerUp: (event) => _pointers.remove(event.pointer),
-            onPointerCancel: (event) => _pointers.remove(event.pointer),
-            child: GestureDetector(
-              onScaleStart: (details) {
-                if (_correctRatio != null) {
-                  // Disable interaction while animating to the correct ratio
-                  return;
-                }
-
-                final RenderBox? box = context.findRenderObject() as RenderBox?;
-                if (box == null ||
-                    details.pointerCount != 2 ||
-                    _pointers.length != 2) {
-                  setState(() {
-                    // Disable interaction if not exactly two pointers are down
-                    _isUpdatingFirstSquare = null;
-                    _previousScale = null;
-                  });
-                  return;
-                }
-
-                final Offset center = box.size.center(Offset.zero);
-                final positions = _pointers.values.toList();
-                final localPos1 = box.globalToLocal(positions[0]);
-                final localPos2 = box.globalToLocal(positions[1]);
-                final double distanceFromCenter =
-                    ((localPos1 - center).distance +
-                        (localPos2 - center).distance) /
-                    2;
-
-                final double threshold =
-                    smallerSizeByUser / 2 +
-                    (containerSize - smallerSizeByUser) / 4;
-                final bool isInteractingWithInnerSquare =
-                    distanceFromCenter < threshold;
-
-                setState(() {
-                  _isUpdatingFirstSquare =
-                      (isFirstLargerByUser && !isInteractingWithInnerSquare) ||
-                      (!isFirstLargerByUser && isInteractingWithInnerSquare);
-                  _previousScale = 1.0;
-                });
-              },
-              onScaleUpdate: (details) {
-                if (_isUpdatingFirstSquare == null) return;
-                _handleScaleUpdate(_isUpdatingFirstSquare!, details);
-              },
-              onScaleEnd: (_) => setState(() {
-                _isUpdatingFirstSquare = null;
-                _previousScale = null;
-              }),
-              child: Container(
-                width: containerSize,
-                height: containerSize,
-                decoration: BoxDecoration(
-                  color: AppColors.neutral100,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: currentRatio >= 1
-                      ? [squareA, squareB]
-                      : [squareB, squareA],
-                ),
+          return GestureDetector(
+            onVerticalDragStart: _onVerticalDragStart,
+            onVerticalDragUpdate: _onVerticalDragUpdate,
+            onVerticalDragEnd: (_) => _resetDragState(),
+            onVerticalDragCancel: _resetDragState,
+            child: Container(
+              width: containerSize,
+              height: containerSize,
+              decoration: BoxDecoration(
+                color: AppColors.neutral100,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: currentRatio >= 1
+                    ? [squareA, squareB]
+                    : [squareB, squareA],
               ),
             ),
           );
@@ -240,7 +204,6 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     required bool isActive,
     required bool isFirst,
     required ItemModel item,
-    required double otherSize,
   }) {
     final Color mainContainer = isFirst
         ? AppColors.primary600
@@ -248,6 +211,9 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     final Color borderColor = isFirst
         ? AppColors.primary800
         : AppColors.accent800;
+    final Color activeBorderColor = isFirst
+        ? AppColors.primary400
+        : AppColors.accent400;
     const Color onMainContainer = Colors.white;
 
     final sizeFraction = size / containerSize;
@@ -288,7 +254,12 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       height: size,
       decoration: BoxDecoration(
         color: mainContainer,
-        border: Border.all(width: 4.0, color: borderColor),
+        border: Border.all(
+          width: 4.0,
+          color: isActive
+              ? activeBorderColor
+              : borderColor,
+        ),
         borderRadius: BorderRadius.circular(24 * sizeFraction),
       ),
       clipBehavior: Clip.antiAlias,
@@ -359,11 +330,11 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 decoration: BoxDecoration(
                   border: Border(
                     top: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: Colors.white.withValues(alpha: isActive ? 0.5 : 0.3),
                       width: 2 * sizeFraction,
                     ),
                     right: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: Colors.white.withValues(alpha: isActive ? 0.5 : 0.3),
                       width: 2 * sizeFraction,
                     ),
                   ),
@@ -382,11 +353,11 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: Colors.white.withValues(alpha: isActive ? 0.5 : 0.3),
                       width: 2 * sizeFraction,
                     ),
                     left: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: Colors.white.withValues(alpha: isActive ? 0.5 : 0.3),
                       width: 2 * sizeFraction,
                     ),
                   ),

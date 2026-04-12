@@ -21,7 +21,7 @@ class WelcomePage extends ConsumerWidget {
         const SizedBox(height: 24),
         const Text('Welcome To Quoscient!', style: AppTypography.h2),
         const Text(
-          'To continue, pinch the squares until square B is twice the size of square A.',
+          'To continue, drag the squares until square B is twice the size of square A.',
           style: AppTypography.h4,
         ),
         const Spacer(),
