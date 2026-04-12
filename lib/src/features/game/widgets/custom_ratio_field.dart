@@ -244,7 +244,7 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     final subtitleFits =
         (titleSize.height + subtitleSize.height + 8) <= maxHeight &&
         subtitleSize.width <= maxWidth;
-
+    debugPrint('Size: $size. Area: ${size * size}. ');
     return AnimatedContainer(
       duration: _correctRatio != null
           ? Duration.zero
@@ -254,12 +254,12 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       height: size,
       decoration: BoxDecoration(
         color: mainContainer,
-        border: Border.all(
+        border: size > 8 ? Border.all(
           width: 4.0,
           color: isActive
               ? activeBorderColor
               : borderColor,
-        ),
+        ) : null,
         borderRadius: BorderRadius.circular(24 * sizeFraction),
       ),
       clipBehavior: Clip.antiAlias,
