@@ -86,6 +86,10 @@ extension SignificantFigures on double {
     if (isNaN || isInfinite || this == 0) {
       return this;
     }
+    // If the nearest integer has at least n digits, return the rounded integer
+    if (abs() >= pow(10, n - 1)) {
+      return round();
+    }
     final d = (log(abs()) / ln10).floor() + 1;
     final power = n - d;
     final magnitude = pow(10, power);
