@@ -63,7 +63,8 @@ class ItemDetailsDialog extends ConsumerWidget {
             ],
           ),
 
-          if (item.quantity?.isNotEmpty == true || item.category?.isNotEmpty == true)
+          if (item.quantity?.isNotEmpty == true ||
+              item.category?.isNotEmpty == true)
             Row(
               spacing: 8,
               children: [
@@ -75,24 +76,34 @@ class ItemDetailsDialog extends ConsumerWidget {
             ),
 
           if (item.description.isNotEmpty)
-            MarkdownBody(
-              data: item.description,
-              styleSheet: MarkdownStyleSheet(
-                p: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.neutral600,
-                  height: 1.6,
-                ),
-                a: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.primary600,
-                  height: 1.6,
-                  decoration: TextDecoration.underline,
-                  decorationThickness: 4,
-                  decorationColor: AppColors.primary400,
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height / 2,
+              ),
+              child: SingleChildScrollView(
+                child: MarkdownBody(
+                  data: item.description,
+                  styleSheet: MarkdownStyleSheet(
+                    p: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.neutral600,
+                      height: 1.6,
+                    ),
+                    a: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.primary600,
+                      height: 1.6,
+                      decoration: TextDecoration.underline,
+                      decorationThickness: 4,
+                      decorationColor: AppColors.primary400,
+                    ),
+                  ),
+                  onTapLink: (text, url, title) => url == null
+                      ? null
+                      : launchUrlString(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        ),
                 ),
               ),
-              onTapLink: (text, url, title) => url == null
-                  ? null
-                  : launchUrlString(url, mode: LaunchMode.externalApplication),
             ),
         ],
       ),
@@ -106,7 +117,7 @@ class ItemDetailsDialog extends ConsumerWidget {
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
         color: AppColors.neutral50,
-        border: Border(top: BorderSide(color: AppColors.neutral200)),
+        border: Border(top: BorderSide(color: AppColors.neutral100)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
