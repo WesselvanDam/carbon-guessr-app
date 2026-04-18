@@ -25,7 +25,7 @@ GameMode gameMode(Ref ref) {
   return ref.watch(
     routerProvider.select((router) {
       final mode = router.state.uri.queryParameters['mode'];
-      return GameMode.values.byName(mode ?? GameMode.simple.name);
+      return GameMode.values.byName(mode ?? GameMode.solo.name);
     }),
   );
 }
@@ -35,6 +35,6 @@ double minRatio(Ref ref) {
   final ratioBoundary =
       ref.watch(currentCollectionProvider).value?.ratioBoundary ?? 0.01;
   talker.debug('Calculating min ratio with boundary: $ratioBoundary');
-  
+
   return pow(10, (log(ratioBoundary) / log(10)).floor()).toDouble();
 }

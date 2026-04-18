@@ -11,7 +11,7 @@ class Dialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return material.Dialog(
-      backgroundColor: AppColors.neutral50,
+      backgroundColor: AppColors.white,
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
       clipBehavior: Clip.antiAlias,

@@ -150,10 +150,10 @@ class CollectionPage extends ConsumerWidget {
                                       height: 1.6,
                                     ),
                                     em: AppTypography.bodyLarge.copyWith(
-                                        color: AppColors.neutral600,
-                                        fontStyle: FontStyle.italic,
-                                        height: 1.6,
-                                      ),
+                                      color: AppColors.neutral600,
+                                      fontStyle: FontStyle.italic,
+                                      height: 1.6,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -252,8 +252,8 @@ class CollectionPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   _buildGameModeCard(
                     context,
-                    () => startGameCallback(GameMode.simple),
-                    'Simple Mode',
+                    () => startGameCallback(GameMode.solo),
+                    'Solo Mode',
                     'Five rounds • Improve your avg score',
                     Symbols.person,
                     AppColors.primary600,
@@ -352,7 +352,7 @@ class CollectionPage extends ConsumerWidget {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        'Only games played in Simple Mode count towards your stats',
+                                        'Only games played in Solo Mode count towards your stats',
                                         style: AppTypography.bodySmall.copyWith(
                                           color: AppColors.neutral500,
                                         ),

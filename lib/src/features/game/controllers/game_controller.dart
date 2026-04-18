@@ -66,10 +66,10 @@ class GameController extends _$GameController {
 
     final updatedGame = gameRepository.nextRound(state.value!);
 
-    // Check if the game is now completed. Update stats if so and mode is simple.
+    // Check if the game is now completed. Update stats if so and mode is solo.
     if (updatedGame.isCompleted) {
       final mode = ref.read(gameModeProvider);
-      if (mode == GameMode.simple) {
+      if (mode == GameMode.solo) {
         final cid = ref.read(currentCollectionProvider).requireValue.id;
         final totalScore = updatedGame.totalScore;
 
