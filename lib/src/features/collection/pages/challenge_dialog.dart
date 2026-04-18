@@ -72,7 +72,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
           Container(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
             decoration: const BoxDecoration(
-              color: AppColors.neutral100,
+              color: AppColors.neutral50,
               border: Border(bottom: BorderSide(color: AppColors.neutral100)),
             ),
             child: Column(
@@ -95,19 +95,14 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [AppColors.accent100, AppColors.accent50],
-                    ),
+                    color: AppColors.neutral200,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.accent100),
                     boxShadow: AppShadows.sm,
                   ),
                   child: const Icon(
                     Symbols.groups,
                     size: 32,
-                    color: AppColors.accent600,
+                    color: AppColors.neutral700,
                     fill: 1,
                   ),
                 ),
@@ -121,7 +116,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Create a room or join a friend's game to compare scores.",
+                  "Create a PIN or join a friend's game to compare scores.",
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.neutral500,
                   ),
