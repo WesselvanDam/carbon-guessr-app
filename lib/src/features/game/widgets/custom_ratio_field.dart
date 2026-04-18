@@ -10,6 +10,7 @@ import '../../../design_system/styles/app_typography.dart';
 import '../controllers/game_controller.dart';
 import '../controllers/ratio_controller.dart';
 import '../controllers/timer_controller.dart';
+import '../models/round.model.dart';
 import 'item_details_dialog.dart';
 
 class CustomRatioField extends ConsumerStatefulWidget {
@@ -102,28 +103,31 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
       }
     });
 
+    final round = ref.watch(
+      gameControllerProvider.select((game) => game.value?.currentRound),
+    );
     final userRatio = ref.watch(ratioControllerProvider);
+    final targetRatio = _correctRatio ?? userRatio;
 
-    // If _correctRatio is set, animate from the user's ratio to the correct one.
-    // Otherwise, just display the current user ratio.
-    if (_correctRatio != null) {
-      return TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: userRatio, end: _correctRatio),
-        duration: const Duration(milliseconds: 2000),
-        curve: Curves.easeInOutCubic,
-        builder: (context, animatedRatio, child) =>
-            _buildRatioUI(context, animatedRatio),
-      );
-    } else {
-      return _buildRatioUI(context, userRatio);
-    }
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: userRatio, end: targetRatio),
+      duration: _correctRatio == null
+          ? Duration.zero
+          : const Duration(milliseconds: 2000),
+      curve: Curves.easeInOutCubic,
+      builder: (context, animatedRatio, child) => KeyedSubtree(
+        key: ValueKey(round?.roundNumber),
+        child: _buildRatioUI(context, animatedRatio, round),
+      ),
+    );
   }
 
   /// Builds the UI based on a given ratio (which can be static or animated).
-  Widget _buildRatioUI(BuildContext context, double currentRatio) {
-    final round = ref.read(
-      gameControllerProvider.select((game) => game.value?.currentRound),
-    );
+  Widget _buildRatioUI(
+    BuildContext context,
+    double currentRatio,
+    RoundModel? round,
+  ) {
 
     return AspectRatio(
       aspectRatio: 1.0,
@@ -244,7 +248,6 @@ class _CustomRatioFieldState extends ConsumerState<CustomRatioField> {
     final subtitleFits =
         (titleSize.height + subtitleSize.height + 8) <= maxHeight &&
         subtitleSize.width <= maxWidth;
-    debugPrint('Size: $size. Area: ${size * size}. ');
     return AnimatedContainer(
       duration: _correctRatio != null
           ? Duration.zero
@@ -396,32 +399,6 @@ class GridPatternPainter extends CustomPainter {
     // Draw horizontal lines
     for (double y = spacing; y < size.height; y += spacing) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-/// Custom painter for diagonal pattern overlay
-class DiagonalPatternPainter extends CustomPainter {
-  const DiagonalPatternPainter({required this.color});
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 20
-      ..style = PaintingStyle.fill;
-
-    const spacing = 20.0;
-    const lineWidth = 10.0;
-
-    // Draw diagonal stripes
-    for (double i = -size.height; i < size.width + size.height; i += spacing) {
-      canvas.drawRect(Rect.fromLTWH(i, 0, lineWidth, size.height * 2), paint);
     }
   }
 
