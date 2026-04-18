@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../client/supabase.dart';
 import '../../client/talker.dart';
@@ -27,17 +28,17 @@ class SupabaseApi {
   Future<Map<String, CollectionModel>> fetchUpdatedCollections(
     int? lastFetchTime,
   ) async {
-    final response = await _client
-        .from('collections')
-        .select()
-        .gt(
+    var query = _client.from('collections').select().gt(
           'updated_at',
           DateTime.fromMillisecondsSinceEpoch(
             lastFetchTime ?? 0,
             isUtc: true,
           ).toIso8601String(),
-        )
-        .eq('published', true)
+        );
+    if (kReleaseMode) {
+      query = query.eq('published', true);
+    }
+    final response = await query
         .catchError((error) {
           talker.error('Error fetching updated collections: $error');
           return [];
