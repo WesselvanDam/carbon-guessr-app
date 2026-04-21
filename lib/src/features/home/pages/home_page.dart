@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../client/talker.dart';
 import '../../../../router/routes.dart';
@@ -11,10 +12,68 @@ import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/widgets/logo.dart';
+import '../../forms/models/feedback_form_kind.dart';
+import '../../forms/pages/form_page.dart';
+import 'local/help_dialog.dart';
 import 'local/select_collection.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
+
+  Future<void> _openHelpDialog(BuildContext context) async {
+    final destination = await HelpDialog.show(context);
+    if (destination == null || !context.mounted) {
+      return;
+    }
+
+    switch (destination) {
+      case HelpDestination.tutorial:
+        const OnboardingRoute().go(context);
+      case HelpDestination.website:
+        await _launchExternal(
+          context,
+          url: 'https://quoscient.app',
+          errorMessage: 'Could not open the website right now.',
+        );
+      case HelpDestination.feedback:
+        await FormPage.showSheet(context, formKind: FeedbackFormKind.general);
+      case HelpDestination.email:
+        await _launchExternal(
+          context,
+          url: 'mailto:info@quoscient.app',
+          errorMessage: 'Could not open your email app right now.',
+        );
+    }
+  }
+
+  Future<void> _launchExternal(
+    BuildContext context, {
+    required String url,
+    required String errorMessage,
+  }) async {
+    try {
+      final didLaunch = await launchUrlString(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (didLaunch || !context.mounted) {
+        return;
+      }
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: AppColors.error600,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,7 +95,7 @@ class HomePage extends ConsumerWidget {
             children: [
               RoundedIconButton(
                 icon: Symbols.help,
-                onPressed: () => const OnboardingRoute().go(context),
+                onPressed: () => _openHelpDialog(context),
                 size: 40,
                 iconColor: AppColors.primary600,
               ),

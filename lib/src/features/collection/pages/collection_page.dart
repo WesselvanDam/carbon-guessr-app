@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -8,12 +9,15 @@ import '../../../../constants/game_mode.dart';
 import '../../../../router/routes.dart';
 import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
+import '../../../design_system/components/buttons/outlined_button.dart';
 import '../../../design_system/components/chips/info_chip.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/utils/extensions.dart';
 import '../../../shared/widgets/stat_box.dart';
+import '../../forms/models/feedback_form_kind.dart';
+import '../../forms/pages/form_page.dart';
 import '../../game/repository/game_repository.dart';
 import '../../home/providers/collections.dart';
 import '../../stats/providers/stats.dart';
@@ -243,7 +247,7 @@ class CollectionPage extends ConsumerWidget {
                   const SizedBox(height: 24),
                   // Game modes section
                   Text(
-                    'Select Game Mode',
+                    'Play A Game!',
                     style: AppTypography.h4.copyWith(
                       color: AppColors.neutral900,
                     ),
@@ -365,6 +369,29 @@ class CollectionPage extends ConsumerWidget {
                             ],
                           );
                         },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  OutlinedActionButton(
+                    fullWidth: true,
+                    label: 'Share Collection Feedback',
+                    icon: Symbols.feedback,
+                    textColor: AppColors.primary700,
+                    borderColor: AppColors.primary200,
+                    backgroundColor: AppColors.primary50,
+                    onPressed: () => FormPage.showSheet(
+                      context,
+                      formKind: FeedbackFormKind.collection,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Subtle, centred 'last updated' info in DD MMM YYYY format
+                  Align(
+                    child: Text(
+                      'Last updated: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(info.lastUpdated))}',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.neutral500,
                       ),
                     ),
                   ),
