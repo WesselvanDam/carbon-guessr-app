@@ -6,6 +6,7 @@ import '../../../design_system/components/buttons/action_button.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/components/form_fields/form_dropdown_field.dart';
 import '../../../design_system/components/form_fields/form_text_area_field.dart';
+import '../../../design_system/components/snackbar/snackbar_presenter.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
@@ -66,8 +67,6 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
       return;
     }
 
-    final messenger = ScaffoldMessenger.of(context);
-
     setState(() {
       _isSubmitting = true;
     });
@@ -89,24 +88,18 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
         return;
       }
 
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Feedback sent. Thank you!'),
-          backgroundColor: AppColors.success600,
-          duration: Duration(seconds: 2),
-        ),
+      AppSnackbarPresenter.showSuccess(
+        context,
+        message: 'Feedback sent. Thank you!',
       );
       Navigator.of(context).pop();
     } catch (_) {
       if (!mounted) {
         return;
       }
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Could not send feedback right now. Please try again.'),
-          backgroundColor: AppColors.error600,
-          duration: Duration(seconds: 3),
-        ),
+      AppSnackbarPresenter.showError(
+        context,
+        message: 'Could not send feedback right now. Please try again.',
       );
     } finally {
       if (mounted) {

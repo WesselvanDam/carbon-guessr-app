@@ -7,6 +7,7 @@ import '../../../design_system/components/buttons/action_button.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
 import '../../../design_system/components/chips/info_chip.dart';
 import '../../../design_system/components/dialogs/dialog.dart';
+import '../../../design_system/components/snackbar/snackbar_presenter.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_shadows.dart';
 import '../../../design_system/styles/app_typography.dart';
@@ -32,12 +33,9 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
     });
     // Copy to clipboard automatically
     Clipboard.setData(ClipboardData(text: _generatedGameId!));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('PIN copied to clipboard!'),
-        backgroundColor: AppColors.green500,
-        duration: Duration(seconds: 2),
-      ),
+    AppSnackbarPresenter.showSuccess(
+      context,
+      message: 'PIN copied to clipboard!',
     );
   }
 

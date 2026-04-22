@@ -9,6 +9,7 @@ import '../../../../client/talker.dart';
 import '../../../../router/routes.dart';
 import '../../../design_system/components/appbar.dart';
 import '../../../design_system/components/buttons/icon_buttons.dart';
+import '../../../design_system/components/snackbar/snackbar_presenter.dart';
 import '../../../design_system/styles/app_colors.dart';
 import '../../../design_system/styles/app_typography.dart';
 import '../../../shared/widgets/logo.dart';
@@ -66,13 +67,7 @@ class HomePage extends ConsumerWidget {
       }
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-        backgroundColor: AppColors.error600,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    AppSnackbarPresenter.showError(context, message: errorMessage);
   }
 
   @override
