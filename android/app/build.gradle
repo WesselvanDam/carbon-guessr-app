@@ -32,7 +32,6 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.quoscient.app"
     compileSdk = flutter.compileSdkVersion
-    // ndkVersion = flutter.ndkVersion
 
     flavorDimensions += "environment"
 
