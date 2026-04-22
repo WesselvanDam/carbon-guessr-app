@@ -108,39 +108,32 @@ class HomePage extends ConsumerWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Main content
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Column(
-                children: [
-                  const SizedBox(height: 32),
-                  // Collections section header
-                  Row(
-                    children: [
-                      const Icon(
-                        Symbols.category,
-                        color: AppColors.accent600,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Collections',
-                        style: AppTypography.h4.copyWith(
-                          color: AppColors.neutral900,
-                        ),
-                      ),
-                    ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          children: [
+            const SizedBox(height: 32),
+            // Collections section header
+            Row(
+              children: [
+                const Icon(
+                  Symbols.category,
+                  color: AppColors.accent600,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Collections',
+                  style: AppTypography.h4.copyWith(
+                    color: AppColors.neutral900,
                   ),
-                  // Collections list
-                  const CollectionSelector(),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
+            // Collections list
+            const CollectionSelector(),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import '../../../../design_system/components/loading_indicator.dart';
 import '../../../../design_system/styles/app_colors.dart';
 import '../../../../design_system/styles/app_typography.dart';
 import '../../providers/collections.dart';
@@ -67,8 +68,12 @@ class CollectionSelector extends ConsumerWidget {
           separatorBuilder: (context, index) => const SizedBox(height: 20),
         );
       },
-      error: (error, stack) => Center(child: Text('Error: $error')),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) =>
+          SizedBox(height: 240, child: Center(child: Text('Error: $error'))),
+      loading: () => const SizedBox(
+        height: 240,
+        child: Center(child: AppLoadingIndicator()),
+      ),
     );
   }
 }
