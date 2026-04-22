@@ -88,7 +88,7 @@ class HelpDialog extends StatelessWidget {
                   icon: Symbols.public,
                   iconColor: AppColors.primary600,
                   title: 'Website',
-                  subtitle: 'Visit official portal',
+                  subtitle: 'Visit our official site',
                   onTap: () =>
                       Navigator.of(context).pop(HelpDestination.website),
                 ),
