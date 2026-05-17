@@ -18,6 +18,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Make .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          envkey_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
       - name: Run build_runner
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
