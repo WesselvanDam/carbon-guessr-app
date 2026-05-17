@@ -1,0 +1,35 @@
+name: Build iOS Simulator App
+
+on:
+  workflow_dispatch: # Allows you to trigger this manually from GitHub
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS Simulator Bundle
+        run: |
+          # The --simulator flag ensures it builds a .app bundle, not a .ipa
+          flutter build ios --simulator --no-codesign
+
+      - name: Zip the .app bundle
+        run: |
+          cd build/ios/iphonesimulator
+          zip -r ../../../Runner.app.zip Runner.app
+
+      - name: Upload Artifact to GitHub
+        uses: actions/upload-artifact@v3
+        with:
+          name: appetize-ios-bundle
+          path: Runner.app.zip
