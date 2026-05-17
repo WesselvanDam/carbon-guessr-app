@@ -78,7 +78,7 @@ jobs:
           DEVELOPMENT_TEAM: ${{ github.event.inputs.team_id }}
 
       - name: Upload IPA to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-release-ipa
           path: ios/build/ios/output/*.ipa
