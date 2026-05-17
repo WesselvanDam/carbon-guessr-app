@@ -1,0 +1,104 @@
+name: Build iOS Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      team_id:
+        description: 'Apple Developer Team ID (10 characters, e.g., AB1C2D3E4F)'
+        required: true
+        type: string
+      app_store_connect_api_key_id:
+        description: 'App Store Connect API Key ID'
+        required: true
+        type: string
+      app_store_connect_issuer_id:
+        description: 'App Store Connect Issuer ID (UUID)'
+        required: true
+        type: string
+
+jobs:
+  build-ios-release:
+    runs-on: macos-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.1'
+          channel: 'stable'
+          cache: true
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: ios
+      
+      - name: Get Flutter dependencies
+        run: flutter pub get
+      
+      - name: Setup iOS build environment
+        run: |
+          cd ios
+          pod install --repo-update
+      
+      - name: Build Flutter iOS Release (no code sign)
+        run: flutter build ios --release --no-codesign
+      
+      - name: Build iOS Archive
+        run: |
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -derivedDataPath build/ios \
+            -archivePath build/ios/Runner.xcarchive \
+            -allowProvisioningUpdates \
+            archive
+        env:
+          DEVELOPMENT_TEAM: ${{ github.event.inputs.team_id }}
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: ""
+      
+      - name: Export IPA
+        run: |
+          cd ios
+          xcodebuild -exportArchive \
+            -archivePath build/ios/Runner.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/ios/output \
+            -allowProvisioningUpdates
+        env:
+          DEVELOPMENT_TEAM: ${{ github.event.inputs.team_id }}
+      
+      - name: Upload IPA to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-release-ipa
+          path: ios/build/ios/output/*.ipa
+          retention-days: 30
+          if-no-files-found: error
+      
+      - name: Display build completion message
+        run: |
+          echo "✅ iOS .ipa built successfully!"
+          echo ""
+          echo "📦 Build artifacts available at:"
+          echo "   - IPA file: ios/build/ios/output/Runner.ipa"
+          echo ""
+          echo "📋 Next steps:"
+          echo "   1. Download the IPA artifact from GitHub Actions"
+          echo "   2. Go to App Store Connect: https://appstoreconnect.apple.com/"
+          echo "   3. Navigate to your app under 'My Apps'"
+          echo "   4. Click '+ Version' or '+ Build' to create a new build"
+          echo "   5. Upload the IPA using Xcode Organizer or App Store Connect web interface"
+          echo "   6. Fill in app metadata (description, screenshots, keywords, etc.)"
+          echo "   7. Submit for App Store Review"
+          echo ""
+          echo "⏱️  Expected review time: 24-48 hours"
