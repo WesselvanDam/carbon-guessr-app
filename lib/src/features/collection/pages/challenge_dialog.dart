@@ -290,7 +290,7 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                             ),
                             textAlign: TextAlign.center,
                             textCapitalization: TextCapitalization.characters,
-                            maxLength: 8,
+                            maxLength: 6,
                             buildCounter:
                                 (
                                   context, {
@@ -299,8 +299,8 @@ class _ChallengeDialogState extends State<ChallengeDialog> {
                                   maxLength,
                                 }) => null,
                             validator: (value) {
-                              if (value == null || value.trim().length != 8) {
-                                return 'Enter a valid 8-digit PIN';
+                              if (value == null || value.trim().length != 6) {
+                                return 'Enter a valid 6-digit PIN';
                               }
                               return null;
                             },

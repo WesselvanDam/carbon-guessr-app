@@ -20,7 +20,7 @@ class GameRepository {
   static String newGameId({int? seed}) {
     if (seed != null) {
       final random = Random(seed);
-      return List.generate(8, (_) => random.nextInt(10)).join();
+      return List.generate(6, (_) => random.nextInt(10)).join();
     }
     return DateTime.now()
       .millisecondsSinceEpoch
@@ -28,7 +28,7 @@ class GameRepository {
       .split('')
       .reversed
       .join()
-      .substring(0, 8);
+      .substring(0, 6);
   }
 
   /// Creates a new game session with the given items
