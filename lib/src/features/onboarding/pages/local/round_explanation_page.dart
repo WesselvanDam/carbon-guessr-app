@@ -41,9 +41,16 @@ class RoundExplanationPage extends ConsumerWidget {
           'Try it out. Adjust the squares to compare India and the USA, then hit submit and check your score!',
           style: AppTypography.bodyLarge,
         ),
-        Spacer(),
-        Card(child: EvaluationRow()),
-        CustomRatioField(),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: .end,
+            spacing: 16,
+            children: [
+              Card(child: EvaluationRow()),
+              Flexible(child: CustomRatioField()),
+            ],
+          ),
+        ),
       ],
     );
   }

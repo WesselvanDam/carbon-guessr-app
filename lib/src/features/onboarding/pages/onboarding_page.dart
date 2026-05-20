@@ -114,7 +114,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 itemCount: _pages.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
                   child: _pages[index],
                 ),
               ),

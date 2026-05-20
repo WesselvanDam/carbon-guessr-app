@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../client/talker.dart';
 import '../../../../design_system/components/cards/card.dart';
 import '../../../../design_system/styles/app_colors.dart';
 import '../../../../design_system/styles/app_typography.dart';
@@ -48,63 +51,85 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           'To continue, drag the squares until square B is twice the size of square A.',
           style: AppTypography.h4,
         ),
-        const Spacer(),
-        Card(
+        Expanded(
           child: Column(
+            mainAxisAlignment: .end,
+            spacing: 16,
             children: [
-              Text(
-                'Ratio between the sizes of both squares'.toUpperCase(),
-                style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.neutral400,
-                  fontSize: 10,
-                  letterSpacing: 1,
+              Card(
+                child: Column(
+                  children: [
+                    Text(
+                      'Ratio between the sizes of both squares'.toUpperCase(),
+                      style: AppTypography.labelSmall.copyWith(
+                        color: AppColors.neutral400,
+                        fontSize: 10,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 4, width: double.infinity),
+                    RatioText(
+                      ratio: ratio,
+                      style: AppTypography.labelLarge.copyWith(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              RatioText(
-                ratio: ratio,
-                style: AppTypography.labelLarge.copyWith(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
+              Flexible(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final size = constraints.biggest.shortestSide;
+                    return SizedBox.square(
+                      dimension: size,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const CustomRatioField(),
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: AnimatedSwitcher(
+                                duration: 260.milliseconds,
+                                switchInCurve: Curves.easeOutCubic,
+                                switchOutCurve: Curves.easeInCubic,
+                                transitionBuilder: (child, animation) {
+                                  final fade = CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOut,
+                                  );
+                                  final slide = Tween<Offset>(
+                                    begin: const Offset(0, 0.06),
+                                    end: Offset.zero,
+                                  ).animate(animation);
+
+                                  return FadeTransition(
+                                    opacity: fade,
+                                    child: SlideTransition(
+                                      position: slide,
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                                child: _showGestureHint
+                                    ? const _GestureHintOverlay(
+                                        key: ValueKey('gesture-hint'),
+                                      )
+                                    : const SizedBox.shrink(
+                                        key: ValueKey('gesture-hint-hidden'),
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
           ),
-        ),
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            const CustomRatioField(),
-            Positioned.fill(
-              child: IgnorePointer(
-                child: AnimatedSwitcher(
-                  duration: 260.milliseconds,
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  transitionBuilder: (child, animation) {
-                    final fade = CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeOut,
-                    );
-                    final slide = Tween<Offset>(
-                      begin: const Offset(0, 0.06),
-                      end: Offset.zero,
-                    ).animate(animation);
-
-                    return FadeTransition(
-                      opacity: fade,
-                      child: SlideTransition(position: slide, child: child),
-                    );
-                  },
-                  child: _showGestureHint
-                      ? const _GestureHintOverlay(key: ValueKey('gesture-hint'))
-                      : const SizedBox.shrink(
-                          key: ValueKey('gesture-hint-hidden'),
-                        ),
-                ),
-              ),
-            ),
-          ],
         ),
       ],
     );
